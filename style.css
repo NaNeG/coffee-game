@@ -1,0 +1,88 @@
+.box {
+    width: 100px;
+    height: 100px;
+    /* animation: fill-box 1s cubic-bezier(0.3, 0.6, 0.6, 0.9);
+    animation-fill-mode: forwards;
+    animation-delay: 1s; */
+    background: red;
+}
+
+.container {
+    width: 100px;
+    height: 300px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.cup-container {
+    display: flex;
+    flex-direction: row;
+}
+
+body {
+  padding: 50px;
+  background: white;
+}
+
+.cup {
+  position: relative;
+  height: 250px;
+  width: 250px;
+  margin: auto;
+  padding-top: 100px;
+  background: linear-gradient(right, #ddd 0, white 100%);
+  background-color: red;
+  border-radius: 5%;
+}
+
+.handle {
+  position: absolute;
+  height: 200px;
+  width: 120px;
+  top: 70px;
+  left: -120px;
+  border-top-left-radius: 75px 100px;
+  border-bottom-left-radius: 75px 100px;
+  border-top-right-radius: 50% 20px;
+  border-bottom-right-radius: 50% 20px;
+  background-color: red;
+}
+
+.handle:after {
+  content: "";
+  position: absolute;
+  height: 140px;
+  width: 90px;
+  top: 30px;
+  right: 0;
+  border-top-left-radius: 45px 70px;
+  border-bottom-left-radius: 45px 70px;
+  border-top-right-radius: 45px 35px;
+  border-bottom-right-radius: 45px 35px;
+  background: white;
+}
+
+.lightblue {
+  background: rgb(106, 158, 255);
+}
+
+.brown {
+  background: brown;
+}
+
+.black {
+  background: black;
+}
+
+
+
+@keyframes fill-box {
+    0% {
+        height: 0;
+    }
+    
+    100%{
+        height: 100px;
+    }
+}
+
