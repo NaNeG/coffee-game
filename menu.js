@@ -1,10 +1,11 @@
-function drawState(state) {
-    switch(state){
-        case GameState.FillState:
-            break;
-    }
+import { Cup } from "./gameElements.js";
+import { FillState } from "./states.js";
+
+const GameState = {
+    FillState: 'fillstate',
+    MixState: 'mixstate',
+    PourState: 'pourstate',
 }
 
-function drawFillState() {
-
-}
+let startButton = document.getElementById('startGame');
+startButton.addEventListener('click', () => new FillState());

@@ -1,7 +1,6 @@
 class Drawable {
-    constructor(container, id) {
+    constructor(container) {
         this.container = container;
-        this.id = id;
     }
 
     draw(...classList) {
@@ -9,21 +8,19 @@ class Drawable {
         for (let c of classList) {
             element.classList.add(c);            
         }
-        if (this.id !== undefined){
-            element.id = this.id;
-        }
         this.container.append(element);
     }
 }
 
 class Filling extends Drawable {
-    constructor(container, id, texture){
-        super(container, id);
+    constructor(container, texture){
+        super(container);
         this.texture = texture;
+        this.draw();
     }
 
     draw() {
-        super.draw("box", this.texture);
+        super.draw("filling-bar", this.texture);
     }
 }
 
@@ -31,42 +28,32 @@ class Cup extends Drawable{
 
     contents = [];
 
-    constructor(container, id, color) {
-        super(container, id);        
+    constructor(container, color) {
+        super(container);        
         this.color = color;
+        this.draw();
     }
 
     fill(filling) {
-        this.contents.push(filling);
+        let fillBarContainer = document.querySelector('.filling-bar-container');
+        if (this.contents.length < 4){
+            this.contents.push(filling);
+            let fillBar = new Filling(fillBarContainer, filling);
+        }   
     }
     
     draw() {
         let cupBody = document.createElement('div');
         let handle = document.createElement('div');
+        let fillBarContainer = document.createElement('div');
+        fillBarContainer.classList.add('filling-bar-container');
         cupBody.classList.add('cup');
         handle.classList.add('handle');
         cupBody.append(handle);
+        cupBody.append(fillBarContainer);
         this.container.append(cupBody);
     }
 }
 
 
-class Water extends Filling {
-    constructor(container, id) {
-        super(container, id, 'lightblue');
-    }
-}
-
-class Tea extends Filling {
-    constructor(container, id) {
-        super(container, id, 'brown');
-    }
-}
-
-class Coffee extends Filling {
-    constructor(container, id) {
-        super(container, id, 'black');
-    }
-}
-
-export { Cup, Water, Tea, Coffee };
+export { Cup };
