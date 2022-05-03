@@ -12,34 +12,69 @@ class Drawable {
     }
 }
 
-class Filling extends Drawable {
+class FillingBar extends Drawable {
     constructor(container, texture){
         super(container);
         this.texture = texture;
-        this.draw();
     }
 
-    draw() {
-        super.draw("filling-bar", this.texture);
+    draw(firstTime) {
+        if (firstTime) {
+            super.draw("filling-bar", 'filling-bar-animation', this.texture);
+        }
+        else {
+            super.draw("filling-bar", this.texture);
+        }
     }
+
+
+}
+
+class ToppingBar extends Drawable {
+    constructor(container, texture){
+        super(container);
+        this.texture = texture;
+    }
+
+    draw(firstTime) {
+        if (firstTime) {
+            super.draw("topping-bar", 'topping-bar-animation', this.texture);
+        }
+        else {
+            super.draw("topping-bar", this.texture);
+        }
+    }
+
 }
 
 class Cup extends Drawable{
 
-    contents = [];
+    components = [];
 
-    constructor(container, color) {
+    constructor(container, color='black') {
         super(container);        
         this.color = color;
-        this.draw();
+        this.draw(true);
     }
 
-    fill(filling) {
-        let fillBarContainer = document.querySelector('.filling-bar-container');
-        if (this.contents.length < 4){
-            this.contents.push(filling);
-            let fillBar = new Filling(fillBarContainer, filling);
+    fill(component, isFilling) {
+        if (this.components.length < 4){
+            let fillBarContainer = document.querySelector('.filling-bar-container');
+            this.drawFilling(fillBarContainer, component, isFilling, true);
+            this.components.push([component, isFilling]);
         }   
+    }
+
+    drawFilling(container, component, isFilling, firstTime) {
+        if (isFilling){
+            let fillBar = new FillingBar(container, component);
+            fillBar.draw(firstTime);
+        }
+        else {
+            let fillBar = new ToppingBar(container, component);
+            fillBar.draw(firstTime);        
+        }
+        
     }
     
     draw() {
@@ -51,6 +86,9 @@ class Cup extends Drawable{
         handle.classList.add('handle');
         cupBody.append(handle);
         cupBody.append(fillBarContainer);
+        for (let component of this.components){
+           this.drawFilling(fillBarContainer, component[0], component[1], false);
+        }
         this.container.append(cupBody);
     }
 }

@@ -32,11 +32,24 @@ body {
 .filling-bar {
   width: 100%;
   height: 25%;
-  animation: fill-box 1s cubic-bezier(0.3, 0.6, 0.6, 0.9);
-  animation-fill-mode: forwards;
   background: white;
 }
 
+.filling-bar-animation {
+  animation: fill-filling 1s cubic-bezier(0.3, 0.6, 0.6, 0.9);
+  animation-fill-mode: forwards;
+}
+
+.topping-bar {
+  width: 100%;
+  height: 5%;
+  background: white;
+}
+
+.topping-bar-animation {
+  animation: fill-topping 0.3s cubic-bezier(0.3, 0.6, 0.6, 0.9);
+  animation-fill-mode: forwards;
+}
 
 .cup {
   position: relative;
@@ -86,6 +99,18 @@ body {
   background: rgb(111, 78, 55);
 }
 
+.milk {
+  background: rgb(253, 255, 245);
+}
+
+.cocoa {
+  background: rgb(89, 71, 63);
+}
+
+.caramel {
+  background: rgb(181, 126, 63);
+}
+
 
 #gameContainer {
   display: flex;
@@ -93,7 +118,7 @@ body {
   height: 100%;
 }
 
-@keyframes fill-box {
+@keyframes fill-filling {
     0% {
         height: 0;
     }
@@ -101,5 +126,15 @@ body {
     100%{
         height: 25%;
     }
+}
+
+@keyframes fill-topping {
+  0% {
+      height: 0;
+  }
+  
+  100%{
+      height: 5%;
+  }
 }
 

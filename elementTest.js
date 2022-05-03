@@ -1,4 +1,4 @@
-import { Cup, Juice, Tea, Coffee } from './gameElements.js'
+import { Cup } from './gameElements.js'
 import { getRgb } from './helpers.js'
 
 // let container = document.querySelector('.container');
