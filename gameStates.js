@@ -52,10 +52,7 @@ class FillState extends State {
                 let fillingsContainer = document.createElement('div');
                 fillingsContainer.classList.add('container', 'filling-menu-container');
 
-                let toppingsContainer = document.createElement('div');
-                toppingsContainer.classList.add('container', 'filling-menu-container');
-
-                this.gameContainer.append(fillingsContainer, toppingsContainer);
+                this.gameContainer.append(fillingsContainer);
 
                 this.cup = new Cup(cupContainer);
                 for (let i = 0; i < 3; i++){
