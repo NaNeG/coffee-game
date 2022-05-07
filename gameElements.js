@@ -1,3 +1,6 @@
+import { getRandomInt } from "./helpers.js";
+
+
 class Drawable {
     constructor(container) {
         this.container = container;
@@ -63,6 +66,10 @@ class Cup extends Drawable{
             this.drawFilling(fillBarContainer, component, isFilling, true);
             this.components.push([component, isFilling]);
         }   
+    }
+
+    mix(userInputs) {
+        
     }
 
     drawFilling(container, component, isFilling, firstTime) {

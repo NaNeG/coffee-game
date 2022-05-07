@@ -1,4 +1,12 @@
 import { Cup } from './gameElements.js';
+import { equalArrays, getRandomInt } from "./helpers.js";
+
+const inputs = {
+    0: 'up',
+    1: 'right',
+    2: 'down',
+    3: 'left',
+}
 
 const Events = {
     init: 'init',
@@ -118,14 +126,44 @@ class MixState extends State {
                 cupContainer.id = 'cupContainer';
                 cupContainer.classList.add('container', 'cup-container');
 
-                this.gameContainer.append(cupContainer);
+                let mixButtonsContainer = document.createElement('div');
+                mixButtonsContainer.id = 'mixButtonsContainer';
+                mixButtonsContainer.classList.add('container', 'mix-buttons-container');
+
+                this.correctInputs = [];
+
+                for (let i = 0; i < 3 + getRandomInt(3); i++) {
+                    this.correctInputs.push(inputs[getRandomInt(4)]);
+                }
+                console.log(this.correctInputs);
+
+                this.userInputs = [];
+
+                let leftMixButton = document.createElement('button');
+                leftMixButton.id = 'leftMixButton';
+                leftMixButton.addEventListener('click', () => this.userInputs.push('left'));
+
+                let upMixButton = document.createElement('button');
+                upMixButton.id = 'upMixButton';
+                upMixButton.addEventListener('click', () => this.userInputs.push('up'));
+
+                let rightMixButton = document.createElement('button');
+                rightMixButton.id = 'rightMixButton';
+                rightMixButton.addEventListener('click', () => this.userInputs.push('right'));
+
+                let downMixButton = document.createElement('button');
+                downMixButton.id = 'downMixButton';
+                downMixButton.addEventListener('click', () => this.userInputs.push('down'));
+
+                mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
+                
+                this.gameContainer.append(cupContainer, mixButtonsContainer);
                 this.cup.container = cupContainer;
                 this.cup.draw();
                 break;
 
             case Events.restart:
-                this.gameContainer.replaceChildren();
-                this.handleEvent(Events.init);
+                this.userInputs = [];
                 break;
         }
     }
@@ -134,6 +172,7 @@ class MixState extends State {
 class PourState extends State {
     constructor(orders){
         super(orders);
+        this.handleEvent(Events.init);
     }
 
     handleEvent(event) {

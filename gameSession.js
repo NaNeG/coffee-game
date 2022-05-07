@@ -1,4 +1,5 @@
 import { FillState, MixState, PourState, FinalState } from "./gameStates.js";
+import { equalArrays } from "./helpers.js";
 
 export class GameSession {
     orders = [];
@@ -20,7 +21,14 @@ export class GameSession {
             this.gameState = new MixState(this.orders, cup);
         } 
         else if (this.gameState instanceof MixState) {
-            this.gameState = new PourState(this.orders, cup);
+            if (equalArrays(this.gameState.userInputs, this.gameState.correctInputs)){
+                console.log('correct');
+                this.gameState = new PourState(this.orders, cup);
+            }
+            else {
+                this.gameState.userInputs = [];
+                console.log('incorrect');
+            }         
         } 
         else if (this.gameState instanceof PourState) {
             this.gameState = new FinalState(this.orders, cup);
