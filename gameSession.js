@@ -21,12 +21,13 @@ export class GameSession {
             this.gameState = new MixState(this.orders, cup);
         } 
         else if (this.gameState instanceof MixState) {
-            if (equalArrays(this.gameState.userInputs, this.gameState.correctInputs)){
+            if (equalArrays(this.gameState.userInputs, this.gameState.requiredInputs)){
                 console.log('correct');
                 this.gameState = new PourState(this.orders, cup);
             }
             else {
                 this.gameState.userInputs = [];
+                alert('Try again');
                 console.log('incorrect');
             }         
         } 

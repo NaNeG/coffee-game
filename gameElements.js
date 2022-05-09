@@ -13,6 +13,10 @@ class Drawable {
         }
         this.container.append(element);
     }
+
+    changeContainer(newContainer) {
+        this.container = newContainer;
+    }
 }
 
 class FillingBar extends Drawable {
@@ -50,14 +54,14 @@ class ToppingBar extends Drawable {
 
 }
 
-class Cup extends Drawable{
+class Cup extends Drawable {
 
     components = [];
 
     constructor(container, color='black') {
         super(container);        
         this.color = color;
-        this.draw(true);
+        this.draw();
     }
 
     fill(component, isFilling) {
@@ -68,8 +72,8 @@ class Cup extends Drawable{
         }   
     }
 
-    mix(userInputs) {
-        
+    changeContainer(newContainer) {
+        super.changeContainer(newContainer);
     }
 
     drawFilling(container, component, isFilling, firstTime) {
@@ -100,5 +104,44 @@ class Cup extends Drawable{
     }
 }
 
+class PouringBar extends Drawable {
+    constructor(container) {
+        super(container);
+        this.progress = 0;
+        this.draw();
+    }
 
-export { Cup };
+    draw() {
+        let oppositeDirection = false;
+        let pouringBar = document.createElement('div');
+        pouringBar.classList.add('pouring-bar');
+        this.container.append(pouringBar);
+        
+        this.interval = setInterval(() => {
+            
+            if (!oppositeDirection) {
+                this.progress++;
+                if (this.progress == 100) {
+                    oppositeDirection = true;
+                }
+                
+            }
+            else {
+                this.progress--;
+                if (this.progress == 0) {
+                    oppositeDirection = false;
+                }
+                
+            }
+            pouringBar.style.height = this.progress + '%';
+
+        }, 15);      
+    }
+
+    stop() {
+        clearInterval(this.interval);
+    }
+}
+
+
+export { Cup, PouringBar };

@@ -9,3 +9,7 @@ export function getRandomInt(max) {
 export function equalArrays(a, b) {
     return a.length === b.length && a.every((v, i) => v === b[i]);
 }
+
+export function mixColors(...colors) {
+    
+}

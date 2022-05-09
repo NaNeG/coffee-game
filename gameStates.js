@@ -1,4 +1,4 @@
-import { Cup } from './gameElements.js';
+import { Cup, PouringBar } from './gameElements.js';
 import { equalArrays, getRandomInt } from "./helpers.js";
 
 const inputs = {
@@ -6,6 +6,13 @@ const inputs = {
     1: 'right',
     2: 'down',
     3: 'left',
+}
+
+const inputImages = {
+    0: 'up.png',
+    1: 'right.png',
+    2: 'down.png',
+    3: 'left.png',
 }
 
 const Events = {
@@ -130,12 +137,20 @@ class MixState extends State {
                 mixButtonsContainer.id = 'mixButtonsContainer';
                 mixButtonsContainer.classList.add('container', 'mix-buttons-container');
 
-                this.correctInputs = [];
+                let requiredInputsContainer = document.createElement('div');
+                requiredInputsContainer.id = 'requiredInputsContainer';
+                requiredInputsContainer.classList.add('container', 'required-inputs-container');
+
+                this.requiredInputs = [];
 
                 for (let i = 0; i < 3 + getRandomInt(3); i++) {
-                    this.correctInputs.push(inputs[getRandomInt(4)]);
+                    let direction = getRandomInt(4);
+                    this.requiredInputs.push(inputs[direction]);
+                    let arrowImage = document.createElement('img');
+                    arrowImage.src = 'img/' + inputImages[direction];
+                    requiredInputsContainer.append(arrowImage);
                 }
-                console.log(this.correctInputs);
+                console.log(this.requiredInputs);
 
                 this.userInputs = [];
 
@@ -157,8 +172,8 @@ class MixState extends State {
 
                 mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
                 
-                this.gameContainer.append(cupContainer, mixButtonsContainer);
-                this.cup.container = cupContainer;
+                this.gameContainer.append(cupContainer, mixButtonsContainer, requiredInputsContainer);
+                this.cup.changeContainer(cupContainer);
                 this.cup.draw();
                 break;
 
@@ -170,15 +185,44 @@ class MixState extends State {
 }
 
 class PourState extends State {
-    constructor(orders){
+    constructor(orders, cup){
         super(orders);
+        this.cup = cup;
         this.handleEvent(Events.init);
     }
 
     handleEvent(event) {
         switch(event) {
             case Events.init:
-                this.gameContainer.replaceChildren();
+                this.gameContainer.replaceChildren();               
+
+                let cupContainer = document.createElement('div');
+                cupContainer.id = 'cupContainer';
+                cupContainer.classList.add('container', 'cup-container');
+
+                let pouringBarContainer = document.createElement('div');
+                pouringBarContainer.id = 'pouringBarContainer';
+                pouringBarContainer.classList.add('container', 'pouring-bar-container');
+
+                let stopButtonContainer = document.createElement('div');
+                stopButtonContainer.id = 'stopButtonContainer';
+                stopButtonContainer.classList.add('container', 'stop-button-container');
+
+                let pouringBar = new PouringBar(pouringBarContainer);
+
+                let stopButton = document.createElement('button');
+                stopButton.id = 'stopButton';
+                stopButton.textContent = 'stop'
+                stopButton.classList.add('button');
+                stopButton.addEventListener('click', () => pouringBar.stop());
+
+                stopButtonContainer.append(stopButton);
+
+                this.cup.changeContainer(cupContainer);
+                this.cup.draw();
+
+                this.gameContainer.append(cupContainer, pouringBarContainer, stopButtonContainer);
+
                 break;
 
             case Events.restart:
