@@ -1,4 +1,4 @@
-import { Cup, PouringBar } from './gameElements.js';
+import { Cup, Drink, PouringBar } from './gameElements.js';
 import { equalArrays, getRandomInt } from "./helpers.js";
 
 const inputs = {
@@ -187,7 +187,7 @@ class MixState extends State {
 class PourState extends State {
     constructor(orders, cup){
         super(orders);
-        this.cup = cup;
+        this.mixingCup = cup;
         this.handleEvent(Events.init);
     }
 
@@ -200,28 +200,44 @@ class PourState extends State {
                 cupContainer.id = 'cupContainer';
                 cupContainer.classList.add('container', 'cup-container');
 
+                let barElementsContainer = document.createElement('div');
+                barElementsContainer.id = 'barElementsContainer';
+                barElementsContainer.classList.add('container');
+
                 let pouringBarContainer = document.createElement('div');
                 pouringBarContainer.id = 'pouringBarContainer';
                 pouringBarContainer.classList.add('container', 'pouring-bar-container');
 
-                let stopButtonContainer = document.createElement('div');
-                stopButtonContainer.id = 'stopButtonContainer';
-                stopButtonContainer.classList.add('container', 'stop-button-container');
+                let pouringCupContainer = document.createElement('div');
+                pouringCupContainer.id = 'pouringCupContainer';
+                pouringCupContainer.classList.add('container', 'cup-container');
 
-                let pouringBar = new PouringBar(pouringBarContainer);
+                this.pouringCup = new Drink(pouringCupContainer);
 
+                for (let i = 1; i <= 2; i++){
+                    let innerDiv = document.createElement('div');
+                    innerDiv.classList.add('divider');
+                    innerDiv.style.top = 33 * i + '%';
+                    pouringBarContainer.append(innerDiv);
+                }   
+
+                this.pouringBar = new PouringBar(pouringBarContainer);
+                
                 let stopButton = document.createElement('button');
                 stopButton.id = 'stopButton';
                 stopButton.textContent = 'stop'
                 stopButton.classList.add('button');
-                stopButton.addEventListener('click', () => pouringBar.stop());
+                stopButton.addEventListener('click', () => {
+                    this.pouringBar.stop();
+                    this.pouringCup.fill(this.pouringBar.progress);
+                });
 
-                stopButtonContainer.append(stopButton);
+                this.mixingCup.changeContainer(cupContainer);
+                this.mixingCup.draw();
 
-                this.cup.changeContainer(cupContainer);
-                this.cup.draw();
+                barElementsContainer.append(pouringBarContainer, stopButton);
 
-                this.gameContainer.append(cupContainer, pouringBarContainer, stopButtonContainer);
+                this.gameContainer.append(cupContainer, pouringCupContainer, barElementsContainer);
 
                 break;
 

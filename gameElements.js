@@ -1,4 +1,4 @@
-import { getRandomInt } from "./helpers.js";
+import { getRandomInt, getRgb } from "./helpers.js";
 
 
 class Drawable {
@@ -60,7 +60,7 @@ class Cup extends Drawable {
 
     constructor(container, color='black') {
         super(container);        
-        this.color = color;
+        //this.color = color;
         this.draw();
     }
 
@@ -70,10 +70,6 @@ class Cup extends Drawable {
             this.drawFilling(fillBarContainer, component, isFilling, true);
             this.components.push([component, isFilling]);
         }   
-    }
-
-    changeContainer(newContainer) {
-        super.changeContainer(newContainer);
     }
 
     drawFilling(container, component, isFilling, firstTime) {
@@ -90,16 +86,46 @@ class Cup extends Drawable {
     
     draw() {
         let cupBody = document.createElement('div');
-        let handle = document.createElement('div');
         let fillBarContainer = document.createElement('div');
         fillBarContainer.classList.add('filling-bar-container');
         cupBody.classList.add('cup');
-        handle.classList.add('handle');
-        cupBody.append(handle);
         cupBody.append(fillBarContainer);
         for (let component of this.components){
            this.drawFilling(fillBarContainer, component[0], component[1], false);
         }
+        this.container.append(cupBody);
+    }
+}
+
+class Drink extends Drawable {
+    constructor(container) {
+        super(container);
+        this.draw();
+        this.firstTimeFill = true;
+    }
+
+    fill(volume, color) {
+        if (this.firstTimeFill) {
+            this.firstTimeFill = false;
+            let fillBarContainer = document.getElementById('pouringFillBarContainer');
+            let fillBar = document.createElement('div');
+            fillBar.classList.add('filling-bar');
+            fillBar.style.background = 'white';
+            fillBar.style.height = volume + '%'; 
+            fillBarContainer.append(fillBar);
+        }    
+    }
+
+    draw() {
+        let cupBody = document.createElement('div');
+        let handle = document.createElement('div');
+        let pouringFillBarContainer = document.createElement('div');
+        pouringFillBarContainer.id = 'pouringFillBarContainer';
+        pouringFillBarContainer.classList.add('filling-bar-container');
+        cupBody.classList.add('cup');
+        handle.classList.add('handle');
+        cupBody.append(handle);
+        cupBody.append(pouringFillBarContainer);
         this.container.append(cupBody);
     }
 }
@@ -144,4 +170,4 @@ class PouringBar extends Drawable {
 }
 
 
-export { Cup, PouringBar };
+export { Cup, PouringBar, Drink };
