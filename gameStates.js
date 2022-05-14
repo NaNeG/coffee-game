@@ -1,11 +1,17 @@
-import { Cup, Drink, PouringBar } from './gameElements.js';
-import { equalArrays, getRandomInt } from "./helpers.js";
+import { Cup, Drink, PouringBar, Order } from './gameElements.js';
+import { equalArrays, getRandomInt, equalOrders } from "./helpers.js";
 
 const inputs = {
     0: 'up',
     1: 'right',
     2: 'down',
     3: 'left',
+}
+
+const Volumes = {
+    0: 'small',
+    1: 'medium',
+    2: 'large',
 }
 
 const inputImages = {
@@ -21,6 +27,8 @@ const Events = {
     dispose: 'dispose',
     nextState: 'nextState',
 }
+
+const FullScore = 1000;
 
 
 class State {
@@ -101,12 +109,16 @@ class FillState extends State {
                     }
                     toppingButton.textContent = toppingButton.name;
                     toppingButton.addEventListener('click', () => {
-                        this.cup.fill(toppingButton.name, false);
+                        this.cup.fill(toppingButton.name);
                         // console.log(this.cup.fillings);
                     });
                     fillingsContainer.append(toppingButton);
                 }
                 break;
+            
+            case Events.dispose:
+                this.gameContainer.replaceChildren();
+                return this.cup;
 
             case Events.restart:
                 this.gameContainer.replaceChildren();
@@ -177,6 +189,10 @@ class MixState extends State {
                 this.cup.draw();
                 break;
 
+            case Events.dispose:
+                this.gameContainer.replaceChildren();
+                return this.cup;
+
             case Events.restart:
                 this.userInputs = [];
                 break;
@@ -187,7 +203,7 @@ class MixState extends State {
 class PourState extends State {
     constructor(orders, cup){
         super(orders);
-        this.mixingCup = cup;
+        this.cup = cup;
         this.handleEvent(Events.init);
     }
 
@@ -230,16 +246,21 @@ class PourState extends State {
                 stopButton.addEventListener('click', () => {
                     this.pouringBar.stop();
                     this.pouringCup.fill(this.pouringBar.progress);
+                    this.volume = Volumes[Math.floor(this.pouringCup.volume / 33.34) - 1];
                 });
 
-                this.mixingCup.changeContainer(cupContainer);
-                this.mixingCup.draw();
+                this.cup.changeContainer(cupContainer);
+                this.cup.draw();
 
                 barElementsContainer.append(pouringBarContainer, stopButton);
 
                 this.gameContainer.append(cupContainer, pouringCupContainer, barElementsContainer);
 
                 break;
+            
+            case Events.dispose:
+                this.gameContainer.replaceChildren();
+                return this.cup;
 
             case Events.restart:
                 this.gameContainer.replaceChildren();
@@ -250,14 +271,34 @@ class PourState extends State {
 }
 
 class FinalState extends State {
-    constructor(orders){
+    constructor(orders, components, volume){
         super(orders);
+        this.components = components;
+        this.volume = volume;
+        this.handleEvent(Events.init);
     }
 
     handleEvent(event) {
         switch(event) {
             case Events.init:
                 this.gameContainer.replaceChildren();
+
+                let scoreContainer =  document.createElement('div');
+                scoreContainer.id = 'scoreContainer';
+                scoreContainer.classList.add('container', 'score-container');
+
+                let scoreText = document.createElement('h1');
+                if (equalOrders(this.orders[0], this.components, this.volume)) {
+                    scoreText.textContent = FullScore;
+                    this.orders.shift();
+                }
+                else {
+                    scoreText.textContent = '0';
+                }
+
+                scoreContainer.append(scoreText);
+
+                this.gameContainer.append(scoreContainer);
                 break;
 
             case Events.restart:

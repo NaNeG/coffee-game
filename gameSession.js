@@ -1,8 +1,9 @@
+import { Order } from "./gameElements.js";
 import { FillState, MixState, PourState, FinalState } from "./gameStates.js";
 import { equalArrays } from "./helpers.js";
 
 export class GameSession {
-    orders = [];
+    orders = [new Order(['tea', 'coffee', 'juice'], 'medium'), new Order(['tea', 'coffee', 'coffee'], 'small')];
 
     constructor(playerId) {
         this.playerId = playerId;
@@ -14,9 +15,12 @@ export class GameSession {
         return this.state;
     }
 
+    createOrder() {
+
+    }
+
     nextState() {
-        let cup = this.gameState.cup;
-        this.gameState.handleEvent('dispose');
+        let cup = this.gameState.handleEvent('dispose');
         if (this.gameState instanceof FillState) {
             this.gameState = new MixState(this.orders, cup);
         } 
@@ -32,8 +36,11 @@ export class GameSession {
             }         
         } 
         else if (this.gameState instanceof PourState) {
-            this.gameState = new FinalState(this.orders, cup);
+            this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume);
         } 
+        else if (this.gameState instanceof FinalState)  {
+            this.gameState = new FillState(this.orders);
+        }
     }
 
     restart() {
