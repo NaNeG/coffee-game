@@ -13,7 +13,7 @@ export class GameSession {
         this.createOrder();
         this.orderCreator = setRandomInterval(() => { 
             this.createOrder();
-        }, 30000, 45000);
+        }, 10000, 15000);
     }
 
     createOrder() {
