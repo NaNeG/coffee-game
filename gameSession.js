@@ -1,32 +1,44 @@
 import { Order } from "./gameElements.js";
 import { FillState, MixState, PourState, FinalState } from "./gameStates.js";
-import { equalArrays } from "./helpers.js";
+import { equalArrays, getRandomInt, setRandomInterval, Volumes } from "./helpers.js";
+import { Recipes } from "./recipes.js";
 
 export class GameSession {
-    orders = [new Order(['tea', 'coffee', 'juice'], 'medium'), new Order(['tea', 'coffee', 'coffee'], 'small')];
+    orders = [];
+    score = 0;
 
     constructor(playerId) {
         this.playerId = playerId;
         this.gameState = new FillState(this.orders); 
-    }
-
-    get getState()
-    {
-        return this.state;
+        this.createOrder();
+        this.orderCreator = setRandomInterval(() => { 
+            this.createOrder();
+        }, 30000, 45000);
     }
 
     createOrder() {
-
+        let recipe = Recipes[getRandomInt(4)];
+        let volume = Volumes[getRandomInt(3)];
+        let nextStateButton = document.getElementById('nextStateButton');
+        nextStateButton.disabled = false;
+        this.orders.push(new Order(recipe, volume));
+        console.log(recipe.components, recipe.name, volume);
+        let orderText = document.getElementById('orderText');
+        if (orderText.textContent == '') {
+            orderText.textContent = this.orders[0].name + ' ' + this.orders[0].volume;
+        }
     }
 
     nextState() {
-        let cup = this.gameState.handleEvent('dispose');
+        let cup = this.gameState.cup;
         if (this.gameState instanceof FillState) {
+            this.gameState.handleEvent('dispose');
             this.gameState = new MixState(this.orders, cup);
         } 
         else if (this.gameState instanceof MixState) {
             if (equalArrays(this.gameState.userInputs, this.gameState.requiredInputs)){
                 console.log('correct');
+                this.gameState.handleEvent('dispose');
                 this.gameState = new PourState(this.orders, cup);
             }
             else {
@@ -36,16 +48,31 @@ export class GameSession {
             }         
         } 
         else if (this.gameState instanceof PourState) {
-            this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume);
+            if (this.gameState.volume != undefined) {
+                console.log(this.gameState.volume);
+                this.gameState.handleEvent('dispose');
+                this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume);
+                this.score += this.gameState.score;
+                let scoreText = document.getElementById('scoreText');
+                scoreText.textContent = this.score;
+            }
         } 
-        else if (this.gameState instanceof FinalState)  {
+        else if (this.gameState instanceof FinalState) {
+            this.gameState.handleEvent('dispose');
             this.gameState = new FillState(this.orders);
+            if (this.orders.length === 0) {
+                let nextStateButton = document.getElementById('nextStateButton');
+                nextStateButton.disabled = true;
+            }
         }
     }
 
     restart() {
         this.gameState.handleEvent('restart');
-        console.log(2);
+    }
+
+    finish() {
+        this.orderCreator.clear();
     }
 }
 

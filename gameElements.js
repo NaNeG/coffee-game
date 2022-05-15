@@ -179,8 +179,9 @@ class PouringBar extends Drawable {
 }
 
 class Order {
-    constructor(components, volume) {
-        this.components = components;
+    constructor(recipe, volume) {
+        this.name = recipe.name;
+        this.components = recipe.components;
         this.volume = volume;
     }
 }

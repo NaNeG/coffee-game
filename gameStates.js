@@ -1,35 +1,5 @@
 import { Cup, Drink, PouringBar, Order } from './gameElements.js';
-import { equalArrays, getRandomInt, equalOrders } from "./helpers.js";
-
-const inputs = {
-    0: 'up',
-    1: 'right',
-    2: 'down',
-    3: 'left',
-}
-
-const Volumes = {
-    0: 'small',
-    1: 'medium',
-    2: 'large',
-}
-
-const inputImages = {
-    0: 'up.png',
-    1: 'right.png',
-    2: 'down.png',
-    3: 'left.png',
-}
-
-const Events = {
-    init: 'init',
-    restart: 'restart',
-    dispose: 'dispose',
-    nextState: 'nextState',
-}
-
-const FullScore = 1000;
-
+import { equalArrays, getRandomInt, equalOrders, inputs, Volumes, inputImages, Events, FullScore } from "./helpers.js";
 
 class State {
     constructor(orders) {
@@ -92,7 +62,6 @@ class FillState extends State {
                     fillingButton.textContent = fillingButton.name;
                     fillingButton.addEventListener('click', () => {
                         this.cup.fill(fillingButton.name, true);
-                        // console.log(this.cup.fillings);
                     });
                     fillingsContainer.append(fillingButton);
                 }
@@ -110,15 +79,10 @@ class FillState extends State {
                     toppingButton.textContent = toppingButton.name;
                     toppingButton.addEventListener('click', () => {
                         this.cup.fill(toppingButton.name);
-                        // console.log(this.cup.fillings);
                     });
                     fillingsContainer.append(toppingButton);
                 }
                 break;
-            
-            case Events.dispose:
-                this.gameContainer.replaceChildren();
-                return this.cup;
 
             case Events.restart:
                 this.gameContainer.replaceChildren();
@@ -189,10 +153,6 @@ class MixState extends State {
                 this.cup.draw();
                 break;
 
-            case Events.dispose:
-                this.gameContainer.replaceChildren();
-                return this.cup;
-
             case Events.restart:
                 this.userInputs = [];
                 break;
@@ -257,14 +217,11 @@ class PourState extends State {
                 this.gameContainer.append(cupContainer, pouringCupContainer, barElementsContainer);
 
                 break;
-            
-            case Events.dispose:
-                this.gameContainer.replaceChildren();
-                return this.cup;
 
             case Events.restart:
                 this.gameContainer.replaceChildren();
                 this.handleEvent(Events.init);
+                this.volume = undefined;
                 break;
         }
     }
@@ -275,6 +232,7 @@ class FinalState extends State {
         super(orders);
         this.components = components;
         this.volume = volume;
+        this.score = 0;
         this.handleEvent(Events.init);
     }
 
@@ -289,12 +247,18 @@ class FinalState extends State {
 
                 let scoreText = document.createElement('h1');
                 if (equalOrders(this.orders[0], this.components, this.volume)) {
-                    scoreText.textContent = FullScore;
+                    this.score += FullScore;
                     this.orders.shift();
+                    let orderText = document.getElementById('orderText');
+                    if (this.orders.length === 0){
+                        orderText.textContent = '';
+                    }
+                    else {
+                        orderText.textContent = this.orders[0].name + ' ' + this.orders[0].volume;
+                    }
                 }
-                else {
-                    scoreText.textContent = '0';
-                }
+
+                scoreText.textContent = this.score;
 
                 scoreContainer.append(scoreText);
 
@@ -302,8 +266,6 @@ class FinalState extends State {
                 break;
 
             case Events.restart:
-                this.gameContainer.replaceChildren();
-                this.handleEvent(Events.init);
                 break;
         }
     }
