@@ -7,13 +7,23 @@ export class GameSession {
     orders = [];
     score = 0;
 
-    constructor(playerId) {
+    constructor(playerId, gameTime) {
         this.playerId = playerId;
         this.gameState = new FillState(this.orders); 
+        this.gameTime = gameTime;
         this.createOrder();
         this.orderCreator = setRandomInterval(() => { 
             this.createOrder();
         }, 10000, 15000);
+        this.updateTimer();
+    }
+
+    updateTimer() {
+        let timer = document.getElementById('timer');
+        this.timerUpdater = setInterval(() => {
+            this.gameTime -= 1;
+            timer.textContent = this.gameTime;
+        }, 1000);
     }
 
     createOrder() {
@@ -73,6 +83,8 @@ export class GameSession {
 
     finish() {
         this.orderCreator.clear();
+        clearInterval(this.timerUpdater);
+        return this.score;
     }
 }
 

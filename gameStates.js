@@ -242,7 +242,6 @@ class FinalState extends State {
                 this.gameContainer.replaceChildren();
 
                 let scoreContainer =  document.createElement('div');
-                scoreContainer.id = 'scoreContainer';
                 scoreContainer.classList.add('container', 'score-container');
 
                 let scoreText = document.createElement('h1');
