@@ -1,6 +1,6 @@
 import { Order } from "./gameElements.js";
 import { FillState, MixState, PourState, FinalState } from "./gameStates.js";
-import { equalArrays, getRandomInt, setRandomInterval, Volumes } from "./helpers.js";
+import { equalArrays, getRandomInt, setRandomInterval, Volumes, VolumeTranslation } from "./helpers.js";
 import { Recipes } from "./recipes.js";
 
 export class GameSession {
@@ -22,7 +22,7 @@ export class GameSession {
         let timer = document.getElementById('timer');
         this.timerUpdater = setInterval(() => {
             this.gameTime -= 1;
-            timer.textContent = this.gameTime;
+            timer.textContent = 'Время: ' + this.gameTime;
         }, 1000);
     }
 
@@ -35,7 +35,7 @@ export class GameSession {
         console.log(recipe.components, recipe.name, volume);
         let orderText = document.getElementById('orderText');
         if (orderText.textContent == '') {
-            orderText.textContent = this.orders[0].name + ' ' + this.orders[0].volume;
+            orderText.textContent = 'Следующий заказ: ' + this.orders[0].name + ' ' + VolumeTranslation[this.orders[0].volume];
         }
     }
 
@@ -64,7 +64,7 @@ export class GameSession {
                 this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume);
                 this.score += this.gameState.score;
                 let scoreText = document.getElementById('scoreText');
-                scoreText.textContent = this.score;
+                scoreText.textContent = 'Очки: ' + this.score;
             }
         } 
         else if (this.gameState instanceof FinalState) {

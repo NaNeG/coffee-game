@@ -1,5 +1,5 @@
 import { Cup, Drink, PouringBar, Order } from './gameElements.js';
-import { equalArrays, getRandomInt, equalOrders, inputs, Volumes, inputImages, Events, FullScore } from "./helpers.js";
+import { equalArrays, getRandomInt, equalOrders, inputs, Volumes, inputImages, Events, FullScore, Fillings, Toppings, VolumeTranslation } from "./helpers.js";
 
 class State {
     constructor(orders) {
@@ -42,45 +42,51 @@ class FillState extends State {
 
                 this.gameContainer.append(cupContainer);
 
-                let fillingsContainer = document.createElement('div');
-                fillingsContainer.classList.add('container', 'filling-menu-container');
+                let fillingMenuContainer = document.createElement('div');
+                fillingMenuContainer.classList.add('filling-menu-container');
 
-                this.gameContainer.append(fillingsContainer);
+                let fillingTitleContainer = document.createElement('div');
+                fillingTitleContainer.classList.add('filling-title-container'); 
+                let fillingTitle = document.createElement('h2');
+                fillingTitle.textContent = 'Основы';
+                fillingTitleContainer.append(fillingTitle);
+
+                let fillingsContainer = document.createElement('div');
+                fillingsContainer.classList.add('filling-buttons-container');
+
+                let toppingTitleContainer = document.createElement('div');
+                toppingTitleContainer.classList.add('filling-title-container'); 
+                let toppingTitle = document.createElement('h2');
+                toppingTitle.textContent = 'Добавки';
+                toppingTitleContainer.append(toppingTitle);
+
+                let toppingsContainer = document.createElement('div');
+                toppingsContainer.classList.add('filling-buttons-container');
+
+                fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, toppingTitleContainer, toppingsContainer);
+
+                this.gameContainer.append(fillingMenuContainer);
 
                 this.cup = new Cup(cupContainer);
-                for (let i = 0; i < 3; i++){
+                for (let filling of Object.keys(Fillings)){
                     let fillingButton = document.createElement('button');
-                    if (i === 0) {
-                        fillingButton.name = 'tea';
-                    }
-                    else if (i === 1) {
-                        fillingButton.name = 'coffee';
-                    }
-                    else if (i === 2) {
-                        fillingButton.name = 'juice';
-                    }
-                    fillingButton.textContent = fillingButton.name;
+                    fillingButton.name = filling;
+                    fillingButton.textContent = Fillings[fillingButton.name];
                     fillingButton.addEventListener('click', () => {
-                        this.cup.fill(fillingButton.name, true);
+                        this.cup.fill(fillingButton.name);
                     });
+                    fillingButton.classList.add('filling-button');
                     fillingsContainer.append(fillingButton);
                 }
-                for (let i = 0; i < 3; i++){
+                for (let topping of Object.keys(Toppings)){
                     let toppingButton = document.createElement('button');
-                    if (i === 0) {
-                        toppingButton.name = 'cocoa';
-                    }
-                    else if (i === 1) {
-                        toppingButton.name = 'caramel';
-                    }
-                    else if (i === 2) {
-                        toppingButton.name = 'milk';
-                    }
-                    toppingButton.textContent = toppingButton.name;
+                    toppingButton.name = topping;
+                    toppingButton.textContent = Toppings[toppingButton.name];
                     toppingButton.addEventListener('click', () => {
                         this.cup.fill(toppingButton.name);
                     });
-                    fillingsContainer.append(toppingButton);
+                    toppingButton.classList.add('filling-button');
+                    toppingsContainer.append(toppingButton);
                 }
                 break;
 
@@ -111,7 +117,7 @@ class MixState extends State {
 
                 let mixButtonsContainer = document.createElement('div');
                 mixButtonsContainer.id = 'mixButtonsContainer';
-                mixButtonsContainer.classList.add('container', 'mix-buttons-container');
+                mixButtonsContainer.classList.add('mix-buttons-container');
 
                 let requiredInputsContainer = document.createElement('div');
                 requiredInputsContainer.id = 'requiredInputsContainer';
@@ -250,10 +256,10 @@ class FinalState extends State {
                     this.orders.shift();
                     let orderText = document.getElementById('orderText');
                     if (this.orders.length === 0){
-                        orderText.textContent = '';
+                        orderText.textContent = 'Следующий заказ:';
                     }
                     else {
-                        orderText.textContent = this.orders[0].name + ' ' + this.orders[0].volume;
+                        orderText.textContent = 'Следующий заказ: ' + this.orders[0].name + ' ' + VolumeTranslation[this.orders[0].volume];
                     }
                 }
 

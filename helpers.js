@@ -25,6 +25,40 @@ export const Events = {
     nextState: 'nextState',
 }
 
+export const Fillings = {
+    'coffee': 'Кофе',
+    'tea': 'Чай',
+    'juice': 'Сок',
+}
+
+export const Toppings = {
+    'milk': 'Молоко',
+    'cocoa': 'Какао',
+    'fizzy-water': 'Газировка',
+    'caramel': 'Карамель',
+    'lemon': 'Лемон',
+    'mint': 'Мята',
+}
+
+export const IsFilling = {
+    'tea': true,
+    'coffee': true,
+    'juice': true,
+    'milk': false,
+    'cocoa': false,
+    'fizzy-water': false,
+    'caramel': false,
+    'lemon': false,
+    'mint': false,
+}
+
+export const VolumeTranslation = {
+    'small': 'малый',
+    'medium': 'средний',
+    'large': 'большой'
+}
+
+
 export const FullScore = 1000;
 
 

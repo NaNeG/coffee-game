@@ -1,13 +1,5 @@
-import { getRandomInt, getRgb } from "./helpers.js";
+import { getRandomInt, getRgb, IsFilling } from "./helpers.js";
 
-const IsFilling = {
-    'tea': true,
-    'coffee': true,
-    'juice': true,
-    'cocoa': false,
-    'caramel': false,
-    'milk': false,
-}
 
 class Drawable {
     constructor(container) {

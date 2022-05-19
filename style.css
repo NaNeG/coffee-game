@@ -1,11 +1,25 @@
+@font-face {
+  font-family: 'TT_Skip-E 85W';
+  src: url('fonts/ja-jp.ttf');
+}
+
+h1 {
+  font-family: 'TT_Skip-E 85W';
+  margin: 20px;
+}
+
+h2 {
+  font-family: 'TT_Skip-E 85W';
+}
+
 body {
   padding: 50px;
   background: white;
 }
 
 .container {
-  width: 500px;
-  height: 500px;
+  width: 300px;
+  height: 400px;
 }
 
 .divider {
@@ -28,8 +42,44 @@ body {
 }
 
 .filling-menu-container {
+  width: 30%;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.filling-buttons-container {
   display: flex;
-  background: white;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.filling-button {
+  margin: 10px;
+  height: 150px;
+  width: 130px;
+  background: rgba(124, 120, 117, 0.3);
+  border-radius: 15px;
+  border: 1px solid gray;
+  font-family: 'TT_Skip-E 85W';
+  font-size: 20px;
+}
+
+.filling-button:hover {
+  background: rgba(19, 228, 113, 0.7);
+}
+
+.filling-title-container {
+  border-radius: 15px;
+  border: 1px solid brown;
+  background: rgba(145, 98, 67, 0.7);
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+}
+
+.filling-title-container h2 {
+  text-align: center;
+  width: 100%;
 }
 
 .filling-bar-container {
@@ -64,6 +114,8 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
+  width: 400px;
+  height: 400px;
 }
 
 .required-inputs-container {
@@ -163,9 +215,22 @@ body {
   background: rgb(181, 126, 63);
 }
 
+.fizzy-water {
+  background: rgb(161, 203, 226);
+}
+
+.lemon {
+  background: rgb(244, 227, 108);
+}
+
+.mint {
+  background: rgb(130, 174, 43);
+}
+
 
 #gameContainer {
   display: flex;
+  justify-content: center;
   width: 100%;
   height: 100%;
   flex-wrap: wrap;
@@ -189,6 +254,26 @@ body {
 #downMixButton {
   grid-column-start: 2;
   grid-row-start: 3;
+}
+
+#gameInfoContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+#orderContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#scoreContainer {
+  width: fit-content;
+}
+
+#timerContainer {
+  width: fit-content;
 }
 
 

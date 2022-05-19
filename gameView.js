@@ -1,7 +1,7 @@
 import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js'
 
-const GameTime = 60;
+const GameTime = 6000;
 
 let currentGameSession;
 let gameTimer;
@@ -39,7 +39,7 @@ function initGame() {
     scoreContainer.id = 'scoreContainer';
     let scoreText = document.createElement('h1');
     scoreText.id = 'scoreText';
-    scoreText.textContent = 0;
+    scoreText.textContent = 'Очки: ' + 0;
     scoreContainer.append(scoreText);
 
     let orderContainer = document.createElement('div');
@@ -48,11 +48,14 @@ function initGame() {
     let gameContainer = document.createElement('div');
     gameContainer.id = 'gameContainer';
 
+    let gameInfoContainer = document.createElement('div');
+    gameInfoContainer.id = 'gameInfoContainer';
+
     let timerContainer = document.createElement('div');
     timerContainer.id = 'timerContainer';
     let timer = document.createElement('h1');
     timer.id = 'timer';
-    timer.textContent = GameTime;
+    timer.textContent = 'Время: ' + GameTime;
     timerContainer.append(timer);
 
     let menuContainer = document.createElement('div');
@@ -76,12 +79,12 @@ function initGame() {
     });
 
     menuContainer.append(nextStateButton, restartButton, finishButton);
+    gameInfoContainer.append(scoreContainer, timerContainer);
 
-    scriptNode.before(timerContainer, orderContainer, gameContainer, scoreContainer, menuContainer);
+    scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
 
     let orderText = document.createElement('h1');
     orderText.id = 'orderText';
-    orderText.textContent = '';
     orderContainer.append(orderText);
 
     currentGameSession = new GameSession(123, GameTime); 
@@ -127,15 +130,15 @@ function createResultScreen(gameScore) {
         initGame();
     });
 
-    let scoreContainer =  document.createElement('div');
-    scoreContainer.id = 'scoreContainer';
-    scoreContainer.classList.add('container', 'score-container');
+    let resultScoreContainer =  document.createElement('div');
+    resultScoreContainer.id = 'resultScoreContainer';
+    resultScoreContainer.classList.add('container', 'score-container');
 
     let scoreText = document.createElement('h1');
     scoreText.textContent = gameScore;
-    scoreContainer.append(scoreText);
+    resultScoreContainer.append(scoreText);
 
-    resultsScreenContainer.append(scoreContainer, quitButton, restartButton);
+    resultsScreenContainer.append(resultScoreContainer, quitButton, restartButton);
 
     scriptNode.before(resultsScreenContainer);
 }
