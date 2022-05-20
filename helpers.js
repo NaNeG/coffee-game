@@ -78,3 +78,41 @@ export function setRandomInterval (intervalFunction, minDelay, maxDelay) {
       clear() { clearTimeout(timeout) },
     };
 };
+
+function readTextFile(file)
+{
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    // rawFile.onreadystatechange = function ()
+    // {
+    //     if(rawFile.readyState === 4)
+    //     {
+    //         if(rawFile.status === 200 || rawFile.status === 0)
+    //         {
+    //             var allText = rawFile.responseText;
+    //             alert(allText);
+    //         }
+    //     }
+    // }
+    rawFile.send(null);
+    return rawFile.responseText;
+}
+
+export function* iterFileRows(filepath) {
+    let file = readTextFile(filepath);
+    for (let row of file.split('\n')) {
+        yield row;
+    }
+}
+
+// export function* iterFileRows(filepath) {
+//     let file = createReadStream(filepath, 'utf-8');
+//     let lines = createInterface({
+//         input: file,
+//         crlfDelay: Infinity
+//     });
+//     for (let line of lines) {
+//         yield line;
+//     }
+//     file.close();
+// }
