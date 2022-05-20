@@ -4,6 +4,26 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <div class="overlay" hidden>
+            <div class="lightbox recipes">
+                <table>
+                    <caption>Рецепты:</caption>
+                    <tr>
+                        <th>Название</th>
+                        <th>Ингредиенты</th>
+                    </tr>
+                </table>
+            </div>
+            <div class="lightbox leaderboard">
+                <table>
+                    <caption>Лидерборд:</caption>
+                    <tr>
+                        <th>ID</th>
+                        <th>Очки</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
         <!--Сюда подключать скрипты в качестве модулей-->
         <script src="gameView.js" type="module"></script>        
         <script src="gameSession.js" type="module"></script>        

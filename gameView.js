@@ -9,6 +9,9 @@ let currentGameSession;
 let gameTimer;
 
 let scriptNode = document.getElementsByTagName('script')[0];
+const overlayNode = document.querySelector('.overlay');
+const recipesTable = document.querySelector('.recipes').firstElementChild;
+const leaderboardTable = document.querySelector('.leaderboard').firstElementChild;
 
 let startButton = createStartButton();
 
@@ -37,48 +40,25 @@ leaderboardButtonContainer.append(leaderboardButton);
 
 scriptNode.before(leaderboardButtonContainer);
 
-let recipes = document.createElement('block');
-recipes.id = 'recipes';
-recipes.hidden = true;
-recipes.style.position = 'fixed';
-recipes.style.top = recipes.style.left = '50%';
-recipes.style.transform = 'translateX(-50%) translateY(-100%)';
-recipes.append('Рецепты:')
 for (let {name, components} of Object.values(Recipes)) {
-    let recipe = document.createElement('div');
-    recipe.append(`${name}: ${components.join(', ')}`);
-    recipes.append(recipe);
+    // let recipe = document.createElement('div');
+    // recipe.append(`${name}: ${components.join(', ')}`);
+    // let x = document.createElement('table').insertRow();
+    let row = recipesTable.insertRow();
+    row.insertCell().textContent = name + ':';
+    row.insertCell().textContent = components.join(', ');
 }
 
-scriptNode.before(recipes);
+// scriptNode.before(recipesNode);
 
-let leaderboard = document.createElement('block');
-leaderboard.id = 'leaderboard';
-leaderboard.hidden = true;
-leaderboard.style.position = 'fixed';
-leaderboard.style.top = leaderboard.style.left = '50%';
-leaderboard.style.transform = 'translateX(-50%) translateY(-100%)';
-let leaderboardHeader = 'Таблица лидеров';//document.createElement('div');
-// leaderboardHeader.textContent = 'Таблица лидеров:';
-leaderboard.append(leaderboardHeader);
-let minPadd = document.createElement('div');
-minPadd.style.width = '20px';
-for (let row of iterFileRows('leaderboard.txt')) {
-    let [id, score] = row.split(' ');
-    let idDiv = document.createElement('div');
-    idDiv.textContent = id;
-    let scoreDiv = document.createElement('div');
-    scoreDiv.textContent = score;
-    let rowDiv = document.createElement('div');
-    rowDiv.style.width = '100%';
-    rowDiv.style.display = 'flex';
-    rowDiv.style.flexDirection = 'row';
-    scoreDiv.style.marginLeft = 'auto';
-    rowDiv.append(idDiv, minPadd, scoreDiv);
-    leaderboard.append(rowDiv);
+for (let line of iterFileRows('leaderboard.txt')) {
+    let [id, score] = line.split(' ');
+    let row = leaderboardTable.insertRow();
+    row.insertCell().textContent = id;
+    row.insertCell().textContent = score;
 }
 
-scriptNode.before(leaderboard);
+// scriptNode.before(leaderboardNode);
 
 function createStartButton() {
     let startButton = document.createElement('button');
@@ -92,7 +72,7 @@ function createRecipesButton() {
     let recipesButton = document.createElement('button');
     recipesButton.id = 'recipesButton';
     recipesButton.textContent = 'Recipes';
-    recipesButton.addEventListener('click', () => { recipes.hidden ^= true; });
+    recipesButton.addEventListener('click', () => showLightBox('.recipes'));
     return recipesButton;
 }
 
@@ -100,7 +80,7 @@ function createLeaderboardButton() {
     let leaderboardButton = document.createElement('button');
     leaderboardButton.id = 'leaderboardButton';
     leaderboardButton.textContent = 'Leaderboard';
-    leaderboardButton.addEventListener('click', () => { leaderboard.hidden ^= true; });
+    leaderboardButton.addEventListener('click', () => showLightBox('.leaderboard'));
     return leaderboardButton;
 }
 
@@ -222,7 +202,16 @@ function createStartScreen() {
 
 }
 
+function hideAllLightboxes() {
+    document.querySelector('.overlay').hidden = true;
+    document.querySelectorAll('.lightbox').forEach(x => x.hidden = true);
+}
+overlayNode.addEventListener('click', hideAllLightboxes);
 
-
+function showLightBox(className) {
+    hideAllLightboxes();
+    document.querySelector('.overlay').hidden = false;
+    document.querySelector('.overlay ' + className).hidden = false;
+}
 
 
