@@ -203,14 +203,14 @@ function createStartScreen() {
 }
 
 function hideAllLightboxes() {
-    document.querySelector('.overlay').hidden = true;
+    document.querySelector('.overlay').style.display = 'none';
     document.querySelectorAll('.lightbox').forEach(x => x.hidden = true);
 }
 overlayNode.addEventListener('click', hideAllLightboxes);
 
 function showLightBox(className) {
     hideAllLightboxes();
-    document.querySelector('.overlay').hidden = false;
+    document.querySelector('.overlay').style.display = 'flex';
     document.querySelector('.overlay ' + className).hidden = false;
 }
 
