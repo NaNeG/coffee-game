@@ -138,19 +138,39 @@ class MixState extends State {
 
                 let leftMixButton = document.createElement('button');
                 leftMixButton.id = 'leftMixButton';
+                leftMixButton.classList.add('mix-button');
                 leftMixButton.addEventListener('click', () => this.userInputs.push('left'));
+                let leftImg = document.createElement('img');
+                leftImg.src = 'img/left.png';
+                leftImg.height = '100';
+                leftMixButton.append(leftImg);
 
                 let upMixButton = document.createElement('button');
                 upMixButton.id = 'upMixButton';
+                upMixButton.classList.add('mix-button');
                 upMixButton.addEventListener('click', () => this.userInputs.push('up'));
+                let upImg = document.createElement('img');
+                upImg.src = 'img/up.png';
+                upImg.height = '100';
+                upMixButton.append(upImg);
 
                 let rightMixButton = document.createElement('button');
                 rightMixButton.id = 'rightMixButton';
+                rightMixButton.classList.add('mix-button');
                 rightMixButton.addEventListener('click', () => this.userInputs.push('right'));
+                let rightImg = document.createElement('img');
+                rightImg.src = 'img/right.png';
+                rightImg.height = '100';
+                rightMixButton.append(rightImg);
 
                 let downMixButton = document.createElement('button');
                 downMixButton.id = 'downMixButton';
+                downMixButton.classList.add('mix-button');
                 downMixButton.addEventListener('click', () => this.userInputs.push('down'));
+                let downImg = document.createElement('img');
+                downImg.src = 'img/down.png';
+                downImg.height = '100';
+                downMixButton.append(downImg);
 
                 mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
                 

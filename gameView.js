@@ -22,6 +22,7 @@ function createStartButton() {
     let startButton = document.createElement('button');
     startButton.id = 'startButton';
     startButton.textContent = 'Start';
+    startButton.classList.add('nav-bar-button');
     startButton.addEventListener('click', () => initGame());
     return startButton;
 }
@@ -65,11 +66,13 @@ function initGame() {
     nextStateButton.id = 'nextStateButton';
     nextStateButton.textContent = 'Следующий этап';
     nextStateButton.addEventListener('click', () => currentGameSession.nextState());
+    nextStateButton.classList.add('game-menu-button');
 
     let restartButton = document.createElement('button');
     restartButton.id = 'restartButton';
     restartButton.textContent = 'Сброс этапа';
     restartButton.addEventListener('click', () => currentGameSession.restart());
+    restartButton.classList.add('game-menu-button');
 
     let finishButton = document.createElement('button');
     finishButton.id = 'finishButton';
@@ -77,8 +80,15 @@ function initGame() {
     finishButton.addEventListener('click', () => {
         finishSession();
     });
+    finishButton.classList.add('game-menu-button');
 
-    menuContainer.append(nextStateButton, restartButton, finishButton);
+    let recipesButton = document.createElement('button');
+    recipesButton.id = 'recipesButton';
+    recipesButton.textContent = 'Рецепты';
+    recipesButton.addEventListener('click', () => showRecipes());
+    recipesButton.classList.add('game-menu-button');
+
+    menuContainer.append(finishButton, restartButton, recipesButton, nextStateButton);
     gameInfoContainer.append(scoreContainer, timerContainer);
 
     scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
@@ -95,10 +105,9 @@ function initGame() {
 }
 
 function finishSession() {
-    document.getElementById('timerContainer').remove();
+    document.getElementById('gameInfoContainer').remove();
     document.getElementById('orderContainer').remove();
     document.getElementById('gameContainer').remove();
-    document.getElementById('scoreContainer').remove();
     document.getElementById('menuContainer').remove();
     let gameScore = currentGameSession.finish();
     clearTimeout(gameTimer);
@@ -115,10 +124,12 @@ function createResultScreen(gameScore) {
     let quitButton = document.createElement('button');
     quitButton.id = 'quitButton';
     quitButton.textContent = 'Меню';
+    quitButton.classList.add('game-menu-button');
 
     let restartButton = document.createElement('button');
     restartButton.id = 'restartButton';
     restartButton.textContent = 'Заново';
+    restartButton.classList.add('game-menu-button');
 
     quitButton.addEventListener('click', () => {
         resultsScreenContainer.remove();
@@ -147,6 +158,9 @@ function createStartScreen() {
 
 }
 
+function showRecipes() {
+
+}
 
 
 
