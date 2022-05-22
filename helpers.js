@@ -100,7 +100,7 @@ function readTextFile(file)
 
 export function* iterFileRows(filepath) {
     let file = readTextFile(filepath);
-    for (let row of file.split('\n')) {
+    for (let row of file.split('\r\n')) {
         yield row;
     }
 }

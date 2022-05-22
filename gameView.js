@@ -12,6 +12,7 @@ let scriptNode = document.getElementsByTagName('script')[0];
 const overlayNode = document.querySelector('.overlay');
 const recipesTable = document.querySelector('.recipes').firstElementChild;
 const leaderboardTable = document.querySelector('.leaderboard').firstElementChild;
+const leaderboard = {};
 
 let startButton = createStartButton();
 
@@ -41,24 +42,16 @@ leaderboardButtonContainer.append(leaderboardButton);
 scriptNode.before(leaderboardButtonContainer);
 
 for (let {name, components} of Object.values(Recipes)) {
-    // let recipe = document.createElement('div');
-    // recipe.append(`${name}: ${components.join(', ')}`);
-    // let x = document.createElement('table').insertRow();
     let row = recipesTable.insertRow();
     row.insertCell().textContent = name + ':';
     row.insertCell().textContent = components.join(', ');
 }
 
-// scriptNode.before(recipesNode);
-
 for (let line of iterFileRows('leaderboard.txt')) {
     let [id, score] = line.split(' ');
-    let row = leaderboardTable.insertRow();
-    row.insertCell().textContent = id;
-    row.insertCell().textContent = score;
+    leaderboard[id] = Number(score);
 }
-
-// scriptNode.before(leaderboardNode);
+console.log(leaderboard);
 
 function createStartButton() {
     let startButton = document.createElement('button');
@@ -80,7 +73,7 @@ function createLeaderboardButton() {
     let leaderboardButton = document.createElement('button');
     leaderboardButton.id = 'leaderboardButton';
     leaderboardButton.textContent = 'Leaderboard';
-    leaderboardButton.addEventListener('click', () => showLightBox('.leaderboard'));
+    leaderboardButton.addEventListener('click', () => showLeaderboard(5));
     return leaderboardButton;
 }
 
@@ -214,4 +207,17 @@ function showLightBox(className) {
     document.querySelector('.overlay ' + className).hidden = false;
 }
 
-
+function showLeaderboard(count = Infinity) {
+    while (leaderboardTable.rows.length > 0) {
+        leaderboardTable.deleteRow(-1);
+    }
+    let i = 0;
+    for (let [id, score] of Object.entries(leaderboard)) {
+        if (i >= count) { break; }
+        let row = leaderboardTable.insertRow();
+        row.insertCell().textContent = id;
+        row.insertCell().textContent = score;
+        i++;
+    }
+    showLightBox('.leaderboard');
+}
