@@ -1,5 +1,5 @@
 import { Cup, Drink, PouringBar, Order } from './gameElements.js';
-import { equalArrays, getRandomInt, equalOrders, inputs, Volumes, inputImages, Events, FullScore, Fillings, Toppings, VolumeTranslation } from "./helpers.js";
+import { mix_rgbs, getRandomInt, equalOrders, inputs, Volumes, inputImages, Events, FullScore, Fillings, Toppings, VolumeTranslation, convertRGB } from "./helpers.js";
 
 class State {
     constructor(orders) {
@@ -200,19 +200,19 @@ class PourState extends State {
 
                 let cupContainer = document.createElement('div');
                 cupContainer.id = 'cupContainer';
-                cupContainer.classList.add('container', 'cup-container');
+                cupContainer.classList.add('cup-container');
 
                 let barElementsContainer = document.createElement('div');
                 barElementsContainer.id = 'barElementsContainer';
-                barElementsContainer.classList.add('container');
+                barElementsContainer.classList.add('bar-elements-container');
 
                 let pouringBarContainer = document.createElement('div');
                 pouringBarContainer.id = 'pouringBarContainer';
-                pouringBarContainer.classList.add('container', 'pouring-bar-container');
+                pouringBarContainer.classList.add('pouring-bar-container');
 
                 let pouringCupContainer = document.createElement('div');
                 pouringCupContainer.id = 'pouringCupContainer';
-                pouringCupContainer.classList.add('container', 'cup-container');
+                pouringCupContainer.classList.add('cup-container');
 
                 this.pouringCup = new Drink(pouringCupContainer);
 
@@ -224,14 +224,15 @@ class PourState extends State {
                 }   
 
                 this.pouringBar = new PouringBar(pouringBarContainer);
+                      
                 
                 let stopButton = document.createElement('button');
                 stopButton.id = 'stopButton';
-                stopButton.textContent = 'stop'
-                stopButton.classList.add('button');
+                stopButton.textContent = 'Стоп'
+                stopButton.classList.add('stop-button');
                 stopButton.addEventListener('click', () => {
                     this.pouringBar.stop();
-                    this.pouringCup.fill(this.pouringBar.progress);
+                    this.pouringCup.fill(this.pouringBar.progress, mix_rgbs(...componentColors));
                     this.volume = Volumes[Math.floor(this.pouringCup.volume / 33.34) - 1];
                 });
 
@@ -241,6 +242,13 @@ class PourState extends State {
                 barElementsContainer.append(pouringBarContainer, stopButton);
 
                 this.gameContainer.append(cupContainer, pouringCupContainer, barElementsContainer);
+
+                let componentColors = [];
+                for (let component of this.cup.components) {
+                    let elem = document.getElementsByClassName(component)[0];
+                    let elemColor = getComputedStyle(elem).backgroundColor;
+                    componentColors.push(convertRGB(elemColor));
+                }
 
                 break;
 

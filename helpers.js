@@ -112,3 +112,51 @@ export function setRandomInterval (intervalFunction, minDelay, maxDelay) {
       clear() { clearTimeout(timeout) },
     };
 };
+
+function rgb2cmyk(r, g, b) {
+    let c = 1 - (r / 255);
+    let m = 1 - (g / 255);
+    let y = 1 - (b / 255);
+    let k = Math.min(c, m, y);
+    c = (c - k) / (1 - k);
+    m = (m - k) / (1 - k);
+    y = (y - k) / (1 - k);
+    return [c, m, y, k];
+}
+
+function cmyk2rgb(c, m, y, k) {
+    let r = c * (1 - k) + k;
+    let g = m * (1 - k) + k;
+    let b = y * (1 - k) + k;
+    r = (1 - r) * 255 + .5;
+    g = (1 - g) * 255 + .5;
+    b = (1 - b) * 255 + .5;
+    return [Math.floor(r), Math.floor(g), Math.floor(b)];
+}
+
+function mix_cmyks(...cmyks) {
+    let c = cmyks.map(cmyk => cmyk[0]).reduce((a, b) => a + b, 0) / cmyks.length;
+    let m = cmyks.map(cmyk => cmyk[1]).reduce((a, b) => a + b, 0) / cmyks.length;
+    let y = cmyks.map(cmyk => cmyk[2]).reduce((a, b) => a + b, 0) / cmyks.length;
+    let k = cmyks.map(cmyk => cmyk[3]).reduce((a, b) => a + b, 0) / cmyks.length;
+    return [c, m, y, k];
+}
+
+export function mix_rgbs(...rgbs) {
+    let cmyks = rgbs.map(rgb => rgb2cmyk(...rgb));
+    let mixture_cmyk = mix_cmyks(...cmyks);
+    let mixture_rgb = cmyk2rgb(...mixture_cmyk);
+    return mixture_rgb;
+}
+
+export function convertRGB(colorString)
+{
+  const rgbKeys = ['r', 'g', 'b'];
+  let rgbArray = [];
+  let color = colorString.replace(/^rgb?\(|\s+|\)$/g,'').split(',');
+
+  for (let i in rgbKeys)
+    rgbArray.push(color[i] || 1);
+
+  return rgbArray;
+}

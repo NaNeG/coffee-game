@@ -54,6 +54,23 @@ class ToppingBar extends Drawable {
 
 }
 
+class PouringCupBar extends Drawable {
+    constructor(container, texture, volume){
+        super(container);
+        this.texture = texture;
+        this.volume = volume;
+    }
+
+    draw() {
+        let element = document.createElement('div');
+        element.classList.add("pouring-cup-bar", 'pouring-cup-animation');
+        element.style.backgroundColor = `rgb(${this.texture[0]}, ${this.texture[1]}, ${this.texture[2]})`
+        element.style.setProperty('--animation-height', this.volume + '%');
+        this.container.append(element);
+    }
+
+}
+
 class Cup extends Drawable {
 
     components = [];
@@ -104,17 +121,18 @@ class Drink extends Drawable {
         this.firstTimeFill = true;
     }
 
-    fill(volume, color) {
+    fill(volume, texture) {
         this.volume = Math.ceil(volume / 33.34) * 33.34;
         if (this.firstTimeFill) {
             this.firstTimeFill = false;
             let fillBarContainer = document.getElementById('pouringFillBarContainer');
-            let fillBar = document.createElement('div');
-            fillBar.classList.add('filling-bar');
-            fillBar.style.background = 'white';
-            fillBar.style.height = this.volume + '%'; 
-            fillBarContainer.append(fillBar);
+            this.drawFilling(fillBarContainer, texture);
         }    
+    }
+
+    drawFilling(container, texture) {
+        let fillBar = new PouringCupBar(container, texture, this.volume);
+        fillBar.draw();
     }
 
     draw() {
