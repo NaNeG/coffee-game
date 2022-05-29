@@ -66,7 +66,10 @@ function createLeaderboardButton() {
     let leaderboardButton = document.createElement('button');
     leaderboardButton.id = 'leaderboardButton';
     leaderboardButton.textContent = 'Leaderboard';
-    leaderboardButton.addEventListener('click', () => showLeaderboard(5));
+    leaderboardButton.addEventListener('click', () => {
+        leaderboardButton.disabled = true;
+        showLeaderboard(5).then(() => leaderboardButton.disabled = false);
+    });
     return leaderboardButton;
 }
 
