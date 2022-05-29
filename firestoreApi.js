@@ -24,7 +24,7 @@ export async function _delete(coll, name) {
     });
 }
 
-export function _get(coll, name=null) {
+export function _get(coll, name = null) {
     let url;
     if (name === null) {
         url = `${base_url}/${coll}`;
@@ -34,10 +34,9 @@ export function _get(coll, name=null) {
     return fetch(url);
 }
 
-export function _getAll(coll, count=null, ascending=null) {
-    const url = `${base_url}/${coll}`;
-    const params = { method: 'GET' };
-    if (count !== null) { params['pageSize'] = count; }
-    if (ascending !== null) { params['orderBy'] = ascending ? 'points' : 'points desc' }
-    return fetch(url, params);
+export function _getAll(coll, count = Infinity, ascending = null) {
+    const url = new URL(`${base_url}/${coll}`);
+    if (count !== null && count !== Infinity) { url.searchParams.append('pageSize', count); }
+    if (ascending !== null) { url.searchParams.append('orderBy', ascending ? 'points' : 'points desc'); }
+    return fetch(url);
 }

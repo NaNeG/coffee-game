@@ -36,7 +36,7 @@ export const leaderboardDB = {
         return _lb_clear(await doc.json());
     },
 
-    getAll: async function (count = null, ascending = null) {
+    getAll: async function (count = Infinity, ascending = null) {
         const docs = await _getAll(_lb_coll, count, ascending);
         return Array.prototype.map.call((await docs.json())['documents'], d => _lb_clear(d, _extr_name(d)));
     },
