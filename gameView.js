@@ -1,7 +1,7 @@
 import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js'
-import { iterFileRows } from "./helpers.js";
 import { Recipes } from "./recipes.js";
+import { leaderboardDB } from "./leaderboardApi.js";
 
 const GameTime = 60;
 
@@ -12,7 +12,6 @@ let scriptNode = document.getElementsByTagName('script')[0];
 const overlayNode = document.querySelector('.overlay');
 const recipesTable = document.querySelector('.recipes').firstElementChild;
 const leaderboardTable = document.querySelector('.leaderboard').firstElementChild;
-const leaderboard = {};
 
 let startButton = createStartButton();
 
@@ -46,12 +45,6 @@ for (let {name, components} of Object.values(Recipes)) {
     row.insertCell().textContent = name + ':';
     row.insertCell().textContent = components.join(', ');
 }
-
-for (let line of iterFileRows('leaderboard.txt')) {
-    let [id, score] = line.split(' ');
-    leaderboard[id] = Number(score);
-}
-console.log(leaderboard);
 
 function createStartButton() {
     let startButton = document.createElement('button');
@@ -207,17 +200,15 @@ function showLightBox(className) {
     document.querySelector('.overlay ' + className).hidden = false;
 }
 
-function showLeaderboard(count = Infinity) {
+async function showLeaderboard(count = Infinity) {
     while (leaderboardTable.rows.length > 0) {
         leaderboardTable.deleteRow(-1);
     }
-    let i = 0;
-    for (let [id, score] of Object.entries(leaderboard)) {
-        if (i >= count) { break; }
+    (await leaderboardDB.getAll(count, false)).forEach(doc => {
+        const {id, points} = doc;
         let row = leaderboardTable.insertRow();
         row.insertCell().textContent = id;
-        row.insertCell().textContent = score;
-        i++;
-    }
+        row.insertCell().textContent = points;
+    });
     showLightBox('.leaderboard');
 }
