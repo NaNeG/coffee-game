@@ -1,5 +1,7 @@
 import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js'
+import { Recipes } from "./recipes.js";
+import { leaderboardDB } from "./leaderboardApi.js";
 
 const GameTime = 6000;
 
@@ -7,6 +9,9 @@ let currentGameSession;
 let gameTimer;
 
 let scriptNode = document.getElementsByTagName('script')[0];
+const overlayNode = document.querySelector('.overlay');
+const recipesTable = document.querySelector('.recipes').firstElementChild;
+const leaderboardTable = document.querySelector('.leaderboard').firstElementChild;
 
 let startButton = createStartButton();
 
@@ -17,6 +22,29 @@ navBarContainer.append(startButton);
 
 scriptNode.before(navBarContainer);
 
+let recipesButton = createRecipesButton();
+
+let recipesButtonContainer = document.createElement('div');
+recipesButtonContainer.id = 'recipesButtonContainer';
+
+recipesButtonContainer.append(recipesButton);
+
+scriptNode.before(recipesButtonContainer);
+
+let leaderboardButton = createLeaderboardButton();
+
+let leaderboardButtonContainer = document.createElement('div');
+leaderboardButtonContainer.id = 'leaderboardButtonContainer';
+
+leaderboardButtonContainer.append(leaderboardButton);
+
+scriptNode.before(leaderboardButtonContainer);
+
+for (let {name, components} of Object.values(Recipes)) {
+    let row = recipesTable.insertRow();
+    row.insertCell().textContent = name + ':';
+    row.insertCell().textContent = components.join(', ');
+}
 
 function createStartButton() {
     let startButton = document.createElement('button');
@@ -25,6 +53,25 @@ function createStartButton() {
     startButton.classList.add('nav-bar-button');
     startButton.addEventListener('click', () => initGame());
     return startButton;
+}
+
+function createRecipesButton() {
+    let recipesButton = document.createElement('button');
+    recipesButton.id = 'recipesButton';
+    recipesButton.textContent = 'Recipes';
+    recipesButton.addEventListener('click', () => showLightBox('.recipes'));
+    return recipesButton;
+}
+
+function createLeaderboardButton() {
+    let leaderboardButton = document.createElement('button');
+    leaderboardButton.id = 'leaderboardButton';
+    leaderboardButton.textContent = 'Leaderboard';
+    leaderboardButton.addEventListener('click', () => {
+        leaderboardButton.disabled = true;
+        showLeaderboard(5).then(() => leaderboardButton.disabled = false);
+    });
+    return leaderboardButton;
 }
 
 function initGame() {
@@ -158,10 +205,27 @@ function createStartScreen() {
 
 }
 
-function showRecipes() {
+function hideAllLightboxes() {
+    document.querySelector('.overlay').style.display = 'none';
+    document.querySelectorAll('.lightbox').forEach(x => x.hidden = true);
+}
+overlayNode.addEventListener('click', hideAllLightboxes);
 
+function showLightBox(className) {
+    hideAllLightboxes();
+    document.querySelector('.overlay').style.display = 'flex';
+    document.querySelector('.overlay ' + className).hidden = false;
 }
 
-
-
-
+async function showLeaderboard(count = Infinity) {
+    while (leaderboardTable.rows.length > 0) {
+        leaderboardTable.deleteRow(-1);
+    }
+    (await leaderboardDB.getAll(count, false)).forEach(doc => {
+        const {id, points} = doc;
+        let row = leaderboardTable.insertRow();
+        row.insertCell().textContent = id;
+        row.insertCell().textContent = points;
+    });
+    showLightBox('.leaderboard');
+}
