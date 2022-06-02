@@ -22,23 +22,23 @@ navBarContainer.append(startButton);
 
 scriptNode.before(navBarContainer);
 
-let recipesButton = createRecipesButton();
+// let recipesButton = createRecipesButton();
 
-let recipesButtonContainer = document.createElement('div');
-recipesButtonContainer.id = 'recipesButtonContainer';
+// let recipesButtonContainer = document.createElement('div');
+// recipesButtonContainer.id = 'recipesButtonContainer';
 
-recipesButtonContainer.append(recipesButton);
+// recipesButtonContainer.append(recipesButton);
 
-scriptNode.before(recipesButtonContainer);
+// scriptNode.before(recipesButtonContainer);
 
-let leaderboardButton = createLeaderboardButton();
+// let leaderboardButton = createLeaderboardButton();
 
-let leaderboardButtonContainer = document.createElement('div');
-leaderboardButtonContainer.id = 'leaderboardButtonContainer';
+// let leaderboardButtonContainer = document.createElement('div');
+// leaderboardButtonContainer.id = 'leaderboardButtonContainer';
 
-leaderboardButtonContainer.append(leaderboardButton);
+// leaderboardButtonContainer.append(leaderboardButton);
 
-scriptNode.before(leaderboardButtonContainer);
+// scriptNode.before(leaderboardButtonContainer);
 
 for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
@@ -58,19 +58,21 @@ function createStartButton() {
 function createRecipesButton() {
     let recipesButton = document.createElement('button');
     recipesButton.id = 'recipesButton';
-    recipesButton.textContent = 'Recipes';
+    recipesButton.textContent = 'Рецепты';
     recipesButton.addEventListener('click', () => showLightBox('.recipes'));
+    recipesButton.classList.add('game-menu-button');
     return recipesButton;
 }
 
 function createLeaderboardButton() {
     let leaderboardButton = document.createElement('button');
     leaderboardButton.id = 'leaderboardButton';
-    leaderboardButton.textContent = 'Leaderboard';
+    leaderboardButton.textContent = 'Таблица лидеров';
     leaderboardButton.addEventListener('click', () => {
         leaderboardButton.disabled = true;
         showLeaderboard(5).then(() => leaderboardButton.disabled = false);
     });
+    leaderboardButton.classList.add('game-menu-button');
     return leaderboardButton;
 }
 
@@ -129,13 +131,10 @@ function initGame() {
     });
     finishButton.classList.add('game-menu-button');
 
-    let recipesButton = document.createElement('button');
-    recipesButton.id = 'recipesButton';
-    recipesButton.textContent = 'Рецепты';
-    recipesButton.addEventListener('click', () => showRecipes());
-    recipesButton.classList.add('game-menu-button');
+    let recipesButton = createRecipesButton();
+    let leaderboardButton = createLeaderboardButton();
 
-    menuContainer.append(finishButton, restartButton, recipesButton, nextStateButton);
+    menuContainer.append(finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton);
     gameInfoContainer.append(scoreContainer, timerContainer);
 
     scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
