@@ -103,6 +103,12 @@ class MixState extends State {
     constructor(orders, cup){  
         super(orders); 
         this.cup = cup;
+        this.arrowsButtons = {
+            'ArrowLeft': null,
+            'ArrowUp': null,
+            'ArrowRight': null,
+            'ArrowDown': null,
+        };
         this.handleEvent(Events.init);
     }
 
@@ -144,6 +150,7 @@ class MixState extends State {
                 leftImg.src = 'img/left.png';
                 leftImg.height = '100';
                 leftMixButton.append(leftImg);
+                this.arrowsButtons['ArrowLeft'] = leftMixButton;
 
                 let upMixButton = document.createElement('button');
                 upMixButton.id = 'upMixButton';
@@ -153,6 +160,7 @@ class MixState extends State {
                 upImg.src = 'img/up.png';
                 upImg.height = '100';
                 upMixButton.append(upImg);
+                this.arrowsButtons['ArrowUp'] = upMixButton;
 
                 let rightMixButton = document.createElement('button');
                 rightMixButton.id = 'rightMixButton';
@@ -162,6 +170,7 @@ class MixState extends State {
                 rightImg.src = 'img/right.png';
                 rightImg.height = '100';
                 rightMixButton.append(rightImg);
+                this.arrowsButtons['ArrowRight'] = rightMixButton;
 
                 let downMixButton = document.createElement('button');
                 downMixButton.id = 'downMixButton';
@@ -171,6 +180,7 @@ class MixState extends State {
                 downImg.src = 'img/down.png';
                 downImg.height = '100';
                 downMixButton.append(downImg);
+                this.arrowsButtons['ArrowDown'] = downMixButton;
 
                 mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
                 
@@ -199,17 +209,27 @@ class MixState extends State {
         'ArrowDown': 'down',
     }
 
-    onKeyDownEvent = (event) => { // arrow-func to make this!==document when used as callback in document.addEventListener
+    // arrow-func to make this!==document when used as callback in document.addEventListener
+    // todo: `onKeyDownEvent = onKeyDownEvent.bind(this)` may be clearer?
+    onKeyDownEvent = (event) => {
         if (!(event.key in MixState.keyNameToEvent)) return;
         this.userInputs.push(MixState.keyNameToEvent[event.key]);
+        this.arrowsButtons[event.key].classList.add('keyboardActive');
+    }
+
+    onKeyUpEvent = (event) => {
+        if (!(event.key in MixState.keyNameToEvent)) return;
+        this.arrowsButtons[event.key].classList.remove('keyboardActive');
     }
 
     addKeyboardListeners() {
         document.addEventListener('keydown', this.onKeyDownEvent);
+        document.addEventListener('keyup', this.onKeyUpEvent);
     }
 
     removeKeyboardListeners() {
         document.removeEventListener('keydown', this.onKeyDownEvent);
+        document.removeEventListener('keyup', this.onKeyUpEvent);
     }
 }
 

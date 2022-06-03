@@ -139,10 +139,9 @@ body {
   background: rgb(224, 211, 186);
 }
 
-.mix-button:active {
+.mix-button:active, .mix-button.keyboardActive {
   background: rgb(197, 182, 153);
 }
-
 
 .filling-title-container {
   border-radius: 15px;
