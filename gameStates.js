@@ -177,12 +177,38 @@ class MixState extends State {
                 this.gameContainer.append(cupContainer, mixButtonsContainer, requiredInputsContainer);
                 this.cup.changeContainer(cupContainer);
                 this.cup.draw();
+
+                this.addKeyboardListeners();
                 break;
 
             case Events.restart:
                 this.userInputs = [];
                 break;
+
+            case Events.dispose:
+                super.handleEvent(event);
+                this.removeKeyboardListeners();
+                break;
         }
+    }
+
+    static keyNameToEvent = {
+        'ArrowLeft': 'left',
+        'ArrowUp': 'up',
+        'ArrowRight': 'right',
+        'ArrowDown': 'down',
+    }
+
+    onKeyDownEvent = (event) => { // arrow-func to make this!==document when used as callback in document.addEventListener
+        this.userInputs.push(MixState.keyNameToEvent[event.key]); // todo: `onKeyDownEvent = onKeyDownEvent.bind(this)` may be clearer?
+    }
+
+    addKeyboardListeners() {
+        document.addEventListener('keydown', this.onKeyDownEvent);
+    }
+
+    removeKeyboardListeners() {
+        document.removeEventListener('keydown', this.onKeyDownEvent);
     }
 }
 
