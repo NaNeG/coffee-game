@@ -1,5 +1,7 @@
 import { Cup, Drink, PouringBar, Order } from './gameElements.js';
-import { mix_rgbs, getRandomInt, equalOrders, inputs, Volumes, inputImages, Events, FullScore, Fillings, Toppings, VolumeTranslation, convertRGB } from "./helpers.js";
+import { mix_rgbs, getRandomInt, equalOrders, inputs, Volumes,
+         inputImages, Events, FullScore, Fillings, Toppings,
+         VolumeTranslation, convertRGB, TabIndexOffsets } from "./helpers.js";
 
 class State {
     constructor(orders) {
@@ -68,6 +70,7 @@ class FillState extends State {
                 this.gameContainer.append(fillingMenuContainer);
 
                 this.cup = new Cup(cupContainer);
+                let offset = TabIndexOffsets.game;
                 for (let filling of Object.keys(Fillings)){
                     let fillingButton = document.createElement('button');
                     fillingButton.name = filling;
@@ -76,7 +79,9 @@ class FillState extends State {
                         this.cup.fill(fillingButton.name);
                     });
                     fillingButton.classList.add('filling-button');
+                    fillingButton.tabIndex = offset;
                     fillingsContainer.append(fillingButton);
+                    offset++;
                 }
                 for (let topping of Object.keys(Toppings)){
                     let toppingButton = document.createElement('button');
@@ -86,7 +91,9 @@ class FillState extends State {
                         this.cup.fill(toppingButton.name);
                     });
                     toppingButton.classList.add('filling-button');
+                    toppingButton.tabIndex = offset;
                     toppingsContainer.append(toppingButton);
+                    offset++;
                 }
                 break;
 
@@ -182,6 +189,9 @@ class MixState extends State {
                 downMixButton.append(downImg);
                 this.arrowsButtons['ArrowDown'] = downMixButton;
 
+                [upMixButton, leftMixButton, rightMixButton, downMixButton].forEach((btn, i) => {
+                    btn.tabIndex = TabIndexOffsets.game + i;
+                });
                 mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
                 
                 this.gameContainer.append(cupContainer, mixButtonsContainer, requiredInputsContainer);
@@ -282,6 +292,7 @@ class PourState extends State {
                     this.pouringCup.fill(this.pouringBar.progress, mix_rgbs(...componentColors));
                     this.volume = Volumes[Math.floor(this.pouringCup.volume / 33.34) - 1];
                 });
+                stopButton.tabIndex = TabIndexOffsets.game;
 
                 this.cup.changeContainer(cupContainer);
                 this.cup.draw();

@@ -2,6 +2,7 @@ import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js'
 import { Recipes } from "./recipes.js";
 import { leaderboardDB } from "./leaderboardApi.js";
+import { TabIndexOffsets } from "./helpers.js";
 
 const GameTime = 6000;
 
@@ -19,6 +20,7 @@ let navBarContainer = document.createElement('div');
 navBarContainer.id = 'navBarContainer';
 
 navBarContainer.append(startButton);
+startButton.tabIndex = TabIndexOffsets.navBar;
 
 scriptNode.before(navBarContainer);
 
@@ -134,6 +136,9 @@ function initGame() {
     let recipesButton = createRecipesButton();
     let leaderboardButton = createLeaderboardButton();
 
+    [finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton].forEach(
+        (btn, i) => btn.tabIndex = TabIndexOffsets.menu + i
+    );
     menuContainer.append(finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton);
     gameInfoContainer.append(scoreContainer, timerContainer);
 

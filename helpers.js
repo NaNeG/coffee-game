@@ -61,6 +61,11 @@ export const VolumeTranslation = {
 
 export const FullScore = 1000;
 
+export const TabIndexOffsets = {
+    navBar: 1,
+    game: 501,
+    menu: 1001,
+}
 
 export function getRgb(r, g, b){
     return `rgb(${r}, ${g}, ${b})`;
