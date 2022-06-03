@@ -200,7 +200,8 @@ class MixState extends State {
     }
 
     onKeyDownEvent = (event) => { // arrow-func to make this!==document when used as callback in document.addEventListener
-        this.userInputs.push(MixState.keyNameToEvent[event.key]); // todo: `onKeyDownEvent = onKeyDownEvent.bind(this)` may be clearer?
+        if (!(event.key in MixState.keyNameToEvent)) return;
+        this.userInputs.push(MixState.keyNameToEvent[event.key]);
     }
 
     addKeyboardListeners() {
