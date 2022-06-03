@@ -24,24 +24,6 @@ startButton.tabIndex = TabIndexOffsets.navBar;
 
 scriptNode.before(navBarContainer);
 
-// let recipesButton = createRecipesButton();
-
-// let recipesButtonContainer = document.createElement('div');
-// recipesButtonContainer.id = 'recipesButtonContainer';
-
-// recipesButtonContainer.append(recipesButton);
-
-// scriptNode.before(recipesButtonContainer);
-
-// let leaderboardButton = createLeaderboardButton();
-
-// let leaderboardButtonContainer = document.createElement('div');
-// leaderboardButtonContainer.id = 'leaderboardButtonContainer';
-
-// leaderboardButtonContainer.append(leaderboardButton);
-
-// scriptNode.before(leaderboardButtonContainer);
-
 for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
     row.insertCell().textContent = name + ':';
@@ -164,8 +146,6 @@ function finishSession() {
     clearTimeout(gameTimer);
     currentGameSession = undefined;
     createResultScreen(gameScore);
-    //startButton = createStartButton();
-    //navBarContainer.append(startButton);
 }
 
 function createResultScreen(gameScore) {
