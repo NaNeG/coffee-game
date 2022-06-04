@@ -25,8 +25,11 @@ class State {
 
 class FillState extends State {
     constructor(orders) {
-        super(orders);   
+        super(orders);
+        this.init();
+    }
 
+    init() {
         this.gameContainer.replaceChildren();
 
         let cupContainer = document.createElement('div');
@@ -228,7 +231,10 @@ class PourState extends State {
     constructor(orders, cup) {
         super(orders);
         this.cup = cup;
+        this.init();
+    }
 
+    init() {
         this.gameContainer.replaceChildren();
 
         let cupContainer = document.createElement('div');
