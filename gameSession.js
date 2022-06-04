@@ -42,13 +42,13 @@ export class GameSession {
     nextState() {
         let cup = this.gameState.cup;
         if (this.gameState instanceof FillState) {
-            this.gameState.handleEvent('dispose');
+            this.gameState.dispose();
             this.gameState = new MixState(this.orders, cup);
         } 
         else if (this.gameState instanceof MixState) {
             if (equalArrays(this.gameState.userInputs, this.gameState.requiredInputs)){
                 console.log('correct');
-                this.gameState.handleEvent('dispose');
+                this.gameState.dispose();
                 this.gameState = new PourState(this.orders, cup);
             }
             else {
@@ -60,7 +60,7 @@ export class GameSession {
         else if (this.gameState instanceof PourState) {
             if (this.gameState.volume != undefined) {
                 console.log(this.gameState.volume);
-                this.gameState.handleEvent('dispose');
+                this.gameState.dispose();
                 this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume);
                 this.score += this.gameState.score;
                 let scoreText = document.getElementById('scoreText');
@@ -68,7 +68,7 @@ export class GameSession {
             }
         } 
         else if (this.gameState instanceof FinalState) {
-            this.gameState.handleEvent('dispose');
+            this.gameState.dispose();
             this.gameState = new FillState(this.orders);
             if (this.orders.length === 0) {
                 let nextStateButton = document.getElementById('nextStateButton');
@@ -78,7 +78,7 @@ export class GameSession {
     }
 
     restart() {
-        this.gameState.handleEvent('restart');
+        this.gameState.restart();
     }
 
     finish() {
