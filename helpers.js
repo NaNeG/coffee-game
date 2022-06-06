@@ -165,3 +165,19 @@ export function convertRGB(colorString)
 
   return rgbArray;
 }
+
+export const componentsColors = {};
+
+if (window.document.styleSheets.length != 1) {
+    throw new Error('Not Implemented');
+}
+
+const styleSheet = window.document.styleSheets[0];
+
+for (let rule of styleSheet.cssRules) {
+    if (!rule.selectorText || rule.selectorText.length <= 1) continue;
+    let potentialClassName = rule.selectorText.substring(1);
+    if (potentialClassName in Toppings || potentialClassName in Fillings) {
+        componentsColors[potentialClassName] = rule.style.background;
+    }
+} // todo: possibly better to define and set colors in js only

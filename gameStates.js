@@ -1,7 +1,7 @@
 import { Cup, Drink, PouringBar, Order } from './gameElements.js';
 import { mix_rgbs, getRandomInt, equalOrders, inputs, Volumes,
          inputImages, Events, FullScore, Fillings, Toppings,
-         VolumeTranslation, convertRGB, TabIndexOffsets } from "./helpers.js";
+         VolumeTranslation, convertRGB, TabIndexOffsets, componentsColors } from "./helpers.js";
 
 class State {
     constructor(orders) {
@@ -277,7 +277,7 @@ class PourState extends State {
         stopButton.classList.add('stop-button');
         stopButton.addEventListener('click', () => {
             this.pouringBar.stop();
-            this.pouringCup.fill(this.pouringBar.progress, mix_rgbs(...componentColors));
+            this.pouringCup.fill(this.pouringBar.progress, mix_rgbs(...usedComponentsColors));
             this.volume = Volumes[Math.floor(this.pouringCup.volume / 33.34) - 1];
         });
         stopButton.tabIndex = TabIndexOffsets.game;
@@ -289,11 +289,10 @@ class PourState extends State {
 
         this.gameContainer.append(cupContainer, pouringCupContainer, barElementsContainer);
 
-        let componentColors = [];
+        let usedComponentsColors = [];
         for (let component of this.cup.components) {
-            let elem = document.getElementsByClassName(component)[0];
-            let elemColor = getComputedStyle(elem).backgroundColor;
-            componentColors.push(convertRGB(elemColor));
+            let componentColor = componentsColors[component];
+            usedComponentsColors.push(convertRGB(componentColor));
         }
     }
 
