@@ -79,10 +79,6 @@ export function equalArrays(a, b) {
     return a.length === b.length && a.every((v, i) => v === b[i]);
 }
 
-export function mixColors(...colors) {
-    
-}
-
 function containsAll (arr1, arr2) {
     return arr2.every(arr2Item => arr1.includes(arr2Item));
 }
@@ -94,6 +90,14 @@ function sameMembers (arr1, arr2) {
 
 export function equalOrders(order, cupComponents, cupVolume) {
     return sameMembers(order.components, cupComponents) && order.volume === cupVolume;
+}
+
+export function equalComponents(order, cupComponents) {
+    return sameMembers(order.components, cupComponents);
+}
+
+export function equalVolumes(order, cupVolume) {
+    return sameMembers(order.volume, cupVolume);
 }
 
 

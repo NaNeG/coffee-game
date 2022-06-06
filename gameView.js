@@ -160,15 +160,15 @@ function finishSession() {
     document.getElementById('orderContainer').remove();
     document.getElementById('gameContainer').remove();
     document.getElementById('menuContainer').remove();
-    let gameScore = currentGameSession.finish();
+    let [gameScore, totalOrders, correctOrders] = currentGameSession.finish();
     clearTimeout(gameTimer);
     currentGameSession = undefined;
-    createResultScreen(gameScore);
+    createResultScreen(gameScore, totalOrders, correctOrders);
     //startButton = createStartButton();
     //navBarContainer.append(startButton);
 }
 
-function createResultScreen(gameScore) {
+function createResultScreen(gameScore, totalOrders, correctOrders) {
     let resultsScreenContainer = document.createElement('div');
     resultsScreenContainer.id = 'resultsScreenContainer';
 
@@ -194,13 +194,28 @@ function createResultScreen(gameScore) {
 
     let resultScoreContainer =  document.createElement('div');
     resultScoreContainer.id = 'resultScoreContainer';
-    resultScoreContainer.classList.add('container', 'score-container');
+
+    let buttonsContainer = document.createElement('div');
+    buttonsContainer.classList.add('filling-buttons-container')
 
     let scoreText = document.createElement('h1');
-    scoreText.textContent = gameScore;
-    resultScoreContainer.append(scoreText);
+    scoreText.textContent = `Ваш счет: ${gameScore}`;
 
-    resultsScreenContainer.append(resultScoreContainer, quitButton, restartButton);
+    let orderCount = document.createElement('h1');
+    orderCount.textContent = `Выполнено заказов: ${correctOrders}`;
+
+    let correctOrdersText = document.createElement('h1');
+    if (totalOrders > 0) {
+        correctOrdersText.textContent = `Процент успеха: ${(correctOrders / totalOrders).toFixed(2) * 100}`;
+    } else {
+        correctOrdersText.textContent = `Процент успеха: 0`;
+    }
+    
+    resultScoreContainer.append(scoreText, orderCount, correctOrdersText);
+
+    buttonsContainer.append(quitButton, restartButton);
+
+    resultsScreenContainer.append(resultScoreContainer, buttonsContainer);
 
     scriptNode.before(resultsScreenContainer);
 }

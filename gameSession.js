@@ -11,6 +11,8 @@ export class GameSession {
         this.playerId = playerId;
         this.gameState = new FillState(this.orders); 
         this.gameTime = gameTime;
+        this.totalOrders = 0;
+        this.correctOrders = 0;
         this.createOrder();
         this.orderCreator = setRandomInterval(() => { 
             this.createOrder();
@@ -63,6 +65,10 @@ export class GameSession {
                 this.gameState.handleEvent('dispose');
                 this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume);
                 this.score += this.gameState.score;
+                if (this.gameState.score > 0) {
+                    this.correctOrders++;
+                }
+                this.totalOrders++;
                 let scoreText = document.getElementById('scoreText');
                 scoreText.textContent = 'Очки: ' + this.score;
             }
@@ -84,7 +90,7 @@ export class GameSession {
     finish() {
         this.orderCreator.clear();
         clearInterval(this.timerUpdater);
-        return this.score;
+        return [this.score, this.totalOrders, this.correctOrders];
     }
 }
 

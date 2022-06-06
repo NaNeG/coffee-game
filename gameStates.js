@@ -47,6 +47,11 @@ class FillState extends State {
                 let fillingMenuContainer = document.createElement('div');
                 fillingMenuContainer.classList.add('filling-menu-container');
 
+                let fillingMenuButtons = document.createElement('div');
+
+                let fillingMenuDimming = document.createElement('div');
+                fillingMenuDimming.classList.add('filling-menu-dimming');
+
                 let fillingTitleContainer = document.createElement('div');
                 fillingTitleContainer.classList.add('filling-title-container'); 
                 let fillingTitle = document.createElement('h2');
@@ -65,7 +70,7 @@ class FillState extends State {
                 let toppingsContainer = document.createElement('div');
                 toppingsContainer.classList.add('filling-buttons-container');
 
-                fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, toppingTitleContainer, toppingsContainer);
+                fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, toppingTitleContainer, toppingsContainer, fillingMenuDimming);
 
                 this.gameContainer.append(fillingMenuContainer);
 
@@ -333,21 +338,32 @@ class FinalState extends State {
             case Events.init:
                 this.gameContainer.replaceChildren();
 
-                let scoreContainer =  document.createElement('div');
+                let scoreContainer = document.createElement('div');
                 scoreContainer.classList.add('container', 'score-container');
 
+                let componentsEqualityContainer = document.createElement('div');
+
+                let volumesEqualityContainer = document.createElement('div');
+
                 let scoreText = document.createElement('h1');
+                let componentsEqualityText = document.createElement('h1');
+                let volumesEqualityText = document.createElement('h1');
+
+                
+
                 if (equalOrders(this.orders[0], this.components, this.volume)) {
-                    this.score += FullScore;
+                    this.score += `Счет: ${FullScore}`;
                     this.orders.shift();
                     let orderText = document.getElementById('orderText');
                     if (this.orders.length === 0){
-                        orderText.textContent = 'Следующий заказ:';
+                        orderText.textContent = '';
                     }
                     else {
                         orderText.textContent = 'Следующий заказ: ' + this.orders[0].name + ' ' + VolumeTranslation[this.orders[0].volume];
                     }
                 }
+
+                
 
                 scoreText.textContent = this.score;
 

@@ -3,6 +3,10 @@
   src: url('fonts/ja-jp.ttf');
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 h1 {
   font-family: 'TTSkip';
   margin: 20px;
@@ -18,7 +22,7 @@ body {
 }
 
 .container {
-  width: 300px;
+  width: 250px;
   height: 400px;
 }
 
@@ -44,8 +48,23 @@ body {
 
 .filling-menu-container {
   width: 30%;
+  height: inherit;
   margin-left: 20px;
   margin-right: 20px;
+  position: relative;
+  padding: 0px 5px;  
+  overflow-y: scroll; 
+}
+
+.filling-menu-dimming {
+  position: sticky;
+  bottom: 0;
+  height: 15%;
+  width: 100%;
+  background: linear-gradient(0deg, rgba(255,255,255,1) 20%, rgba(255,255,255,0) 100%);
+  padding: 5px;
+  z-index: 50;
+  pointer-events: none; 
 }
 
 .filling-buttons-container {
@@ -55,7 +74,7 @@ body {
 }
 
 .filling-button {
-  margin: 10px;
+  margin: 8px;
   height: 150px;
   width: 130px;
   background: rgba(124, 120, 117, 0.3);
@@ -207,7 +226,6 @@ body {
   justify-content: center;
   align-items: center;
   align-self: flex-end;
-  margin-top: 50px;
   background: linear-gradient(90deg, rgba(255,255,255,1) 15%, rgba(175,160,148,1) 50%, rgba(255,255,255,1) 85%);
 }
 
@@ -321,7 +339,7 @@ body {
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  height: 650px;
   flex-wrap: wrap;
 }
 
@@ -389,8 +407,17 @@ body {
   padding: 0 50px 0 50px;
   background: transparent;
   box-sizing: border-box;
-  position: fixed;
   bottom: 0px;
+}
+
+#resultScoreContainer {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+#resultsScreenContainer {
+  height: 100%;
 }
 
 @keyframes fill-percentage {
@@ -421,6 +448,13 @@ body {
   
   100%{
       height: 5%;
+  }
+}
+
+@media screen and (min-width: 1460px) {
+  .filling-menu-dimming {
+    display: none;
+
   }
 }
 
