@@ -117,26 +117,16 @@ class MixState extends State {
     constructor(orders, cup) {
         super(orders); 
         this.cup = cup;
-        this.arrowsButtons = {
-            'ArrowLeft': null,
-            'ArrowUp': null,
-            'ArrowRight': null,
-            'ArrowDown': null,
+        this._buttons = {
+            'left': null,
+            'up': null,
+            'right': null,
+            'down': null,
         };
 
-        this.gameContainer.replaceChildren();
-
-        let cupContainer = document.createElement('div');
-        cupContainer.id = 'cupContainer';
-        cupContainer.classList.add('container', 'cup-container');
-
-        let mixButtonsContainer = document.createElement('div');
-        mixButtonsContainer.id = 'mixButtonsContainer';
-        mixButtonsContainer.classList.add('mix-buttons-container');
-
-        let requiredInputsContainer = document.createElement('div');
-        requiredInputsContainer.id = 'requiredInputsContainer';
-        requiredInputsContainer.classList.add('container', 'required-inputs-container');
+        let cupContainer = this._createCupContainer();
+        let mixButtonsContainer = this._createMixButtonsContainer();
+        let requiredInputsContainer = this._createRequiredInputsContainer();
 
         this.requiredInputs = [];
 
@@ -147,60 +137,58 @@ class MixState extends State {
             arrowImage.src = 'img/' + inputImages[direction];
             requiredInputsContainer.append(arrowImage);
         }
-        console.log(this.requiredInputs);
 
         this.userInputs = [];
 
-        let leftMixButton = document.createElement('button');
-        leftMixButton.id = 'leftMixButton';
-        leftMixButton.classList.add('mix-button');
-        leftMixButton.addEventListener('click', () => this.userInputs.push('left'));
-        let leftImg = document.createElement('img');
-        leftImg.src = 'img/left.png';
-        leftImg.height = '100';
-        leftMixButton.append(leftImg);
-        this.arrowsButtons['ArrowLeft'] = leftMixButton;
+        let leftMixButton = this._createMixButton('left');
+        let upMixButton = this._createMixButton('up');
+        let rightMixButton = this._createMixButton('right');
+        let downMixButton = this._createMixButton('down');
 
-        let upMixButton = document.createElement('button');
-        upMixButton.id = 'upMixButton';
-        upMixButton.classList.add('mix-button');
-        upMixButton.addEventListener('click', () => this.userInputs.push('up'));
-        let upImg = document.createElement('img');
-        upImg.src = 'img/up.png';
-        upImg.height = '100';
-        upMixButton.append(upImg);
-        this.arrowsButtons['ArrowUp'] = upMixButton;
-
-        let rightMixButton = document.createElement('button');
-        rightMixButton.id = 'rightMixButton';
-        rightMixButton.classList.add('mix-button');
-        rightMixButton.addEventListener('click', () => this.userInputs.push('right'));
-        let rightImg = document.createElement('img');
-        rightImg.src = 'img/right.png';
-        rightImg.height = '100';
-        rightMixButton.append(rightImg);
-        this.arrowsButtons['ArrowRight'] = rightMixButton;
-
-        let downMixButton = document.createElement('button');
-        downMixButton.id = 'downMixButton';
-        downMixButton.classList.add('mix-button');
-        downMixButton.addEventListener('click', () => this.userInputs.push('down'));
-        let downImg = document.createElement('img');
-        downImg.src = 'img/down.png';
-        downImg.height = '100';
-        downMixButton.append(downImg);
-        this.arrowsButtons['ArrowDown'] = downMixButton;
-
-        [upMixButton, leftMixButton, rightMixButton, downMixButton].forEach((btn, i) => {
-            btn.tabIndex = TabIndexOffsets.game + i;
-        });
+        [upMixButton, leftMixButton, rightMixButton, downMixButton].forEach(
+            (btn, i) => btn.tabIndex = TabIndexOffsets.game + i
+        );
         mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
         
-        this.gameContainer.append(cupContainer, mixButtonsContainer, requiredInputsContainer);
+        this.gameContainer.replaceChildren(cupContainer, mixButtonsContainer, requiredInputsContainer);
         this.cup.changeContainer(cupContainer);
         this.cup.draw();
 
         this.addKeyboardListeners();
+    }
+
+    _createCupContainer() {
+        let cupContainer = document.createElement('div');
+        cupContainer.id = 'cupContainer';
+        cupContainer.classList.add('container', 'cup-container');
+        return cupContainer;
+    }
+
+    _createMixButtonsContainer() {
+        let mixButtonsContainer = document.createElement('div');
+        mixButtonsContainer.id = 'mixButtonsContainer';
+        mixButtonsContainer.classList.add('mix-buttons-container');
+        return mixButtonsContainer;
+    }
+
+    _createRequiredInputsContainer() {
+        let requiredInputsContainer = document.createElement('div');
+        requiredInputsContainer.id = 'requiredInputsContainer';
+        requiredInputsContainer.classList.add('container', 'required-inputs-container');
+        return requiredInputsContainer;
+    }
+
+    _createMixButton(dirName) {
+        let mixButton = document.createElement('button');
+        mixButton.id = dirName + 'MixButton';
+        mixButton.classList.add('mix-button');
+        mixButton.addEventListener('click', () => this.userInputs.push(dirName));
+        let img = document.createElement('img');
+        img.src = `img/${dirName}.png`;
+        img.height = '100';
+        mixButton.append(img);
+        this._buttons[dirName] = mixButton;
+        return mixButton;
     }
 
     restart() {
@@ -212,7 +200,7 @@ class MixState extends State {
         this.removeKeyboardListeners();
     }
 
-    static keyNameToEvent = {
+    static keyNameToDirectionName = {
         'ArrowLeft': 'left',
         'ArrowUp': 'up',
         'ArrowRight': 'right',
@@ -221,25 +209,27 @@ class MixState extends State {
 
     // arrow-func to make this!==document when used as callback in document.addEventListener
     // todo: `onKeyDownEvent = onKeyDownEvent.bind(this)` may be clearer?
-    onKeyDownEvent = (event) => {
-        if (!(event.key in MixState.keyNameToEvent)) return;
-        this.userInputs.push(MixState.keyNameToEvent[event.key]);
-        this.arrowsButtons[event.key].classList.add('keyboardActive');
+    _onKeyDownEvent = (event) => {
+        if (!(event.key in MixState.keyNameToDirectionName)) return;
+        let dirName = MixState.keyNameToDirectionName[event.key];
+        this.userInputs.push(dirName);
+        this._buttons[dirName].classList.add('keyboardActive');
     }
 
-    onKeyUpEvent = (event) => {
-        if (!(event.key in MixState.keyNameToEvent)) return;
-        this.arrowsButtons[event.key].classList.remove('keyboardActive');
+    _onKeyUpEvent = (event) => {
+        if (!(event.key in MixState.keyNameToDirectionName)) return;
+        let dirName = MixState.keyNameToDirectionName[event.key];
+        this._buttons[dirName].classList.remove('keyboardActive');
     }
 
     addKeyboardListeners() {
-        document.addEventListener('keydown', this.onKeyDownEvent);
-        document.addEventListener('keyup', this.onKeyUpEvent);
+        document.addEventListener('keydown', this._onKeyDownEvent);
+        document.addEventListener('keyup', this._onKeyUpEvent);
     }
 
     removeKeyboardListeners() {
-        document.removeEventListener('keydown', this.onKeyDownEvent);
-        document.removeEventListener('keyup', this.onKeyUpEvent);
+        document.removeEventListener('keydown', this._onKeyDownEvent);
+        document.removeEventListener('keyup', this._onKeyUpEvent);
     }
 }
 
