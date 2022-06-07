@@ -241,19 +241,14 @@ class PourState extends State {
     }
 
     init() {
+        this._mixColor = mix_rgbs(...this.getComponentsColorsOfCup());
         this.gameContainer.replaceChildren();
 
-        let cupContainer = document.createElement('div');
-        cupContainer.id = 'cupContainer';
-        cupContainer.classList.add('cup-container');
+        let cupContainer = this._createCupContainer();
 
-        let barElementsContainer = document.createElement('div');
-        barElementsContainer.id = 'barElementsContainer';
-        barElementsContainer.classList.add('bar-elements-container');
+        let barElementsContainer = this._createBarElementsContainer();
 
-        let pouringBarContainer = document.createElement('div');
-        pouringBarContainer.id = 'pouringBarContainer';
-        pouringBarContainer.classList.add('pouring-bar-container');
+        let pouringBarContainer = this._createPouringBarContainer();
 
         let pouringCupContainer = document.createElement('div');
         pouringCupContainer.id = 'pouringCupContainer';
@@ -261,26 +256,9 @@ class PourState extends State {
 
         this.pouringCup = new Drink(pouringCupContainer);
 
-        for (let i = 1; i <= 2; i++) {
-            let innerDiv = document.createElement('div');
-            innerDiv.classList.add('divider');
-            innerDiv.style.top = 33 * i + '%';
-            pouringBarContainer.append(innerDiv);
-        }   
-
         this.pouringBar = new PouringBar(pouringBarContainer);
-                
         
-        let stopButton = document.createElement('button');
-        stopButton.id = 'stopButton';
-        stopButton.textContent = 'Стоп'
-        stopButton.classList.add('stop-button');
-        stopButton.addEventListener('click', () => {
-            this.pouringBar.stop();
-            this.pouringCup.fill(this.pouringBar.progress, mix_rgbs(...usedComponentsColors));
-            this.volume = Volumes[Math.floor(this.pouringCup.volume / 33.34) - 1];
-        });
-        stopButton.tabIndex = TabIndexOffsets.game;
+        let stopButton = this._createStopButton();
 
         this.cup.changeContainer(cupContainer);
         this.cup.draw();
@@ -288,12 +266,61 @@ class PourState extends State {
         barElementsContainer.append(pouringBarContainer, stopButton);
 
         this.gameContainer.append(cupContainer, pouringCupContainer, barElementsContainer);
+    }
 
+    // arrow-func to make this!==document when used as callback in document.addEventListener
+    // todo: `_stop = _stop.bind(this)` may be clearer?
+    _stop = () => {
+        this.pouringBar.stop();
+        this.pouringCup.fill(this.pouringBar.progress, this._mixColor);
+        this.volume = Volumes[Math.floor(this.pouringCup.volume / 33.34) - 1];
+    }
+
+    _createPouringBarContainer() {
+        let pouringBarContainer = document.createElement('div');
+        pouringBarContainer.id = 'pouringBarContainer';
+        pouringBarContainer.classList.add('pouring-bar-container');
+
+        for (let i = 1; i <= 2; i++) {
+            let innerDiv = document.createElement('div');
+            innerDiv.classList.add('divider');
+            innerDiv.style.top = 33 * i + '%';
+            pouringBarContainer.append(innerDiv);
+        }
+        return pouringBarContainer;
+    }
+
+    _createBarElementsContainer() {
+        let barElementsContainer = document.createElement('div');
+        barElementsContainer.id = 'barElementsContainer';
+        barElementsContainer.classList.add('bar-elements-container');
+        return barElementsContainer;
+    }
+
+    _createStopButton() {
+        let stopButton = document.createElement('button');
+        stopButton.id = 'stopButton';
+        stopButton.textContent = 'Стоп';
+        stopButton.classList.add('stop-button');
+        stopButton.addEventListener('click', this._stop);
+        stopButton.tabIndex = TabIndexOffsets.game;
+        return stopButton;
+    }
+
+    getComponentsColorsOfCup() {
         let usedComponentsColors = [];
         for (let component of this.cup.components) {
             let componentColor = componentsColors[component];
             usedComponentsColors.push(convertRGB(componentColor));
         }
+        return usedComponentsColors;
+    }
+
+    _createCupContainer() {
+        let cupContainer = document.createElement('div');
+        cupContainer.id = 'cupContainer';
+        cupContainer.classList.add('container', 'cup-container');
+        return cupContainer;
     }
 
     restart() {
