@@ -1,4 +1,4 @@
-export const inputs = {
+export const Inputs = {
     0: 'up',
     1: 'right',
     2: 'down',
@@ -39,6 +39,8 @@ export const Toppings = {
     'lemon': 'Лемон',
     'mint': 'Мята',
 }
+
+export const ComponentTranslation = { ...Fillings, ...Toppings }
 
 export const IsFilling = {
     'tea': true,
@@ -98,6 +100,14 @@ export function equalComponents(order, cupComponents) {
 
 export function equalVolumes(order, cupVolume) {
     return sameMembers(order.volume, cupVolume);
+}
+
+export function getArrayDifference(arr1, arr2) {
+    return arr1.filter(x => !arr2.includes(x)).concat(arr2.filter(x => !arr1.includes(x)));
+}
+
+export function getArrayIntersection(arr1, arr2) {
+    return arr1.filter(x => arr2.includes(x))
 }
 
 

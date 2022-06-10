@@ -1,7 +1,8 @@
 import { Cup, Drink, PouringBar, Order } from './gameElements.js';
-import { mix_rgbs, getRandomInt, equalOrders, inputs, Volumes,
+import { mix_rgbs, getRandomInt, equalOrders, Inputs, Volumes,
          inputImages, Events, FullScore, Fillings, Toppings,
-         VolumeTranslation, convertRGB, TabIndexOffsets } from "./helpers.js";
+         VolumeTranslation, convertRGB, TabIndexOffsets, equalComponents,
+         getArrayDifference, getArrayIntersection, ComponentTranslation } from "./helpers.js";
 
 class State {
     constructor(orders) {
@@ -29,7 +30,7 @@ class State {
 
 class FillState extends State {
     constructor(orders){
-        super(orders);   
+        super(orders);  
         this.handleEvent(Events.init);
     }
 
@@ -145,7 +146,7 @@ class MixState extends State {
 
                 for (let i = 0; i < 3 + getRandomInt(3); i++) {
                     let direction = getRandomInt(4);
-                    this.requiredInputs.push(inputs[direction]);
+                    this.requiredInputs.push(Inputs[direction]);
                     let arrowImage = document.createElement('img');
                     arrowImage.src = 'img/' + inputImages[direction];
                     requiredInputsContainer.append(arrowImage);
@@ -157,40 +158,48 @@ class MixState extends State {
                 let leftMixButton = document.createElement('button');
                 leftMixButton.id = 'leftMixButton';
                 leftMixButton.classList.add('mix-button');
-                leftMixButton.addEventListener('click', () => this.userInputs.push('left'));
+                leftMixButton.addEventListener('click', () => {
+                    this.userInputs.push('left');
+                    this.compareMixInput();
+                });
                 let leftImg = document.createElement('img');
                 leftImg.src = 'img/left.png';
-                leftImg.height = '100';
                 leftMixButton.append(leftImg);
                 this.arrowsButtons['ArrowLeft'] = leftMixButton;
 
                 let upMixButton = document.createElement('button');
                 upMixButton.id = 'upMixButton';
                 upMixButton.classList.add('mix-button');
-                upMixButton.addEventListener('click', () => this.userInputs.push('up'));
+                upMixButton.addEventListener('click', () => {
+                    this.userInputs.push('up');
+                    this.compareMixInput();
+                });
                 let upImg = document.createElement('img');
                 upImg.src = 'img/up.png';
-                upImg.height = '100';
                 upMixButton.append(upImg);
                 this.arrowsButtons['ArrowUp'] = upMixButton;
 
                 let rightMixButton = document.createElement('button');
                 rightMixButton.id = 'rightMixButton';
                 rightMixButton.classList.add('mix-button');
-                rightMixButton.addEventListener('click', () => this.userInputs.push('right'));
+                rightMixButton.addEventListener('click', () => {
+                    this.userInputs.push('right');
+                    this.compareMixInput();
+                });
                 let rightImg = document.createElement('img');
                 rightImg.src = 'img/right.png';
-                rightImg.height = '100';
                 rightMixButton.append(rightImg);
                 this.arrowsButtons['ArrowRight'] = rightMixButton;
 
                 let downMixButton = document.createElement('button');
                 downMixButton.id = 'downMixButton';
                 downMixButton.classList.add('mix-button');
-                downMixButton.addEventListener('click', () => this.userInputs.push('down'));
+                downMixButton.addEventListener('click', () => {
+                    this.userInputs.push('down');
+                    this.compareMixInput();
+                });
                 let downImg = document.createElement('img');
                 downImg.src = 'img/down.png';
-                downImg.height = '100';
                 downMixButton.append(downImg);
                 this.arrowsButtons['ArrowDown'] = downMixButton;
 
@@ -207,7 +216,7 @@ class MixState extends State {
                 break;
 
             case Events.restart:
-                this.userInputs = [];
+                this.resetInputs();
                 break;
 
             case Events.dispose:
@@ -245,6 +254,28 @@ class MixState extends State {
     removeKeyboardListeners() {
         document.removeEventListener('keydown', this.onKeyDownEvent);
         document.removeEventListener('keyup', this.onKeyUpEvent);
+    }
+
+    compareMixInput() {
+        let elementOrder = this.userInputs.length - 1;
+        let arrowObject = document.querySelector(`#requiredInputsContainer :nth-child(${elementOrder + 1})`);
+        console.log(arrowObject);
+        if (this.requiredInputs[elementOrder] == this.userInputs[elementOrder]) {
+            arrowObject.classList.add('green-tint');
+        } else {
+            arrowObject.classList.add('red-tint');
+        }
+    }
+
+    resetInputs() {
+        for (let i = 1; i <= this.userInputs.length; i++) {
+            let arrowObject = document.querySelector(`#requiredInputsContainer :nth-child(${i})`);
+            arrowObject.classList.remove(...arrowObject.classList);
+        }
+        let requiredInputsContainer = document.getElementById('requiredInputsContainer');
+        requiredInputsContainer.classList.add('flash-background');
+        setTimeout(() => requiredInputsContainer.classList.remove('flash-background'), 1000);
+        this.userInputs = [];
     }
 }
 
@@ -325,11 +356,12 @@ class PourState extends State {
 }
 
 class FinalState extends State {
-    constructor(orders, components, volume){
+    constructor(orders, components, volume, streak){
         super(orders);
         this.components = components;
         this.volume = volume;
         this.score = 0;
+        this.streak = streak;
         this.handleEvent(Events.init);
     }
 
@@ -346,30 +378,51 @@ class FinalState extends State {
                 let volumesEqualityContainer = document.createElement('div');
 
                 let scoreText = document.createElement('h1');
-                let componentsEqualityText = document.createElement('h1');
-                let volumesEqualityText = document.createElement('h1');
+                let streakText = document.createElement('h1');
 
+                let addedComponentsText = document.createElement('h1');
+                let requiredComponentsText = document.createElement('h1');
+                let componentDifferenceText = document.createElement('h1');
+
+                let addedVolumeText = document.createElement('h1');
+                let requiredVolumeText = document.createElement('h1');
+
+                addedComponentsText.textContent = `Ваш состав: ${this.components.map(x => ComponentTranslation[x]).join(', ')}`;
+                requiredComponentsText.textContent = `Требуемый состав: ${this.orders[0].components.map(x => ComponentTranslation[x]).join(', ')}`;
+
+                if (getArrayDifference(this.components, this.orders[0].components).length !== 0) {
+                    componentDifferenceText.textContent = `Разница: ${getArrayDifference(this.components, this.orders[0].components).map(x => ComponentTranslation[x]).join(', ')}`;
+                }
+
+                addedVolumeText.textContent = `Ваш объем: ${VolumeTranslation[this.volume]}`;
+                requiredVolumeText.textContent = `Требуемый объем: ${VolumeTranslation[this.orders[0].volume]}`;
                 
 
                 if (equalOrders(this.orders[0], this.components, this.volume)) {
-                    this.score += `Счет: ${FullScore}`;
+                    this.score += FullScore + FullScore * this.streak / 2;
+                    this.streak++;
                     this.orders.shift();
                     let orderText = document.getElementById('orderText');
                     if (this.orders.length === 0){
                         orderText.textContent = '';
                     }
                     else {
-                        orderText.textContent = 'Следующий заказ: ' + this.orders[0].name + ' ' + VolumeTranslation[this.orders[0].volume];
+                        orderText.textContent = `Следующий заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
                     }
+                } else {
+                    this.streak = 0;
                 }
 
+                scoreText.textContent = `Ваш счет: ${this.score}`;
+                streakText.textContent = `Серия: ${this.streak}`;
                 
 
-                scoreText.textContent = this.score;
+                scoreContainer.append(scoreText, streakText);
 
-                scoreContainer.append(scoreText);
+                componentsEqualityContainer.append(addedComponentsText, requiredComponentsText, componentDifferenceText);
+                volumesEqualityContainer.append(addedVolumeText, requiredVolumeText);
 
-                this.gameContainer.append(scoreContainer);
+                this.gameContainer.append(scoreContainer, componentsEqualityContainer, volumesEqualityContainer);
                 break;
 
             case Events.restart:

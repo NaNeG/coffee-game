@@ -6,10 +6,11 @@ import { Recipes } from "./recipes.js";
 export class GameSession {
     orders = [];
     score = 0;
+    streak = 0;
 
     constructor(playerId, gameTime) {
         this.playerId = playerId;
-        this.gameState = new FillState(this.orders); 
+        this.gameState = new FillState(this.orders, this.streak); 
         this.gameTime = gameTime;
         this.totalOrders = 0;
         this.correctOrders = 0;
@@ -45,17 +46,16 @@ export class GameSession {
         let cup = this.gameState.cup;
         if (this.gameState instanceof FillState) {
             this.gameState.handleEvent('dispose');
-            this.gameState = new MixState(this.orders, cup);
+            this.gameState = new MixState(this.orders, cup, this.streak);
         } 
         else if (this.gameState instanceof MixState) {
             if (equalArrays(this.gameState.userInputs, this.gameState.requiredInputs)){
                 console.log('correct');
                 this.gameState.handleEvent('dispose');
-                this.gameState = new PourState(this.orders, cup);
+                this.gameState = new PourState(this.orders, cup, this.streak);
             }
             else {
-                this.gameState.userInputs = [];
-                alert('Try again');
+                this.gameState.handleEvent('restart');  
                 console.log('incorrect');
             }         
         } 
@@ -63,11 +63,14 @@ export class GameSession {
             if (this.gameState.volume != undefined) {
                 console.log(this.gameState.volume);
                 this.gameState.handleEvent('dispose');
-                this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume);
+                this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume, this.streak);
                 this.score += this.gameState.score;
                 if (this.gameState.score > 0) {
+                    this.streak++;
                     this.correctOrders++;
-                }
+                } else {
+                    this.streak = 0;
+                } 
                 this.totalOrders++;
                 let scoreText = document.getElementById('scoreText');
                 scoreText.textContent = 'Очки: ' + this.score;
@@ -75,7 +78,7 @@ export class GameSession {
         } 
         else if (this.gameState instanceof FinalState) {
             this.gameState.handleEvent('dispose');
-            this.gameState = new FillState(this.orders);
+            this.gameState = new FillState(this.orders, this.streak);
             if (this.orders.length === 0) {
                 let nextStateButton = document.getElementById('nextStateButton');
                 nextStateButton.disabled = true;
