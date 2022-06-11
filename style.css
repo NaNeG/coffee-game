@@ -93,6 +93,7 @@ body {
   background: rgba(23, 189, 97, 0.7);
 }
 
+
 .nav-bar-button {
   background: transparent;
   border: 0px;
@@ -228,6 +229,14 @@ body {
   align-self: flex-end;
   background: linear-gradient(90deg, rgba(255,255,255,1) 15%, rgba(175,160,148,1) 50%, rgba(255,255,255,1) 85%);
   margin-top: 20px;
+}
+
+.final-info-container {
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .filling-bar {
@@ -410,7 +419,8 @@ body {
   padding-right: 50px;
   box-sizing: border-box;
   position: sticky;
-  top: 0px
+  top: 0px;
+  z-index: 100;
 }
 
 #menuContainer {
@@ -421,12 +431,14 @@ body {
   background: transparent;
   box-sizing: border-box;
   bottom: 0px;
+  flex-wrap: wrap;
 }
 
 #resultScoreContainer {
   display: flex;
   height: 100%;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 #resultsScreenContainer {
@@ -481,7 +493,16 @@ body {
 @media screen and (min-width: 1460px) {
   .filling-menu-dimming {
     display: none;
+  }
+}
 
+@media screen and (max-width: 1459px) {
+  #nextStateButton {
+    margin-left: 15px;
+  }
+  
+  #menuContainer {
+    flex-direction: column-reverse;
   }
 }
 
@@ -491,13 +512,38 @@ body {
   }
 }
 
+
+
 .lightbox {
   position: fixed;
   /* top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-100%); */
-  background-color: red;
+  background-color: rgb(255, 255, 255);
+
+  border-radius: 10px;
+  font-family: 'TTSkip';
+  font-size: 36px;
+  height: 450px;
+  overflow: scroll;
+  border: 40px white solid;
 }
+
+.lightbox table {
+  border-spacing: 10px;
+}
+
+
+.lightbox-dimming {
+  position: sticky;
+  bottom: -1px;
+  height: 15%;
+  width: 100%;
+  background: linear-gradient(0deg, rgba(255,255,255,1) 20%, rgba(255,255,255,0) 100%);
+  z-index: 50;
+  pointer-events: none; 
+}
+
 
 .overlay {
   position: fixed;

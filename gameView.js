@@ -2,7 +2,7 @@ import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js'
 import { Recipes } from "./recipes.js";
 import { leaderboardDB } from "./leaderboardApi.js";
-import { TabIndexOffsets } from "./helpers.js";
+import { ComponentTranslation, TabIndexOffsets } from "./helpers.js";
 
 const GameTime = 6000;
 
@@ -45,7 +45,7 @@ scriptNode.before(navBarContainer);
 for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
     row.insertCell().textContent = name + ':';
-    row.insertCell().textContent = components.join(', ');
+    row.insertCell().textContent = components.map(x => ComponentTranslation[x]).join(', ');
 }
 
 function createStartButton() {

@@ -371,11 +371,13 @@ class FinalState extends State {
                 this.gameContainer.replaceChildren();
 
                 let scoreContainer = document.createElement('div');
-                scoreContainer.classList.add('container', 'score-container');
+                scoreContainer.classList.add('final-info-container');
 
                 let componentsEqualityContainer = document.createElement('div');
+                componentsEqualityContainer.classList.add('final-info-container');
 
                 let volumesEqualityContainer = document.createElement('div');
+                volumesEqualityContainer.classList.add('final-info-container');
 
                 let scoreText = document.createElement('h1');
                 let streakText = document.createElement('h1');
