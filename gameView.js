@@ -22,24 +22,6 @@ const leaderboardTable = document.querySelector('.leaderboard').firstElementChil
 
 createStartScreen();
 
-// let recipesButton = createRecipesButton();
-
-// let recipesButtonContainer = document.createElement('div');
-// recipesButtonContainer.id = 'recipesButtonContainer';
-
-// recipesButtonContainer.append(recipesButton);
-
-// scriptNode.before(recipesButtonContainer);
-
-// let leaderboardButton = createLeaderboardButton();
-
-// let leaderboardButtonContainer = document.createElement('div');
-// leaderboardButtonContainer.id = 'leaderboardButtonContainer';
-
-// leaderboardButtonContainer.append(leaderboardButton);
-
-// scriptNode.before(leaderboardButtonContainer);
-
 for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
     row.insertCell().textContent = name + ':';
@@ -134,71 +116,23 @@ function initGame(mode) {
         finishSession();
     }
 
-    if (document.getElementById('resultsScreenContainer')) {
-        document.getElementById('resultsScreenContainer').remove();
-    }
+    let modeInfoContainer = createModeInfoContainer(mode);
+    let scoreContainer = createScoreContainer();
+    let gameInfoContainer = createGameInfoContainer(scoreContainer, modeInfoContainer);
+    // todo: move timer & score containers creation inside?
+
+    let orderContainer = createOrderContainer();
     
-    
-    let scoreContainer = document.createElement('div');
-    scoreContainer.id = 'scoreContainer';
-    let scoreText = document.createElement('h1');
-    scoreText.id = 'scoreText';
-    scoreText.textContent = 'Очки: ' + 0;
-    scoreContainer.append(scoreText);
+    let gameContainer = createGameContainer();
 
-    let orderContainer = document.createElement('div');
-    orderContainer.id = 'orderContainer';
-    
-    let gameContainer = document.createElement('div');
-    gameContainer.id = 'gameContainer';
-
-    let gameInfoContainer = document.createElement('div');
-    gameInfoContainer.id = 'gameInfoContainer';
-
-    let modeInfoContainer = document.createElement('div');
-    modeInfoContainer.id = 'modeInfoContainer';
-    let modeInfo = document.createElement('h1');
-    modeInfo.id = 'modeInfo';
-    switch (mode) {
-        case 'classic':
-            modeInfo.textContent = 'Ошибок: 0'
-            break;
-
-        case 'arcade':
-            modeInfo.textContent = `Время: ${ArcadeGameTime}`;
-            break;
-
-        case 'infinite':
-            modeInfo.textContent = `Время: 0`;
-            break;
-    } 
-    modeInfoContainer.append(modeInfo);
-
-    let menuContainer = document.createElement('div');
-    menuContainer.id = 'menuContainer';
-
-    let nextStateButton = document.createElement('button');
-    nextStateButton.id = 'nextStateButton';
-    nextStateButton.textContent = 'Следующий этап';
-    nextStateButton.addEventListener('click', () => currentGameSession.nextState());
-    nextStateButton.classList.add('game-menu-button');
-
-    let restartButton = document.createElement('button');
-    restartButton.id = 'restartButton';
-    restartButton.textContent = 'Сброс этапа';
-    restartButton.addEventListener('click', () => currentGameSession.restart());
-    restartButton.classList.add('game-menu-button');
-
-    let finishButton = document.createElement('button');
-    finishButton.id = 'finishButton';
-    finishButton.textContent = 'Выход';
-    finishButton.addEventListener('click', () => {
-        finishSession();
-    });
-    finishButton.classList.add('game-menu-button');
-
+    let finishButton = createFinishButton();
+    let restartButton = createRestartButton();
     let recipesButton = createRecipesButton();
     let leaderboardButton = createLeaderboardButton();
+    let nextStateButton = createNextStateButton();
+    let menuContainer = createMenuContainer(finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton);
+    // todo: move buttons creation inside?
+    // todo: redundant css class for button, menu's id is enough?
 
     [finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton].forEach(
         (btn, i) => btn.tabIndex = TabIndexOffsets.menu + i
@@ -211,11 +145,9 @@ function initGame(mode) {
     gameInfoContainer.classList.add('game-elements-fade-in');
     orderContainer.classList.add('game-elements-fade-in');
     gameContainer.classList.add('game-elements-fade-in');
-    menuContainer.classList.add('game-elements-fade-in');    
-   
-    let orderText = document.createElement('h1');
-    orderText.id = 'orderText';
-    orderContainer.append(orderText);
+    menuContainer.classList.add('game-elements-fade-in');   
+
+    scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
 
     currentGameSession = new GameSession(123, mode); //add playerId
     switch (mode) {
@@ -238,8 +170,91 @@ function initGame(mode) {
         case 'infinite':
             break;
     }
-    
 }
+
+function createMenuContainer(...buttons) {
+    let menuContainer = document.createElement('div');
+    menuContainer.id = 'menuContainer';
+
+    buttons.forEach((btn, i) => btn.tabIndex = TabIndexOffsets.menu + i); // todo: move outside?
+    menuContainer.append(...buttons);
+    return menuContainer;
+}
+
+function createNextStateButton() {
+    let nextStateButton = document.createElement('button');
+    nextStateButton.id = 'nextStateButton';
+    nextStateButton.textContent = 'Следующий этап';
+    nextStateButton.addEventListener('click', () => currentGameSession.nextState());
+    nextStateButton.classList.add('game-menu-button');
+    return nextStateButton;
+}
+
+function createRestartButton() {
+    let restartButton = document.createElement('button');
+    restartButton.id = 'restartButton';
+    restartButton.textContent = 'Сброс этапа';
+    restartButton.addEventListener('click', () => currentGameSession.restart());
+    restartButton.classList.add('game-menu-button');
+    return restartButton;
+}
+
+function createFinishButton() {
+    let finishButton = document.createElement('button');
+    finishButton.id = 'finishButton';
+    finishButton.textContent = 'Выход';
+    finishButton.addEventListener('click', () => {
+        createResultScreen(...finishSession());
+    });
+    finishButton.classList.add('game-menu-button');
+    return finishButton;
+}
+
+function createGameInfoContainer(scoreContainer, timerContainer) {
+    let gameInfoContainer = document.createElement('div');
+    gameInfoContainer.id = 'gameInfoContainer';
+    gameInfoContainer.append(scoreContainer, timerContainer);
+    return gameInfoContainer;
+}
+
+function createModeInfoContainer(mode) {
+    let modeInfoContainer = document.createElement('div');
+    modeInfoContainer.id = 'modeInfoContainer';
+    let modeInfo = document.createElement('h1');
+    modeInfo.id = 'modeInfo';
+    switch (mode) {
+        case 'classic':
+            modeInfo.textContent = 'Ошибок: 0'
+            break;
+
+        case 'arcade':
+            modeInfo.textContent = `Время: ${ArcadeGameTime}`;
+            break;
+
+        case 'infinite':
+            modeInfo.textContent = `Время: 0`;
+            break;
+    } 
+    modeInfoContainer.append(modeInfo);
+    return modeInfoContainer;
+}
+
+function createGameContainer() {
+    let gameContainer = document.createElement('div');
+    gameContainer.id = 'gameContainer';
+    return gameContainer;
+}
+
+function createOrderContainer() {
+    let orderContainer = document.createElement('div');
+    orderContainer.id = 'orderContainer';
+    let orderText = document.createElement('h1');
+    orderText.id = 'orderText';
+    orderContainer.append(orderText);
+    return orderContainer;
+}
+
+
 
 function finishSession() {
     clearInterval(gameTimer);
@@ -262,9 +277,16 @@ function finishSession() {
         currentGameSession = undefined;
         createResultScreen(currentGameMode, gameScore, totalOrders, correctOrders);
     }, 500);
-    
-    //startButton = createStartButton();
-    //navBarContainer.append(startButton);
+}
+
+function createScoreContainer() {
+    let scoreContainer = document.createElement('div');
+    scoreContainer.id = 'scoreContainer';
+    let scoreText = document.createElement('h1');
+    scoreText.id = 'scoreText';
+    scoreText.textContent = 'Очки: ' + 0;
+    scoreContainer.append(scoreText);
+    return scoreContainer; // todo: return method for setting score?
 }
 
 function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
