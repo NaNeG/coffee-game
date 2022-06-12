@@ -60,8 +60,15 @@ export const VolumeTranslation = {
     'large': 'большой'
 }
 
+export const GameModes = {
+    'classic': 'Классика',
+    'arcade': 'Аркада',
+    'infinite': 'Бесконечный',
+}
 
 export const FullScore = 1000;
+
+export const ArcadeGameTime = 120;
 
 export const TabIndexOffsets = {
     navBar: 1,

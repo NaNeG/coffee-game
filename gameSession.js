@@ -1,6 +1,6 @@
 import { Order } from "./gameElements.js";
 import { FillState, MixState, PourState, FinalState } from "./gameStates.js";
-import { equalArrays, getRandomInt, setRandomInterval, Volumes, VolumeTranslation } from "./helpers.js";
+import { equalArrays, getRandomInt, setRandomInterval, Volumes, VolumeTranslation, ArcadeGameTime } from "./helpers.js";
 import { Recipes } from "./recipes.js";
 
 export class GameSession {
@@ -8,21 +8,49 @@ export class GameSession {
     score = 0;
     streak = 0;
 
-    constructor(playerId, gameTime) {
+    constructor(playerId, mode) {
         this.playerId = playerId;
         this.gameState = new FillState(this.orders, this.streak); 
-        this.gameTime = gameTime;
+        this.mode = mode;
         this.totalOrders = 0;
         this.correctOrders = 0;
+        switch (mode) {
+            case 'classic':
+                this.updateMistakeCounter();
+                break;
+
+            case 'arcade':
+                this.gameTime = ArcadeGameTime;
+                this.updateArcadeTimer();
+                break;
+
+            case 'infinite':
+                this.gameTime = 0;
+                this.updateInfiniteTimer();
+                break;
+        } 
         this.createOrder();
         this.orderCreator = setRandomInterval(() => { 
             this.createOrder();
-        }, 10000, 15000);
-        this.updateTimer();
+        }, 5000, 15000);
+        
     }
 
-    updateTimer() {
-        let timer = document.getElementById('timer');
+    updateMistakeCounter() {
+        let mistakeCounter = document.getElementById('modeInfo');
+        mistakeCounter.textContent = `Ошибок: ${this.totalOrders - this.correctOrders}`;
+    }
+
+    updateInfiniteTimer() {
+        let timer = document.getElementById('modeInfo');
+        this.timerUpdater = setInterval(() => {
+            this.gameTime += 1;
+            timer.textContent = 'Время: ' + this.gameTime;
+        }, 1000);
+    }
+
+    updateArcadeTimer() {
+        let timer = document.getElementById('modeInfo');
         this.timerUpdater = setInterval(() => {
             this.gameTime -= 1;
             timer.textContent = 'Время: ' + this.gameTime;
@@ -72,6 +100,9 @@ export class GameSession {
                     this.streak = 0;
                 } 
                 this.totalOrders++;
+                if (this.mode == 'classic') {
+                    this.updateMistakeCounter();
+                }
                 let scoreText = document.getElementById('scoreText');
                 scoreText.textContent = 'Очки: ' + this.score;
             }

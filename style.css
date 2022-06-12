@@ -93,6 +93,16 @@ body {
   background: rgba(23, 189, 97, 0.7);
 }
 
+.start-menu-button {
+  border: 0;
+  width: 20%;
+  height: 10%;
+  border-radius: 50px;
+  font-family: 'TTSkip';
+  font-size: 24px;
+  z-index: 10;
+  margin: 2%;
+}
 
 .nav-bar-button {
   background: transparent;
@@ -272,6 +282,53 @@ body {
   animation-fill-mode: forwards;
 }
 
+.start-screen-animation {
+  animation: screen-pulse 0.75s cubic-bezier(.24,.08,.91,-0.21);
+  animation-fill-mode: forwards;
+}
+
+.result-screen-animation {
+  animation: screen-pulse 0.75s cubic-bezier(.24,.08,.91,-0.21);
+  animation-fill-mode: backwards;
+  animation-direction: reverse;
+}
+
+.start-button-animation {
+  animation: transparency-out 0.3s ease-in;
+  animation-fill-mode: forwards;
+}
+
+.game-elements-fade-in {
+  animation: transparency-in 0.5s ease-in;
+  animation-fill-mode: forwards;
+}
+
+.game-elements-fade-out {
+  animation: transparency-out 0.5s ease-in;
+  animation-fill-mode: forwards;
+}
+
+.start-screen-ripple {
+  position: absolute;
+  width: 200vw;
+  height: 200vw;
+  transform: scale(0);
+  display: block;
+  border-radius: 100%;
+  background: white;
+}
+
+.result-screen-ripple {
+  position: absolute;
+  width: 200vw;
+  height: 200vw;
+  transform: scale(0);
+  display: block;
+  border-radius: 100%;
+  background: white;
+  z-index: 100;
+}
+
 .cup {
   position: relative;
   height: 350px;
@@ -389,6 +446,12 @@ body {
   margin-left: auto;
 }
 
+#startButton {
+  
+}
+
+
+
 #gameInfoContainer {
   display: flex;
   justify-content: center;
@@ -405,7 +468,7 @@ body {
   width: fit-content;
 }
 
-#timerContainer {
+#modeInfoContainer {
   width: fit-content;
 }
 
@@ -423,6 +486,23 @@ body {
   z-index: 100;
 }
 
+#startScreenContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background: blue;
+  overflow: scroll;
+  position: absolute;
+}
+
+#startScreenTitle {
+
+}
+
+
 #menuContainer {
   display: flex;
   width: 100%;
@@ -436,13 +516,15 @@ body {
 
 #resultScoreContainer {
   display: flex;
-  height: 100%;
+  height: fit-content;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 #resultsScreenContainer {
-  height: 100%;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
 }
 
 @keyframes fill-percentage {
@@ -487,6 +569,34 @@ body {
 
   100% {
     background: linear-gradient(90deg, rgba(255,255,255,1) 15%, rgba(175,160,148,1) 50%, rgba(255,255,255,1) 85%);
+  }
+}
+
+@keyframes screen-pulse {
+
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes transparency-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes transparency-out {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
   }
 }
 

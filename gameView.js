@@ -2,9 +2,7 @@ import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js'
 import { Recipes } from "./recipes.js";
 import { leaderboardDB } from "./leaderboardApi.js";
-import { ComponentTranslation, TabIndexOffsets } from "./helpers.js";
-
-const GameTime = 6000;
+import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets } from "./helpers.js";
 
 let currentGameSession;
 let gameTimer;
@@ -14,15 +12,15 @@ const overlayNode = document.querySelector('.overlay');
 const recipesTable = document.querySelector('.recipes').firstElementChild;
 const leaderboardTable = document.querySelector('.leaderboard').firstElementChild;
 
-let startButton = createStartButton();
+//let startButton = createStartButton();
 
-let navBarContainer = document.createElement('div');
-navBarContainer.id = 'navBarContainer';
+// let navBarContainer = document.createElement('div');
+// navBarContainer.id = 'navBarContainer';
 
-navBarContainer.append(startButton);
-startButton.tabIndex = TabIndexOffsets.navBar;
+// navBarContainer.append(startButton);
+// startButton.tabIndex = TabIndexOffsets.navBar;
 
-scriptNode.before(navBarContainer);
+createStartScreen();
 
 // let recipesButton = createRecipesButton();
 
@@ -48,13 +46,66 @@ for (let {name, components} of Object.values(Recipes)) {
     row.insertCell().textContent = components.map(x => ComponentTranslation[x]).join(', ');
 }
 
-function createStartButton() {
+function createStartButton(container) {
     let startButton = document.createElement('button');
     startButton.id = 'startButton';
     startButton.textContent = 'Start';
-    startButton.classList.add('nav-bar-button');
-    startButton.addEventListener('click', () => initGame());
+    startButton.classList.add('start-menu-button');
+    startButton.addEventListener('click', () => {
+        createModeButtons(container);
+        startButton.remove();
+    });
     return startButton;
+}
+
+function createModeButtons(container) {
+    for (let mode of Object.keys(GameModes)) {
+        let modeButton = document.createElement('button');
+        modeButton.id = mode;
+        modeButton.textContent = GameModes[mode];
+        modeButton.classList.add('start-menu-button');
+        modeButton.addEventListener('click', (event) => {
+            hideStartScreen(event);
+            setTimeout(() => initGame(mode), 750)
+        });
+        container.append(modeButton);
+    }
+}
+
+function createStartScreen() {
+    let startScreenContainer = document.createElement('div');
+    startScreenContainer.id = 'startScreenContainer'; 
+    let title = document.createElement('h1');
+    title.id = 'startScreenTitle';
+    title.textContent = 'Coffee-game';
+    let startButton = createStartButton(startScreenContainer);
+    let ripple = document.createElement('div');
+    ripple.classList.add('start-screen-ripple');
+    startScreenContainer.append(title, startButton, ripple);
+    scriptNode.before(startScreenContainer);
+}
+
+function hideStartScreen(event) {
+    let startScreenContainer = document.getElementById('startScreenContainer');
+    let button = event.currentTarget;
+    let ripple = document.querySelector('.start-screen-ripple');
+    let ripplePosition = getRipplePosition(button);
+    console.log(ripplePosition);
+    ripple.style.top = `${ripplePosition[0]}px`;
+    ripple.style.left = `${ripplePosition[1]}px`;
+    ripple.classList.add('start-screen-animation');
+    let menuButtons = document.querySelectorAll('.start-menu-button');
+    for (let button of menuButtons){
+        button.classList.add('start-button-animation');
+    }
+    setTimeout(() => {
+        startScreenContainer.remove();
+    }, 750);
+}
+
+function getRipplePosition(element) {
+    let rect = element.getBoundingClientRect();
+    return [rect.top + (rect.bottom - rect.top) / 2 - window.innerWidth, rect.left + (rect.right - rect.left) / 2 - window.innerWidth];
 }
 
 function createRecipesButton() {
@@ -78,7 +129,7 @@ function createLeaderboardButton() {
     return leaderboardButton;
 }
 
-function initGame() {
+function initGame(mode) {
     if (currentGameSession instanceof GameSession) {
         finishSession();
     }
@@ -86,6 +137,7 @@ function initGame() {
     if (document.getElementById('resultsScreenContainer')) {
         document.getElementById('resultsScreenContainer').remove();
     }
+    
     
     let scoreContainer = document.createElement('div');
     scoreContainer.id = 'scoreContainer';
@@ -103,12 +155,24 @@ function initGame() {
     let gameInfoContainer = document.createElement('div');
     gameInfoContainer.id = 'gameInfoContainer';
 
-    let timerContainer = document.createElement('div');
-    timerContainer.id = 'timerContainer';
-    let timer = document.createElement('h1');
-    timer.id = 'timer';
-    timer.textContent = 'Время: ' + GameTime;
-    timerContainer.append(timer);
+    let modeInfoContainer = document.createElement('div');
+    modeInfoContainer.id = 'modeInfoContainer';
+    let modeInfo = document.createElement('h1');
+    modeInfo.id = 'modeInfo';
+    switch (mode) {
+        case 'classic':
+            modeInfo.textContent = 'Ошибок: 0'
+            break;
+
+        case 'arcade':
+            modeInfo.textContent = `Время: ${ArcadeGameTime}`;
+            break;
+
+        case 'infinite':
+            modeInfo.textContent = `Время: 0`;
+            break;
+    } 
+    modeInfoContainer.append(modeInfo);
 
     let menuContainer = document.createElement('div');
     menuContainer.id = 'menuContainer';
@@ -140,35 +204,70 @@ function initGame() {
         (btn, i) => btn.tabIndex = TabIndexOffsets.menu + i
     );
     menuContainer.append(finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton);
-    gameInfoContainer.append(scoreContainer, timerContainer);
+    gameInfoContainer.append(scoreContainer, modeInfoContainer);
 
     scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
 
+    gameInfoContainer.classList.add('game-elements-fade-in');
+    orderContainer.classList.add('game-elements-fade-in');
+    gameContainer.classList.add('game-elements-fade-in');
+    menuContainer.classList.add('game-elements-fade-in');    
+   
     let orderText = document.createElement('h1');
     orderText.id = 'orderText';
     orderContainer.append(orderText);
 
-    currentGameSession = new GameSession(123, GameTime); 
-    gameTimer = setTimeout(() => {
-        finishSession();
-        console.log('fin');
-    }, GameTime * 1000);
+    currentGameSession = new GameSession(123, mode); //add playerId
+    switch (mode) {
+        case 'classic':
+            gameTimer = setInterval(() => {
+                if (currentGameSession.totalOrders - currentGameSession.correctOrders === 3) {
+                    finishSession();
+                    console.log('fin');
+                }
+            }, 50);
+            break;
+        
+        case 'arcade':
+            gameTimer = setTimeout(() => {
+                finishSession();
+                console.log('fin');
+            }, ArcadeGameTime * 1000);
+            break;
+
+        case 'infinite':
+            break;
+    }
+    
 }
 
 function finishSession() {
-    document.getElementById('gameInfoContainer').remove();
-    document.getElementById('orderContainer').remove();
-    document.getElementById('gameContainer').remove();
-    document.getElementById('menuContainer').remove();
-    let [gameScore, totalOrders, correctOrders] = currentGameSession.finish();
-    clearTimeout(gameTimer);
-    currentGameSession = undefined;
-    createResultScreen(gameScore, totalOrders, correctOrders);
+    clearInterval(gameTimer);
+    let gameInfoContainer = document.getElementById('gameInfoContainer');
+    let orderContainer = document.getElementById('orderContainer');
+    let gameContainer = document.getElementById('gameContainer');
+    let menuContainer = document.getElementById('menuContainer');
+    gameInfoContainer.classList.add('game-elements-fade-out');
+    orderContainer.classList.add('game-elements-fade-out');
+    gameContainer.classList.add('game-elements-fade-out');
+    menuContainer.classList.add('game-elements-fade-out');
+    setTimeout(() => {
+        document.getElementById('gameInfoContainer').remove();
+        document.getElementById('orderContainer').remove();
+        document.getElementById('gameContainer').remove();
+        document.getElementById('menuContainer').remove();
+        let currentGameMode = currentGameSession.mode;
+        let [gameScore, totalOrders, correctOrders] = currentGameSession.finish();
+        clearTimeout(gameTimer);
+        currentGameSession = undefined;
+        createResultScreen(currentGameMode, gameScore, totalOrders, correctOrders);
+    }, 500);
+    
     //startButton = createStartButton();
     //navBarContainer.append(startButton);
 }
 
-function createResultScreen(gameScore, totalOrders, correctOrders) {
+function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
     let resultsScreenContainer = document.createElement('div');
     resultsScreenContainer.id = 'resultsScreenContainer';
 
@@ -182,14 +281,28 @@ function createResultScreen(gameScore, totalOrders, correctOrders) {
     restartButton.textContent = 'Заново';
     restartButton.classList.add('game-menu-button');
 
+    let ripple = document.createElement('div');
+    ripple.classList.add('result-screen-ripple');
+    
     quitButton.addEventListener('click', () => {
-        resultsScreenContainer.remove();
+        let ripplePosition = getRipplePosition(quitButton);
+        ripple.style.top = `${ripplePosition[0]}px`;
+        ripple.style.left = `${ripplePosition[1]}px`;
+        ripple.classList.add('result-screen-animation');
+        // resultScoreContainer.remove();
+        // buttonsContainer.remove();
+        resultsScreenContainer.style.background = 'blue';
         createStartScreen();
+        setTimeout(() => {
+            resultsScreenContainer.remove()
+        }, 750);
+        
     });
 
     restartButton.addEventListener('click', () => {
         resultsScreenContainer.remove();
-        initGame();
+        console.log(gameMode);
+        initGame(gameMode);
     });
 
     let resultScoreContainer =  document.createElement('div');
@@ -215,13 +328,9 @@ function createResultScreen(gameScore, totalOrders, correctOrders) {
 
     buttonsContainer.append(quitButton, restartButton);
 
-    resultsScreenContainer.append(resultScoreContainer, buttonsContainer);
+    resultsScreenContainer.append(resultScoreContainer, buttonsContainer, ripple);
 
     scriptNode.before(resultsScreenContainer);
-}
-
-function createStartScreen() {
-
 }
 
 function hideAllLightboxes() {
