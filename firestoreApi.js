@@ -2,7 +2,6 @@ const base_url = 'https://firestore.googleapis.com/v1/projects/coffee-game-db/da
 
 export async function _create(coll, name, body) {
     const url = `${base_url}/${coll}/${name}`;
-    // return r.patch(url, str(body));
     await fetch(url, {
         method: 'PATCH',
         body: JSON.stringify(body)

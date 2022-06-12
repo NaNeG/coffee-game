@@ -14,38 +14,22 @@ const overlayNode = document.querySelector('.overlay');
 const recipesTable = document.querySelector('.recipes').firstElementChild;
 const leaderboardTable = document.querySelector('.leaderboard').firstElementChild;
 
-let startButton = createStartButton();
-
-let navBarContainer = document.createElement('div');
-navBarContainer.id = 'navBarContainer';
-
-navBarContainer.append(startButton);
-startButton.tabIndex = TabIndexOffsets.navBar;
-
+let navBarContainer = createNavBarContainer();
 scriptNode.before(navBarContainer);
-
-// let recipesButton = createRecipesButton();
-
-// let recipesButtonContainer = document.createElement('div');
-// recipesButtonContainer.id = 'recipesButtonContainer';
-
-// recipesButtonContainer.append(recipesButton);
-
-// scriptNode.before(recipesButtonContainer);
-
-// let leaderboardButton = createLeaderboardButton();
-
-// let leaderboardButtonContainer = document.createElement('div');
-// leaderboardButtonContainer.id = 'leaderboardButtonContainer';
-
-// leaderboardButtonContainer.append(leaderboardButton);
-
-// scriptNode.before(leaderboardButtonContainer);
 
 for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
     row.insertCell().textContent = name + ':';
     row.insertCell().textContent = components.map(x => ComponentTranslation[x]).join(', ');
+}
+
+function createNavBarContainer() {
+    let navBarContainer = document.createElement('div');
+    navBarContainer.id = 'navBarContainer';
+    let startButton = createStartButton();
+    startButton.tabIndex = TabIndexOffsets.navBar;
+    navBarContainer.append(startButton);
+    return navBarContainer;
 }
 
 function createStartButton() {
@@ -83,76 +67,111 @@ function initGame() {
         finishSession();
     }
 
-    if (document.getElementById('resultsScreenContainer')) {
-        document.getElementById('resultsScreenContainer').remove();
-    }
-    
-    let scoreContainer = document.createElement('div');
-    scoreContainer.id = 'scoreContainer';
-    let scoreText = document.createElement('h1');
-    scoreText.id = 'scoreText';
-    scoreText.textContent = 'Очки: ' + 0;
-    scoreContainer.append(scoreText);
+    let timerContainer = createTimerContainer();
+    let scoreContainer = createScoreContainer();
+    let gameInfoContainer = createGameInfoContainer(scoreContainer, timerContainer);
+    // todo: move timer & score containers creation inside?
 
-    let orderContainer = document.createElement('div');
-    orderContainer.id = 'orderContainer';
+    let orderContainer = createOrderContainer();
     
-    let gameContainer = document.createElement('div');
-    gameContainer.id = 'gameContainer';
+    let gameContainer = createGameContainer();
 
+    let finishButton = createFinishButton();
+    let restartButton = createRestartButton();
+    let recipesButton = createRecipesButton();
+    let leaderboardButton = createLeaderboardButton();
+    let nextStateButton = createNextStateButton();
+    let menuContainer = createMenuContainer(finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton);
+    // todo: move buttons creation inside?
+    // todo: redundant css class for button, menu's id is enough?
+
+    scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
+
+    currentGameSession = new GameSession(123, GameTime); 
+    gameTimer = setTimeout(() => {
+        createResultScreen(...finishSession());
+        console.log('fin');
+    }, GameTime * 1000);
+}
+
+function createMenuContainer(...buttons) {
+    let menuContainer = document.createElement('div');
+    menuContainer.id = 'menuContainer';
+
+    buttons.forEach((btn, i) => btn.tabIndex = TabIndexOffsets.menu + i); // todo: move outside?
+    menuContainer.append(...buttons);
+    return menuContainer;
+}
+
+function createNextStateButton() {
+    let nextStateButton = document.createElement('button');
+    nextStateButton.id = 'nextStateButton';
+    nextStateButton.textContent = 'Следующий этап';
+    nextStateButton.addEventListener('click', () => currentGameSession.nextState());
+    nextStateButton.classList.add('game-menu-button');
+    return nextStateButton;
+}
+
+function createRestartButton() {
+    let restartButton = document.createElement('button');
+    restartButton.id = 'restartButton';
+    restartButton.textContent = 'Сброс этапа';
+    restartButton.addEventListener('click', () => currentGameSession.restart());
+    restartButton.classList.add('game-menu-button');
+    return restartButton;
+}
+
+function createFinishButton() {
+    let finishButton = document.createElement('button');
+    finishButton.id = 'finishButton';
+    finishButton.textContent = 'Выход';
+    finishButton.addEventListener('click', () => {
+        createResultScreen(...finishSession());
+    });
+    finishButton.classList.add('game-menu-button');
+    return finishButton;
+}
+
+function createGameInfoContainer(scoreContainer, timerContainer) {
     let gameInfoContainer = document.createElement('div');
     gameInfoContainer.id = 'gameInfoContainer';
+    gameInfoContainer.append(scoreContainer, timerContainer);
+    return gameInfoContainer;
+}
 
+function createTimerContainer() {
     let timerContainer = document.createElement('div');
     timerContainer.id = 'timerContainer';
     let timer = document.createElement('h1');
     timer.id = 'timer';
     timer.textContent = 'Время: ' + GameTime;
     timerContainer.append(timer);
+    return timerContainer; // todo: return method for setting time?
+}
 
-    let menuContainer = document.createElement('div');
-    menuContainer.id = 'menuContainer';
+function createGameContainer() {
+    let gameContainer = document.createElement('div');
+    gameContainer.id = 'gameContainer';
+    return gameContainer;
+}
 
-    let nextStateButton = document.createElement('button');
-    nextStateButton.id = 'nextStateButton';
-    nextStateButton.textContent = 'Следующий этап';
-    nextStateButton.addEventListener('click', () => currentGameSession.nextState());
-    nextStateButton.classList.add('game-menu-button');
-
-    let restartButton = document.createElement('button');
-    restartButton.id = 'restartButton';
-    restartButton.textContent = 'Сброс этапа';
-    restartButton.addEventListener('click', () => currentGameSession.restart());
-    restartButton.classList.add('game-menu-button');
-
-    let finishButton = document.createElement('button');
-    finishButton.id = 'finishButton';
-    finishButton.textContent = 'Выход';
-    finishButton.addEventListener('click', () => {
-        finishSession();
-    });
-    finishButton.classList.add('game-menu-button');
-
-    let recipesButton = createRecipesButton();
-    let leaderboardButton = createLeaderboardButton();
-
-    [finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton].forEach(
-        (btn, i) => btn.tabIndex = TabIndexOffsets.menu + i
-    );
-    menuContainer.append(finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton);
-    gameInfoContainer.append(scoreContainer, timerContainer);
-
-    scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
-
+function createOrderContainer() {
+    let orderContainer = document.createElement('div');
+    orderContainer.id = 'orderContainer';
     let orderText = document.createElement('h1');
     orderText.id = 'orderText';
     orderContainer.append(orderText);
+    return orderContainer;
+}
 
-    currentGameSession = new GameSession(123, GameTime); 
-    gameTimer = setTimeout(() => {
-        finishSession();
-        console.log('fin');
-    }, GameTime * 1000);
+function createScoreContainer() {
+    let scoreContainer = document.createElement('div');
+    scoreContainer.id = 'scoreContainer';
+    let scoreText = document.createElement('h1');
+    scoreText.id = 'scoreText';
+    scoreText.textContent = 'Очки: ' + 0;
+    scoreContainer.append(scoreText);
+    return scoreContainer; // todo: return method for setting score?
 }
 
 function finishSession() {
@@ -163,9 +182,7 @@ function finishSession() {
     let [gameScore, totalOrders, correctOrders] = currentGameSession.finish();
     clearTimeout(gameTimer);
     currentGameSession = undefined;
-    createResultScreen(gameScore, totalOrders, correctOrders);
-    //startButton = createStartButton();
-    //navBarContainer.append(startButton);
+    return [gameScore, totalOrders, correctOrders];
 }
 
 function createResultScreen(gameScore, totalOrders, correctOrders) {

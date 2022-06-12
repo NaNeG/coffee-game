@@ -42,27 +42,27 @@ export class GameSession {
         }
     }
 
-    nextState() {
+    nextState() { // todo: why this.streak everywhere? only FinalState has such parameter
         let cup = this.gameState.cup;
         if (this.gameState instanceof FillState) {
-            this.gameState.handleEvent('dispose');
+            this.gameState.dispose();
             this.gameState = new MixState(this.orders, cup, this.streak);
         } 
         else if (this.gameState instanceof MixState) {
             if (equalArrays(this.gameState.userInputs, this.gameState.requiredInputs)){
                 console.log('correct');
-                this.gameState.handleEvent('dispose');
+                this.gameState.dispose();
                 this.gameState = new PourState(this.orders, cup, this.streak);
             }
             else {
-                this.gameState.handleEvent('restart');  
+                this.gameState.restart();
                 console.log('incorrect');
             }         
         } 
         else if (this.gameState instanceof PourState) {
             if (this.gameState.volume != undefined) {
                 console.log(this.gameState.volume);
-                this.gameState.handleEvent('dispose');
+                this.gameState.dispose();
                 this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume, this.streak);
                 this.score += this.gameState.score;
                 if (this.gameState.score > 0) {
@@ -77,7 +77,7 @@ export class GameSession {
             }
         } 
         else if (this.gameState instanceof FinalState) {
-            this.gameState.handleEvent('dispose');
+            this.gameState.dispose();
             this.gameState = new FillState(this.orders, this.streak);
             if (this.orders.length === 0) {
                 let nextStateButton = document.getElementById('nextStateButton');
@@ -87,7 +87,7 @@ export class GameSession {
     }
 
     restart() {
-        this.gameState.handleEvent('restart');
+        this.gameState.restart();
     }
 
     finish() {

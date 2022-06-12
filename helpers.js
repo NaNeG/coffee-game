@@ -180,40 +180,18 @@ export function convertRGB(colorString)
   return rgbArray;
 }
 
-// function readTextFile(file)
-// {
-//     var rawFile = new XMLHttpRequest();
-//     rawFile.open("GET", file, false);
-//     // rawFile.onreadystatechange = function ()
-//     // {
-//     //     if(rawFile.readyState === 4)
-//     //     {
-//     //         if(rawFile.status === 200 || rawFile.status === 0)
-//     //         {
-//     //             var allText = rawFile.responseText;
-//     //             alert(allText);
-//     //         }
-//     //     }
-//     // }
-//     rawFile.send(null);
-//     return rawFile.responseText;
-// }
+export const componentsColors = {};
 
-// export function* iterFileRows(filepath) {
-//     let file = readTextFile(filepath);
-//     for (let row of file.split('\r\n')) {
-//         yield row;
-//     }
-// }
+if (window.document.styleSheets.length != 1) {
+    throw new Error('Not Implemented');
+}
 
-// export function* iterFileRows(filepath) {
-//     let file = createReadStream(filepath, 'utf-8');
-//     let lines = createInterface({
-//         input: file,
-//         crlfDelay: Infinity
-//     });
-//     for (let line of lines) {
-//         yield line;
-//     }
-//     file.close();
-// }
+const styleSheet = window.document.styleSheets[0];
+
+for (let rule of styleSheet.cssRules) {
+    if (!rule.selectorText || rule.selectorText.length <= 1) continue;
+    let potentialClassName = rule.selectorText.substring(1);
+    if (potentialClassName in Toppings || potentialClassName in Fillings) {
+        componentsColors[potentialClassName] = rule.style.background;
+    }
+} // todo: possibly better to define and set colors in js only
