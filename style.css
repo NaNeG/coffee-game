@@ -7,23 +7,34 @@
   display: none;
 }
 
+::-moz-scrollbar {
+  display: none;
+}
+
+::-ms-scrollbar {
+  display: none;
+}
+
 h1 {
   font-family: 'TTSkip';
   margin: 20px;
+  font-size: 36px;
+  color: #8d726e;
 }
 
 h2 {
   font-family: 'TTSkip';
+  color: #8d726e;
 }
 
 body {
-  background: white;
+  background: #FFFDF0;
   margin: 0;
 }
 
 .container {
-  width: 250px;
-  height: 400px;
+  width: 300px;
+  height: 300px;
 }
 
 .divider {
@@ -39,11 +50,11 @@ body {
 }
 
 .cup-container {
-  margin: 50px;
   display: flex;
   flex-direction: row;
-  --container-bg-color: white;
+  --container-bg-color: #FFFDF0;
   background: var(--container-bg-color);
+  margin: auto 50px;
 }
 
 .filling-menu-container {
@@ -61,7 +72,7 @@ body {
   bottom: 0;
   height: 15%;
   width: 100%;
-  background: linear-gradient(0deg, rgba(255,255,255,1) 20%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(0deg, #FFFDF0 20%, rgba(255,255,255,0) 100%);
   padding: 5px;
   z-index: 50;
   pointer-events: none; 
@@ -77,31 +88,44 @@ body {
   margin: 8px;
   height: 150px;
   width: 130px;
-  background: rgba(124, 120, 117, 0.3);
+  background: white;
   border-radius: 15px;
-  border: 1px solid gray;
+  border: 3px solid #FFD599;
   font-family: 'TTSkip';
   font-size: 20px;
   cursor: pointer;
+  color: #8d726e;
 }
 
 .filling-button:hover {
-  background: rgba(19, 228, 113, 0.7);
+  background: #FFD599;
 }
 
 .filling-button:active {
-  background: rgba(23, 189, 97, 0.7);
+  background: #ffc676;
 }
 
 .start-menu-button {
-  border: 0;
-  width: 20%;
-  height: 10%;
+  width: 300px;
+  height: 8%;
+  background: white;
+  border: 3px solid #ffd599;
   border-radius: 50px;
   font-family: 'TTSkip';
   font-size: 24px;
+  color: #8d726e;
   z-index: 10;
   margin: 2%;
+}
+
+.start-menu-button:hover {
+  background: #ffd599;
+  transition: 0.2s;
+}
+
+.start-menu-button:active {
+  background: #ffc676;
+  transition: 0.2s;
 }
 
 .nav-bar-button {
@@ -121,62 +145,63 @@ body {
 }
 
 .stop-button {
-  background: rgb(254, 241, 214);
-  border: 2px solid rgb(255, 222, 155);
+  background: white;
+  border: 3px solid #ffd599;
   border-radius: 100px;
   cursor: pointer;
   width: 100px;
   height: 100px;
   font-family: 'TTSkip';
   font-size: 24px;
+  color: #8d726e;
 }
 
 .stop-button:hover {
-  background: rgb(224, 211, 186);
+  background: #ffd599;
 }
 
 .stop-button:active {
-  background: rgb(197, 182, 153);
+  background: #ffc676;
 }
 
 .game-menu-button {
-  border: 0px;
-  border-radius: 100px;
-  font-size: 24px;
-  background: rgb(236, 228, 217);
-  cursor: pointer;
-  margin: 15px;
-  padding: 20px 30px;
+  width: 200px;
+  height: 80px;
+  background: white;
+  border: 3px solid #ffd599;
+  border-radius: 50px;
   font-family: 'TTSkip';
+  font-size: 24px;
+  color: #8d726e;
+  margin: 20px;
 }
 
 .game-menu-button:hover {
-  background: rgb(202, 193, 181);
+  background: #ffd599;
 }
 
 .game-menu-button:active {
-  background: rgb(202, 188, 168);
+  background: #ffc676;
 }
 
 .mix-button {
-  background: rgb(254, 241, 214);
-  border: 2px solid rgb(255, 222, 155);
+  background: white;
+  border: 3px solid #FFD599;
   border-radius: 100px;
   cursor: pointer;
 }
 
 .mix-button:hover {
-  background: rgb(224, 211, 186);
+  background: #ffd599;
 }
 
 .mix-button:active, .mix-button.keyboardActive {
-  background: rgb(197, 182, 153);
+  background: #ffc676;
 }
 
 .filling-title-container {
   border-radius: 15px;
-  border: 1px solid brown;
-  background: rgba(145, 98, 67, 0.7);
+  background: #ffd599;
   display: inline-block;
   width: 100%;
   overflow: hidden;
@@ -188,18 +213,57 @@ body {
 }
 
 .filling-bar-container {
+  position: absolute;
+  bottom: 16px;
+  right: 1px;
+  background: white;
   display: flex;
   flex-direction: column-reverse;
-  width: 30%;
-  height: 80%;
-  transform:translate(100%, 10%);
-  border: 5px solid black;
+  width: 100%;
+  height: 68%;
+  box-sizing: border-box;
+  mask: url('img/cupIconMask.png');
+  -webkit-mask: url('img/cupIconMask.png');
+  -moz-mask: url('img/cupIconMask.png');
+  -ms-mask: url('img/cupIconMask.png');
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  -moz-mask-size: 100% 100%;
+  -ms-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  -moz-mask-repeat: no-repeat;
+  -ms-mask-repeat: no-repeat;
+
+}
+
+.mug-filling-bar-container {
+  position: absolute;
+  bottom: 37px;
+  background: white;
+  display: flex;
+  flex-direction: column-reverse;
+  width: 100%;
+  height: 60%;
+  box-sizing: border-box;
+  mask: url('img/mugIconMask.png');
+  -webkit-mask: url('img/mugIconMask.png');
+  -moz-mask: url('img/mugIconMask.png');
+  -ms-mask: url('img/mugIconMask.png');
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  -moz-mask-size: 100% 100%;
+  -ms-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  -moz-mask-repeat: no-repeat;
+  -ms-mask-repeat: no-repeat;
 }
 
 .bar-elements-container {
   display: flex;
   flex-direction: column;
-  
+  justify-content: center;
 }
 
 .pouring-bar-container {
@@ -212,13 +276,14 @@ body {
   border-radius: 15px;
   width: 30px;
   height: 400px;
-  border: 5px solid black;
+  border: 5px solid #63554E;
 }
 
 .pouring-bar {
   width: 100%;
   height: 0%;
-  background: yellow;
+  --background-color: 'yellow';
+  background: var(--background-color);
   z-index: -1;
 }
 
@@ -228,6 +293,7 @@ body {
   grid-template-rows: 1fr 1fr 1fr;
   width: 400px;
   height: 400px;
+  margin: auto 0;
 }
 
 .required-inputs-container {
@@ -237,16 +303,17 @@ body {
   justify-content: center;
   align-items: center;
   align-self: flex-end;
-  background: linear-gradient(90deg, rgba(255,255,255,1) 15%, rgba(175,160,148,1) 50%, rgba(255,255,255,1) 85%);
+  background: linear-gradient(90deg, #FFFDF0 15%, #FFD599 50%, #FFFDF0 85%);
   margin-top: 20px;
 }
 
 .final-info-container {
   display: flex;
   width: fit-content;
-  height: fit-content;
+  height: inherit;
   justify-content: center;
   flex-direction: column;
+  align-items: center;
 }
 
 .filling-bar {
@@ -276,6 +343,7 @@ body {
   justify-content: center;
   align-items: center;
 }
+
 
 .pouring-cup-animation {
   animation: fill-percentage 1s cubic-bezier(0.3, 0.6, 0.6, 0.9);
@@ -330,39 +398,21 @@ body {
 }
 
 .cup {
+  background-image: url('img/cupIcon.svg');
+  background-size: cover;
   position: relative;
-  height: 350px;
-  width: 250px;
+  height: 300px;
+  width: 300px;
   margin: auto;
-  background-color: red;
-  border-radius: 5%;
 }
 
-.handle {
-  position: absolute;
-  height: 200px;
-  width: 120px;
-  top: 70px;
-  left: -120px;
-  border-top-left-radius: 75px 100px;
-  border-bottom-left-radius: 75px 100px;
-  border-top-right-radius: 50% 20px;
-  border-bottom-right-radius: 50% 20px;
-  background-color: red;
-}
-
-.handle:after {
-  content: "";
-  position: absolute;
-  height: 140px;
-  width: 90px;
-  top: 30px;
-  right: 0;
-  border-top-left-radius: 45px 70px;
-  border-bottom-left-radius: 45px 70px;
-  border-top-right-radius: 45px 35px;
-  border-bottom-right-radius: 45px 35px;
-  background: var(--container-bg-color);
+.mug {
+  background-image: url('img/mugIcon.svg');
+  background-size: cover;
+  position: relative;
+  height: 300px;
+  width: 300px;
+  margin: auto;
 }
 
 .tea {
@@ -402,7 +452,7 @@ body {
 }
 
 .green-tint {
-  background: linear-gradient(0deg, rgba(90,255,123,1) 0%, rgba(255,255,255,0) 25%);
+  background: linear-gradient(0deg, rgb(0, 247, 49) 0%, rgba(255,255,255,0) 25%);
 }
 
 .red-tint {
@@ -454,7 +504,7 @@ body {
 
 #gameInfoContainer {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   width: 100%;
 }
 
@@ -493,13 +543,13 @@ body {
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  background: blue;
+  background-image: url('img/mainBg.svg');
   overflow: scroll;
   position: absolute;
 }
 
 #startScreenTitle {
-
+  color: #8d726e;
 }
 
 
@@ -510,8 +560,8 @@ body {
   padding: 0 50px 0 50px;
   background: transparent;
   box-sizing: border-box;
-  bottom: 0px;
   flex-wrap: wrap;
+  margin: auto 0;
 }
 
 #resultScoreContainer {
@@ -519,12 +569,16 @@ body {
   height: fit-content;
   justify-content: center;
   flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  height: 50%;
 }
 
 #resultsScreenContainer {
   position: absolute;
-  height: 100vh;
-  width: 100vw;
+  padding-top: 100px;
+  width: 100%;
+  height: 100%;
 }
 
 @keyframes fill-percentage {
@@ -560,15 +614,15 @@ body {
 
 @keyframes flash-background {
   0% {
-    background: linear-gradient(90deg, rgba(255,255,255,1) 15%, rgba(175,160,148,1) 50%, rgba(255,255,255,1) 85%);
+    background: linear-gradient(90deg, #FFFDF0 15%, #FFD599 50%, #FFFDF0 85%);
   }
 
   50%{
-    background: linear-gradient(90deg, rgba(255,255,255,1) 15%, rgba(255,48,48,1) 50%, rgba(255,255,255,1) 85%);
+    background: linear-gradient(90deg, #FFFDF0 15%, rgb(255, 48, 48) 50%, #FFFDF0 85%);
   }
 
   100% {
-    background: linear-gradient(90deg, rgba(255,255,255,1) 15%, rgba(175,160,148,1) 50%, rgba(255,255,255,1) 85%);
+    background: linear-gradient(90deg, #FFFDF0 15%, #FFD599 50%, #FFFDF0 85%);
   }
 }
 

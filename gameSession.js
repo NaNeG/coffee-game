@@ -66,7 +66,7 @@ export class GameSession {
         console.log(recipe.components, recipe.name, volume);
         let orderText = document.getElementById('orderText');
         if (orderText.textContent == '') {
-            orderText.textContent = 'Следующий заказ: ' + this.orders[0].name + ' ' + VolumeTranslation[this.orders[0].volume];
+            orderText.textContent = 'Заказ: ' + this.orders[0].name + ' ' + VolumeTranslation[this.orders[0].volume];
         }
     }
 

@@ -39,14 +39,23 @@ class FillState extends State {
         let toppingTitleContainer = this._createToppingTitleContainer();
         let toppingsContainer = this._createToppingsContainer();
 
-        let fillingMenuButtons = document.createElement('div'); // todo: unused
-
         let fillingMenuDimming = document.createElement('div');
         fillingMenuDimming.classList.add('filling-menu-dimming');
 
         let fillingMenuContainer = document.createElement('div');
         fillingMenuContainer.classList.add('filling-menu-container');
-        fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, toppingTitleContainer, toppingsContainer, fillingMenuDimming);
+
+        let toppingMenuContainer = document.createElement('div');
+            toppingMenuContainer.classList.add('filling-menu-container');
+
+        if (window.matchMedia("(min-width: 1251px)").matches) {
+            fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, fillingMenuDimming);
+            toppingMenuContainer.append(toppingTitleContainer, toppingsContainer, fillingMenuDimming);
+            this.gameContainer.style.flexWrap = 'nowrap';
+        } else {
+            fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, toppingTitleContainer, toppingsContainer, fillingMenuDimming);
+            this.gameContainer.style.flexWrap = 'wrap';
+        }
 
         this.cup = new Cup(cupContainer);
         let offset = TabIndexOffsets.game;
@@ -62,8 +71,13 @@ class FillState extends State {
             toppingsContainer.append(button);
             offset++;
         }
-        
-        this.gameContainer.replaceChildren(cupContainer, fillingMenuContainer);
+
+        if (window.matchMedia("(min-width: 1251px)").matches) {
+            this.gameContainer.replaceChildren(fillingMenuContainer, cupContainer, toppingMenuContainer);
+        } else {
+            this.gameContainer.replaceChildren(cupContainer, fillingMenuContainer);
+        }
+
     }
 
     _createIngredientButton(engName, translation) {
@@ -157,6 +171,7 @@ class MixState extends State {
         );
         mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
         
+        this.gameContainer.style.flexWrap = 'wrap';
         this.gameContainer.replaceChildren(cupContainer, mixButtonsContainer, requiredInputsContainer);
         this.cup.changeContainer(cupContainer);
         this.cup.draw();
@@ -285,11 +300,11 @@ class PourState extends State {
 
         let pouringCupContainer = document.createElement('div');
         pouringCupContainer.id = 'pouringCupContainer';
-        pouringCupContainer.classList.add('cup-container');
+        pouringCupContainer.classList.add('container', 'cup-container');
 
         this.pouringCup = new Drink(pouringCupContainer);
 
-        this.pouringBar = new PouringBar(pouringBarContainer);
+        this.pouringBar = new PouringBar(pouringBarContainer, this._mixColor);
         
         let stopButton = this._createStopButton();
 
@@ -410,21 +425,21 @@ class FinalState extends State {
             if (this.orders.length === 0) {
                 orderText.textContent = ''; // todo: why empty?
             } else {
-                orderText.textContent = `Следующий заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
+                orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
             }
         } else {
             this.streak = 0;
         }
 
-        scoreText.textContent = `Ваш счет: ${this.score}`;
+        scoreText.textContent = `Очки за заказ: ${this.score}`;
         streakText.textContent = `Серия: ${this.streak}`;
 
         scoreContainer.append(scoreText, streakText);
 
-        componentsEqualityContainer.append(addedComponentsText, requiredComponentsText, componentDifferenceText);
-        volumesEqualityContainer.append(addedVolumeText, requiredVolumeText);
+        // componentsEqualityContainer.append(addedComponentsText, requiredComponentsText, componentDifferenceText);
+        // volumesEqualityContainer.append(addedVolumeText, requiredVolumeText);
 
-        this.gameContainer.append(scoreContainer, componentsEqualityContainer, volumesEqualityContainer);
+        this.gameContainer.append(scoreContainer);
     }
 
     restart() {

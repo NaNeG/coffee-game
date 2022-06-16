@@ -59,7 +59,7 @@ function createStartScreen() {
     startScreenContainer.id = 'startScreenContainer'; 
     let title = document.createElement('h1');
     title.id = 'startScreenTitle';
-    title.textContent = 'Coffee-game';
+    title.textContent = 'Cofea';
     let startButton = createStartButton(startScreenContainer);
     let ripple = document.createElement('div');
     ripple.classList.add('start-screen-ripple');
@@ -184,7 +184,7 @@ function createMenuContainer(...buttons) {
 function createNextStateButton() {
     let nextStateButton = document.createElement('button');
     nextStateButton.id = 'nextStateButton';
-    nextStateButton.textContent = 'Следующий этап';
+    nextStateButton.textContent = 'Готово!';
     nextStateButton.addEventListener('click', () => currentGameSession.nextState());
     nextStateButton.classList.add('game-menu-button');
     return nextStateButton;
@@ -204,7 +204,7 @@ function createFinishButton() {
     finishButton.id = 'finishButton';
     finishButton.textContent = 'Выход';
     finishButton.addEventListener('click', () => {
-        createResultScreen(...finishSession());
+        finishSession();
     });
     finishButton.classList.add('game-menu-button');
     return finishButton;
@@ -313,7 +313,7 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
         ripple.classList.add('result-screen-animation');
         // resultScoreContainer.remove();
         // buttonsContainer.remove();
-        resultsScreenContainer.style.background = 'blue';
+        resultsScreenContainer.style.background = '#FFFDF0';
         createStartScreen();
         setTimeout(() => {
             resultsScreenContainer.remove()
@@ -341,9 +341,9 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
 
     let correctOrdersText = document.createElement('h1');
     if (totalOrders > 0) {
-        correctOrdersText.textContent = `Процент успеха: ${(correctOrders / totalOrders).toFixed(2) * 100}`;
+        correctOrdersText.textContent = `Процент успеха: ${(correctOrders / totalOrders).toFixed(2) * 100}%`;
     } else {
-        correctOrdersText.textContent = `Процент успеха: 0`;
+        correctOrdersText.textContent = `Процент успеха: 0%`;
     }
     
     resultScoreContainer.append(scoreText, orderCount, correctOrdersText);

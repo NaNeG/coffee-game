@@ -137,29 +137,27 @@ class Drink extends Drawable {
 
     draw() {
         let cupBody = document.createElement('div');
-        let handle = document.createElement('div');
         let pouringFillBarContainer = document.createElement('div');
         pouringFillBarContainer.id = 'pouringFillBarContainer';
-        pouringFillBarContainer.classList.add('filling-bar-container');
-        cupBody.classList.add('cup');
-        handle.classList.add('handle');
-        cupBody.append(handle);
+        pouringFillBarContainer.classList.add('mug-filling-bar-container');
+        cupBody.classList.add('mug');
         cupBody.append(pouringFillBarContainer);
         this.container.append(cupBody);
     }
 }
 
 class PouringBar extends Drawable {
-    constructor(container) {
+    constructor(container, barColor) {
         super(container);
         this.progress = 0;
-        this.draw();
+        this.draw(barColor);
     }
 
-    draw() {
+    draw(barColor) {
         let oppositeDirection = false;
         let pouringBar = document.createElement('div');
         pouringBar.classList.add('pouring-bar');
+        pouringBar.style.setProperty('--background-color', `rgb(${barColor[0]}, ${barColor[1]}, ${barColor[2]})`);
         this.container.append(pouringBar);
         
         this.interval = setInterval(() => {
