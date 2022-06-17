@@ -58,7 +58,7 @@ export class GameSession {
     }
 
     createOrder() {
-        let recipe = Recipes[getRandomInt(4)];
+        let recipe = Recipes[getRandomInt(21)];
         let volume = Volumes[getRandomInt(3)];
         let nextStateButton = document.getElementById('nextStateButton');
         nextStateButton.disabled = false;

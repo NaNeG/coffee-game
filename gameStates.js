@@ -42,6 +42,9 @@ class FillState extends State {
         let fillingMenuDimming = document.createElement('div');
         fillingMenuDimming.classList.add('filling-menu-dimming');
 
+        let toppingMenuDimming = document.createElement('div');
+        toppingMenuDimming.classList.add('filling-menu-dimming');
+
         let fillingMenuContainer = document.createElement('div');
         fillingMenuContainer.classList.add('filling-menu-container');
 
@@ -50,7 +53,7 @@ class FillState extends State {
 
         if (window.matchMedia("(min-width: 1251px)").matches) {
             fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, fillingMenuDimming);
-            toppingMenuContainer.append(toppingTitleContainer, toppingsContainer, fillingMenuDimming);
+            toppingMenuContainer.append(toppingTitleContainer, toppingsContainer, toppingMenuDimming);
             this.gameContainer.style.flexWrap = 'nowrap';
         } else {
             fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, toppingTitleContainer, toppingsContainer, fillingMenuDimming);
