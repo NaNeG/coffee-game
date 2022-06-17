@@ -37,12 +37,20 @@ export class database {
             return (await docs.json())['documents'].map(d => _lb_clear(d, _extr_name(d)));
         }
         const doc = await _get(this._coll_name, id);
-        return _lb_clear(await doc.json());
+        const docJson = await doc.json();
+        if ('error' in docJson) {
+            throw new Error("Document doesn't exist"); // todo: different Error type?
+        }
+        return _lb_clear(docJson);
     }
 
     async getAll(count = Infinity, ascending = null) {
         const docs = await _getAll(this._coll_name, count, ascending);
-        return Array.prototype.map.call((await docs.json())['documents'], d => _lb_clear(d, _extr_name(d)));
+        const docsJson = await docs.json();
+        if (!('documents' in docsJson)) {
+            throw new Error("Collection doesn't exist");
+        }
+        return Array.prototype.map.call(docsJson['documents'], d => _lb_clear(d, _extr_name(d)));
     }
     
     del(id) {
