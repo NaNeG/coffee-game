@@ -17,31 +17,37 @@ function _lb_clear(doc, id=null) {
 
 const _lb_coll = 'leaderboard';
 
-export const leaderboardDB = {
-    create: function (id, body) {
-        return _create(_lb_coll, id, _lb_dirt(body));
-    },
+export class database {
+    constructor(coll_name) {
+        this._coll_name = coll_name;
+    }
 
-    update: function (id, body) {
-        return _update(_lb_coll, id, _lb_dirt(body));
-    },
+    create(id, body) {
+        return _create(this._coll_name, id, _lb_dirt(body));
+    }
 
-    get: async function (id = null) {
+    update(id, body) {
+        return _update(this._coll_name, id, _lb_dirt(body));
+    }
+
+    async get(id = null) {
         if (id === null) {
             1/0;
-            const docs = await _get(_lb_coll);
+            const docs = await _get(this._coll_name);
             return (await docs.json())['documents'].map(d => _lb_clear(d, _extr_name(d)));
         }
-        const doc = await _get(_lb_coll, id);
+        const doc = await _get(this._coll_name, id);
         return _lb_clear(await doc.json());
-    },
+    }
 
-    getAll: async function (count = Infinity, ascending = null) {
-        const docs = await _getAll(_lb_coll, count, ascending);
+    async getAll(count = Infinity, ascending = null) {
+        const docs = await _getAll(this._coll_name, count, ascending);
         return Array.prototype.map.call((await docs.json())['documents'], d => _lb_clear(d, _extr_name(d)));
-    },
+    }
     
-    del: function (id) {
-        return _delete(_lb_coll, id);
+    del(id) {
+        return _delete(this._coll_name, id);
     }
 }
+
+export const leaderboardDB = new database(_lb_coll);
