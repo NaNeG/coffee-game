@@ -12,14 +12,6 @@ const overlayNode = document.querySelector('.overlay');
 const recipesTable = document.querySelector('.recipes').firstElementChild;
 const leaderboardTable = document.querySelector('.leaderboard').firstElementChild;
 
-//let startButton = createStartButton();
-
-// let navBarContainer = document.createElement('div');
-// navBarContainer.id = 'navBarContainer';
-
-// navBarContainer.append(startButton);
-// startButton.tabIndex = TabIndexOffsets.navBar;
-
 createStartScreen();
 
 for (let {name, components} of Object.values(Recipes)) {
@@ -36,6 +28,7 @@ function createStartButton(container) {
     startButton.addEventListener('click', () => {
         createModeButtons(container);
         startButton.remove();
+        document.getElementById('leaderboardButton').remove();
     });
     return startButton;
 }
@@ -61,9 +54,10 @@ function createStartScreen() {
     title.id = 'startScreenTitle';
     title.textContent = 'Cofea';
     let startButton = createStartButton(startScreenContainer);
+    let leaderboardButton = createLeaderboardButton();
     let ripple = document.createElement('div');
     ripple.classList.add('start-screen-ripple');
-    startScreenContainer.append(title, startButton, ripple);
+    startScreenContainer.append(title, startButton, leaderboardButton, ripple);
     scriptNode.before(startScreenContainer);
 }
 
@@ -107,7 +101,7 @@ function createLeaderboardButton() {
         leaderboardButton.disabled = true;
         showLeaderboard(5).then(() => leaderboardButton.disabled = false);
     });
-    leaderboardButton.classList.add('game-menu-button');
+    leaderboardButton.classList.add('start-menu-button');
     return leaderboardButton;
 }
 
@@ -128,16 +122,15 @@ function initGame(mode) {
     let finishButton = createFinishButton();
     let restartButton = createRestartButton();
     let recipesButton = createRecipesButton();
-    let leaderboardButton = createLeaderboardButton();
     let nextStateButton = createNextStateButton();
-    let menuContainer = createMenuContainer(finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton);
+    let menuContainer = createMenuContainer(finishButton, restartButton, recipesButton, nextStateButton);
     // todo: move buttons creation inside?
     // todo: redundant css class for button, menu's id is enough?
 
-    [finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton].forEach(
+    [finishButton, restartButton, recipesButton, nextStateButton].forEach(
         (btn, i) => btn.tabIndex = TabIndexOffsets.menu + i
     );
-    menuContainer.append(finishButton, restartButton, recipesButton, leaderboardButton, nextStateButton);
+    menuContainer.append(finishButton, restartButton, recipesButton, nextStateButton);
     gameInfoContainer.append(scoreContainer, modeInfoContainer);
 
     scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);

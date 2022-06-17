@@ -33,7 +33,7 @@ export const Fillings = {
 
 export const Toppings = {
     'milk': 'Молоко',
-    'cocoa': 'Какао',
+    'chocolate': 'Шоколад',
     'fizzy-water': 'Газировка',
     'caramel': 'Карамель',
     'lemon': 'Лемон',
@@ -47,7 +47,7 @@ export const IsFilling = {
     'coffee': true,
     'juice': true,
     'milk': false,
-    'cocoa': false,
+    'chocolate': false,
     'fizzy-water': false,
     'caramel': false,
     'lemon': false,
