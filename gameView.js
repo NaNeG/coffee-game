@@ -349,15 +349,16 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
 }
 
 function hideAllLightboxes() {
-    document.querySelector('.overlay').style.display = 'none';
+    document.querySelector('.lightboxes').style.display = 'none';
     document.querySelectorAll('.lightbox').forEach(x => x.hidden = true);
 }
 overlayNode.addEventListener('click', hideAllLightboxes);
 
 function showLightBox(className) {
     hideAllLightboxes();
-    document.querySelector('.overlay').style.display = 'flex';
-    document.querySelector('.overlay ' + className).hidden = false;
+    document.querySelector('.overlay').style.display = 'block';
+    document.querySelector('.lightboxes').style.display = 'flex';
+    document.querySelector('.lightboxes ' + className).hidden = false;
 }
 
 async function showLeaderboard(count = Infinity) {
