@@ -23,7 +23,7 @@ for (let {name, components} of Object.values(Recipes)) {
 function createStartButton(container) {
     let startButton = document.createElement('button');
     startButton.id = 'startButton';
-    startButton.textContent = 'Start';
+    startButton.textContent = 'Старт';
     startButton.classList.add('start-menu-button');
     startButton.addEventListener('click', () => {
         createModeButtons(container);
@@ -177,7 +177,7 @@ function createMenuContainer(...buttons) {
 function createNextStateButton() {
     let nextStateButton = document.createElement('button');
     nextStateButton.id = 'nextStateButton';
-    nextStateButton.textContent = 'Готово!';
+    nextStateButton.textContent = 'Далее';
     nextStateButton.addEventListener('click', () => currentGameSession.nextState());
     nextStateButton.classList.add('game-menu-button');
     return nextStateButton;
