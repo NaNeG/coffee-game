@@ -154,7 +154,7 @@ class MixState extends State {
 
         this.requiredInputs = [];
 
-        for (let i = 0; i < 3 + getRandomInt(3); i++) {
+        for (let i = 0; i < 3 + getRandomInt(3); i++) { // todo: remove magic constants
             let direction = getRandomInt(4);
             this.requiredInputs.push(Inputs[direction]);
             let arrowImage = document.createElement('img');
@@ -207,16 +207,21 @@ class MixState extends State {
         let mixButton = document.createElement('button');
         mixButton.id = dirName + 'MixButton';
         mixButton.classList.add('mix-button');
-        mixButton.addEventListener('click', () => {
-            this.userInputs.push(dirName);
-            this.compareMixInput();
-        });
+        mixButton.addEventListener('click', () => this._onMixButtonClick(dirName));
         let img = document.createElement('img');
         img.src = `img/${dirName}.png`;
         img.height = '100';
         mixButton.append(img);
         this._buttons[dirName] = mixButton;
         return mixButton;
+    }
+
+    _onMixButtonClick(dirName) {
+        if (this.userInputs.length >= this.requiredInputs.length) {
+            return;
+        }
+        this.userInputs.push(dirName);
+        this.compareMixInput();
     }
 
     restart() {
@@ -240,7 +245,7 @@ class MixState extends State {
     _onKeyDownEvent = (event) => {
         if (!(event.key in MixState.keyNameToDirectionName)) return;
         let dirName = MixState.keyNameToDirectionName[event.key];
-        this.userInputs.push(dirName);
+        this._onMixButtonClick(dirName);
         this._buttons[dirName].classList.add('keyboardActive');
     }
 
@@ -261,7 +266,7 @@ class MixState extends State {
     }
 
     compareMixInput() {
-        let elementOrder = this.userInputs.length - 1;
+        let elementOrder = this.userInputs.length - 1; // cannot be more than this.requiredIputs.length
         let arrowObject = document.querySelector(`#requiredInputsContainer :nth-child(${elementOrder + 1})`);
         console.log(arrowObject);
         if (this.requiredInputs[elementOrder] == this.userInputs[elementOrder]) {
@@ -274,7 +279,6 @@ class MixState extends State {
     resetInputs() {
         for (let i = 1; i <= this.userInputs.length; i++) {
             let arrowObject = document.querySelector(`#requiredInputsContainer :nth-child(${i})`);
-            // todo: userInputs.length > number of children in requiredInputsContainer causes bug
             arrowObject.classList.remove(...arrowObject.classList);
         }
         let requiredInputsContainer = document.getElementById('requiredInputsContainer');
