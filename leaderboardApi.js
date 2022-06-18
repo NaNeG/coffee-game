@@ -1,4 +1,5 @@
 import { _create, _update, _delete, _get, _getAll } from "./firestoreApi.js";
+import { GameModes } from "./helpers.js";
 
 function _extr_name(doc) {
     const name = doc['name'];
@@ -15,28 +16,26 @@ function _lb_clear(doc, id=null) {
     return cleared;
 }
 
-const _lb_coll = 'leaderboard';
-
-export class database {
+export class Database {
     constructor(coll_name) {
-        this._coll_name = coll_name;
+        this.collection_name = coll_name;
     }
 
     create(id, body) {
-        return _create(this._coll_name, id, _lb_dirt(body));
+        return _create(this.collection_name, id, _lb_dirt(body));
     }
 
     update(id, body) {
-        return _update(this._coll_name, id, _lb_dirt(body));
+        return _update(this.collection_name, id, _lb_dirt(body));
     }
 
     async get(id = null) {
         if (id === null) {
             1/0;
-            const docs = await _get(this._coll_name);
+            const docs = await _get(this.collection_name);
             return (await docs.json())['documents'].map(d => _lb_clear(d, _extr_name(d)));
         }
-        const doc = await _get(this._coll_name, id);
+        const doc = await _get(this.collection_name, id);
         const docJson = await doc.json();
         if ('error' in docJson) {
             throw new Error("Document doesn't exist"); // todo: different Error type?
@@ -45,7 +44,7 @@ export class database {
     }
 
     async getAll(count = Infinity, ascending = null) {
-        const docs = await _getAll(this._coll_name, count, ascending);
+        const docs = await _getAll(this.collection_name, count, ascending);
         const docsJson = await docs.json();
         if (!('documents' in docsJson)) {
             throw new Error("Collection doesn't exist");
@@ -54,8 +53,10 @@ export class database {
     }
     
     del(id) {
-        return _delete(this._coll_name, id);
+        return _delete(this.collection_name, id);
     }
 }
 
-export const leaderboardDB = new database(_lb_coll);
+export const leaderboardDBs = Object.fromEntries(
+    Object.keys(GameModes).map(mode => [mode, new Database(mode)])
+);
