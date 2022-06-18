@@ -143,7 +143,6 @@ export class GameSession {
     finish() {
         this.orderCreator.clear();
         clearInterval(this.timerUpdater);
-        return [this.score, this.totalOrders, this.correctOrders];
     }
 }
 
