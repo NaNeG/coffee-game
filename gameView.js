@@ -56,7 +56,7 @@ function createModeButtons(container) {
     backButton.addEventListener('click', () => {
         startScreenContainer.remove();
         createStartScreen();
-    })
+    });
     container.append(backButton);
 }
 

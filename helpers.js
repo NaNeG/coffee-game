@@ -40,8 +40,19 @@ export const Toppings = {
     'mint': 'Мята',
 }
 
+// export const CursedFillings = {
+//     'uranium': 'Уран',
+//     'muc': 'MUC-963',
+//     'nakirium': 'Накириум'
+// }
+
+// export const CursedToppings = {
+//     'y1': 'Y1',
+//     'y2': 'Y2',
+//     'y3': 'Y3'
+// }
 export const CursedFillings = {
-    'uranium': 'Уран',
+    'x1': 'X1',
     'x2': 'X2',
     'x3': 'X3'
 }
