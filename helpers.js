@@ -70,6 +70,8 @@ export const FullScore = 1000;
 
 export const ArcadeGameTime = 120;
 
+export const MaxLeaderboardEntriesCount = 5;
+
 export const TabIndexOffsets = {
     navBar: 1,
     game: 501,

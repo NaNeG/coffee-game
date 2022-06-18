@@ -1,8 +1,10 @@
 import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js'
 import { Recipes } from "./recipes.js";
-import { leaderboardDB } from "./leaderboardApi.js";
-import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets } from "./helpers.js";
+import { leaderboardDBs } from "./leaderboardApi.js";
+import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount } from "./helpers.js";
+
+const firstGameMode = Object.keys(GameModes)[0];
 
 let currentGameSession;
 let gameTimer;
@@ -10,9 +12,12 @@ let gameTimer;
 let scriptNode = document.getElementsByTagName('script')[0];
 const overlayNode = document.querySelector('.overlay');
 const recipesTable = document.querySelector('.recipes').firstElementChild;
-const leaderboardTable = document.querySelector('.leaderboard').firstElementChild;
+const leaderboardLightBox = document.querySelector('.leaderboard');
+const leaderboardTable = leaderboardLightBox.querySelector('table');
+const leaderboardModeSelection = leaderboardLightBox.querySelector('#leaderboard-mode-selection');
 
 createStartScreen();
+addModeSelectionButtonsToLeaderboardLightbox();
 
 for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
@@ -99,7 +104,7 @@ function createLeaderboardButton() {
     leaderboardButton.textContent = 'Таблица лидеров';
     leaderboardButton.addEventListener('click', () => {
         leaderboardButton.disabled = true;
-        showLeaderboard(5).then(() => leaderboardButton.disabled = false);
+        showLeaderboard(currentGameSession?.mode ?? firstGameMode, MaxLeaderboardEntriesCount).then(() => leaderboardButton.disabled = false);
     });
     leaderboardButton.classList.add('start-menu-button');
     return leaderboardButton;
@@ -348,24 +353,32 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
     scriptNode.before(resultsScreenContainer);
 }
 
+function addModeSelectionButtonsToLeaderboardLightbox() {
+    Object.keys(GameModes).forEach(mode => {
+        let btn = document.createElement('button');
+        btn.textContent = mode;
+        btn.addEventListener('click', () => showLeaderboard(mode, MaxLeaderboardEntriesCount))
+        leaderboardModeSelection.appendChild(btn);
+    });
+}
+
 function hideAllLightboxes() {
     document.querySelector('.lightboxes').style.display = 'none';
     document.querySelectorAll('.lightbox').forEach(x => x.hidden = true);
 }
-overlayNode.addEventListener('click', hideAllLightboxes);
+overlayNode.addEventListener('click', hideAllLightboxes); // todo: move up
 
-function showLightBox(className) {
-    hideAllLightboxes();
-    document.querySelector('.overlay').style.display = 'block';
+function showLightBox(className) { // todo: make it not require dot in beginning
     document.querySelector('.lightboxes').style.display = 'flex';
+    document.querySelectorAll('.lightbox').forEach(x => x.hidden = !x.classList.contains(className));
     document.querySelector('.lightboxes ' + className).hidden = false;
 }
 
-async function showLeaderboard(count = Infinity) {
+async function showLeaderboard(gameMode, count = Infinity) {
     while (leaderboardTable.rows.length > 0) {
         leaderboardTable.deleteRow(-1);
     }
-    (await leaderboardDB.getAll(count, false)).forEach(doc => {
+    (await leaderboardDBs[gameMode].getAll(count, false)).forEach(doc => {
         const {id, points} = doc;
         let row = leaderboardTable.insertRow();
         row.insertCell().textContent = id;
