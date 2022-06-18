@@ -58,7 +58,7 @@ export class GameSession {
     }
 
     createOrder() {
-        let recipe = Recipes[getRandomInt(21)];
+        let recipe = Recipes[getRandomInt(21)]; // todo: remove magic constants
         let volume = Volumes[getRandomInt(3)];
         let nextStateButton = document.getElementById('nextStateButton');
         nextStateButton.disabled = false;
@@ -124,7 +124,6 @@ export class GameSession {
     finish() {
         this.orderCreator.clear();
         clearInterval(this.timerUpdater);
-        return [this.score, this.totalOrders, this.correctOrders];
     }
 }
 

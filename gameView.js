@@ -264,13 +264,22 @@ function finishSession() {
     orderContainer.classList.add('game-elements-fade-out');
     gameContainer.classList.add('game-elements-fade-out');
     menuContainer.classList.add('game-elements-fade-out');
+    let currentGameMode = currentGameSession.mode;
+    let gameScore = currentGameSession.score;
+    let totalOrders = currentGameSession.totalOrders;
+    let correctOrders = currentGameSession.correctOrders;
+    const playerId = 123; // todo: fix
+    console.log(leaderboardDBs[currentGameMode].get(playerId)?.points);
+    console.log(gameScore);
+    if (leaderboardDBs[currentGameMode].get(playerId)?.points ?? -1 < gameScore) {
+        leaderboardDBs[currentGameMode].create(playerId, {points: gameScore});
+    }
     setTimeout(() => {
         document.getElementById('gameInfoContainer').remove();
         document.getElementById('orderContainer').remove();
         document.getElementById('gameContainer').remove();
         document.getElementById('menuContainer').remove();
-        let currentGameMode = currentGameSession.mode;
-        let [gameScore, totalOrders, correctOrders] = currentGameSession.finish();
+        currentGameSession.finish();
         clearTimeout(gameTimer);
         currentGameSession = undefined;
         createResultScreen(currentGameMode, gameScore, totalOrders, correctOrders);
