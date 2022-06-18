@@ -7,7 +7,7 @@ function _extr_name(doc) {
 }
 
 function _lb_dirt(doc) {
-    return {fields: {points: {integerValue: str(doc.points)}}};
+    return {fields: {points: {integerValue: doc.points}}};
 }
 
 function _lb_clear(doc, id=null) {
