@@ -2,7 +2,7 @@ import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js'
 import { Recipes } from "./recipes.js";
 import { leaderboardDBs } from "./leaderboardApi.js";
-import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount } from "./helpers.js";
+import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition } from "./helpers.js";
 
 const firstGameMode = Object.keys(GameModes)[0];
 
@@ -50,6 +50,14 @@ function createModeButtons(container) {
         });
         container.append(modeButton);
     }
+    let backButton = document.createElement('button');
+    backButton.textContent = 'Назад';
+    backButton.classList.add('start-menu-button');
+    backButton.addEventListener('click', () => {
+        startScreenContainer.remove();
+        createStartScreen();
+    })
+    container.append(backButton);
 }
 
 function createStartScreen() {
@@ -82,11 +90,6 @@ function hideStartScreen(event) {
     setTimeout(() => {
         startScreenContainer.remove();
     }, 750);
-}
-
-function getRipplePosition(element) {
-    let rect = element.getBoundingClientRect();
-    return [rect.top + (rect.bottom - rect.top) / 2 - window.innerWidth, rect.left + (rect.right - rect.left) / 2 - window.innerWidth];
 }
 
 function createRecipesButton() {
@@ -312,6 +315,7 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
         // resultScoreContainer.remove();
         // buttonsContainer.remove();
         resultsScreenContainer.style.background = '#FFFDF0';
+        document.body.style.background = '#FFFDF0';
         createStartScreen();
         setTimeout(() => {
             resultsScreenContainer.remove()
@@ -321,6 +325,7 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
 
     restartButton.addEventListener('click', () => {
         resultsScreenContainer.remove();
+        document.body.style.background = '#FFFDF0';
         console.log(gameMode);
         initGame(gameMode);
     });

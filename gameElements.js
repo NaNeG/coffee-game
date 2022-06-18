@@ -187,10 +187,11 @@ class PouringBar extends Drawable {
 }
 
 class Order {
-    constructor(recipe, volume) {
+    constructor(recipe, volume, isCursed) {
         this.name = recipe.name;
         this.components = recipe.components;
         this.volume = volume;
+        this.isCursed = isCursed;
     }
 }
 

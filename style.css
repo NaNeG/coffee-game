@@ -57,6 +57,10 @@ body {
   margin: auto 50px;
 }
 
+.cup-container.cursed {
+  --container-bg-color: rgb(80, 0, 69);
+}
+
 .filling-menu-container {
   width: 30%;
   height: inherit;
@@ -76,6 +80,10 @@ body {
   padding: 5px;
   z-index: 50;
   pointer-events: none; 
+}
+
+.filling-menu-dimming.cursed {
+  background: linear-gradient(0deg, rgb(80, 0, 69) 20%, rgba(255,255,255,0) 100%);
 }
 
 .filling-buttons-container {
@@ -307,6 +315,10 @@ body {
   margin-top: 20px;
 }
 
+.required-inputs-container.cursed {
+  background: linear-gradient(90deg, rgb(80, 0, 69) 15%, #FFD599 50%, rgb(80, 0, 69) 85%);
+}
+
 .final-info-container {
   display: flex;
   width: fit-content;
@@ -386,6 +398,18 @@ body {
   background: white;
 }
 
+.cursed-screen-ripple {
+  position: absolute;
+  width: 200vw;
+  height: 200vw;
+  transform: scale(0);
+  display: block;
+  border-radius: 100%;
+  background: rgb(80, 0, 69);
+  z-index: 10;
+}
+
+
 .result-screen-ripple {
   position: absolute;
   width: 200vw;
@@ -450,6 +474,27 @@ body {
 .mint {
   background: rgb(130, 174, 43);
 }
+
+.x1 {
+  background: rgb(0, 0, 255);
+}
+.x2 {
+  background: rgb(0, 255, 0);
+}
+.x3 {
+  background: rgb(255, 0, 0);
+}
+.y1 {
+  background: rgb(255, 0, 255);
+}
+.y2 {
+  background: rgb(0, 255, 255);
+}
+.y3 {
+  background: rgb(255, 255, 0);
+}
+
+
 
 .green-tint {
   background: linear-gradient(0deg, rgb(0, 247, 49) 0%, rgba(255,255,255,0) 25%);
@@ -660,7 +705,7 @@ body {
   }
 }
 
-@media screen and (min-width: 1460px), screen and (min-height: 900px) {
+@media screen and (min-width: 1460px) and (min-height: 900px) {
   .filling-menu-dimming {
     display: none;
   }
@@ -713,7 +758,7 @@ body {
   background-color: #FFFDF0;
   border-radius: 10px;
   font-family: 'TTSkip';
-  font-size: 36px;
+  font-size: 24px;
   height: 450px;
   overflow: scroll;
   border: 20px #FFFDF0 solid;

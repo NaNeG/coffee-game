@@ -40,7 +40,21 @@ export const Toppings = {
     'mint': 'Мята',
 }
 
+export const CursedFillings = {
+    'uranium': 'Уран',
+    'x2': 'X2',
+    'x3': 'X3'
+}
+
+export const CursedToppings = {
+    'y1': 'Y1',
+    'y2': 'Y2',
+    'y3': 'Y3'
+}
+
 export const ComponentTranslation = { ...Fillings, ...Toppings }
+
+export const CursedComponentTranslation = { ...CursedFillings, ...CursedToppings }
 
 export const IsFilling = {
     'tea': true,
@@ -52,6 +66,12 @@ export const IsFilling = {
     'caramel': false,
     'lemon': false,
     'mint': false,
+    'x1': true,
+    'x2': true,
+    'x3': true,
+    'y1': false,
+    'y2': false,
+    'y3': false
 }
 
 export const VolumeTranslation = {
@@ -189,6 +209,11 @@ export function convertRGB(colorString)
   return rgbArray;
 }
 
+export function getRipplePosition(element) {
+    let rect = element.getBoundingClientRect();
+    return [rect.top + (rect.bottom - rect.top) / 2 - window.innerWidth, rect.left + (rect.right - rect.left) / 2 - window.innerWidth];
+}
+
 export const componentsColors = {};
 
 if (window.document.styleSheets.length != 1) {
@@ -200,7 +225,7 @@ const styleSheet = window.document.styleSheets[0];
 for (let rule of styleSheet.cssRules) {
     if (!rule.selectorText || rule.selectorText.length <= 1) continue;
     let potentialClassName = rule.selectorText.substring(1);
-    if (potentialClassName in Toppings || potentialClassName in Fillings) {
+    if (potentialClassName in Toppings || potentialClassName in Fillings || potentialClassName in CursedFillings || potentialClassName in CursedToppings) {
         componentsColors[potentialClassName] = rule.style.background;
     }
 } // todo: possibly better to define and set colors in js only

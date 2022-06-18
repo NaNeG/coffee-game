@@ -3,7 +3,12 @@ import { mix_rgbs, getRandomInt, equalOrders, Inputs, Volumes,
          inputImages, Events, FullScore, Fillings, Toppings,
          VolumeTranslation, convertRGB, TabIndexOffsets, equalComponents,
          getArrayDifference, getArrayIntersection, ComponentTranslation,
-         componentsColors } from "./helpers.js";
+         componentsColors, 
+         CursedFillings,
+         CursedToppings, 
+        getRipplePosition} from "./helpers.js";
+
+globalThis.rippleFunc = () => {};
 
 class State {
     constructor(orders) {
@@ -26,12 +31,18 @@ class State {
 }
 
 class FillState extends State {
-    constructor(orders) {
+    constructor(orders, previousOrder, firstTime) {
         super(orders);
-        this.init();
+        this.previousOrder = previousOrder;
+        if (this.previousOrder == this.orders[0]) {
+            firstTime = false;
+        } else {
+            firstTime = true;
+        }
+        this.init(firstTime);
     }
 
-    init() {
+    init(firstTime) {
         let cupContainer = this._createCupContainer();
 
         let fillingTitleContainer = this._createFillingTitleContainer();
@@ -62,19 +73,50 @@ class FillState extends State {
 
         this.cup = new Cup(cupContainer);
         let offset = TabIndexOffsets.game;
-        for (let [name, translation] of Object.entries(Fillings)) {
-            let button = this._createIngredientButton(name, translation);
-            button.tabIndex = offset;
-            fillingsContainer.append(button);
-            offset++;
-        }
-        for (let [engName, translation] of Object.entries(Toppings)) {
-            let button = this._createIngredientButton(engName, translation);
-            button.tabIndex = offset;
-            toppingsContainer.append(button);
-            offset++;
-        }
 
+        if (this.orders[0].isCursed) {
+            for (let [name, translation] of Object.entries(CursedFillings)) {
+                let button = this._createIngredientButton(name, translation);
+                button.tabIndex = offset;
+                fillingsContainer.append(button);
+                offset++;
+            }
+            for (let [engName, translation] of Object.entries(CursedToppings)) {
+                let button = this._createIngredientButton(engName, translation);
+                button.tabIndex = offset;
+                toppingsContainer.append(button);
+                offset++;
+            }
+            if (firstTime && (this.previousOrder == undefined || !this.previousOrder.isCursed)) {
+                setTimeout(() => {
+                    cupContainer.classList.add('cursed');
+                    fillingMenuDimming.classList.add('cursed');
+                    toppingMenuDimming.classList.add('cursed');
+                }, 750);
+            } else {
+                cupContainer.classList.add('cursed');
+                fillingMenuDimming.classList.add('cursed');
+                toppingMenuDimming.classList.add('cursed');
+            }
+            
+        } else {
+            for (let [name, translation] of Object.entries(Fillings)) {
+                let button = this._createIngredientButton(name, translation);
+                button.tabIndex = offset;
+                fillingsContainer.append(button);
+                offset++;
+            }
+            for (let [engName, translation] of Object.entries(Toppings)) {
+                let button = this._createIngredientButton(engName, translation);
+                button.tabIndex = offset;
+                toppingsContainer.append(button);
+                offset++;
+            }
+            cupContainer.classList.remove('cursed');
+            fillingMenuDimming.classList.remove('cursed');
+            toppingMenuDimming.classList.remove('cursed');
+        }
+        
         if (window.matchMedia("(min-width: 1251px)").matches) {
             this.gameContainer.replaceChildren(fillingMenuContainer, cupContainer, toppingMenuContainer);
         } else {
@@ -107,21 +149,11 @@ class FillState extends State {
     }
 
     _createToppingTitleContainer() {
-        let toppingTitleContainer = document.createElement('div');
-        toppingTitleContainer.classList.add('filling-title-container');
-        let toppingTitle = document.createElement('h2');
-        toppingTitle.textContent = 'Добавки';
-        toppingTitleContainer.append(toppingTitle);
-        return toppingTitleContainer;
+        return this._createTitleContainer('Добавки');
     }
 
     _createFillingTitleContainer() {
-        let fillingTitleContainer = document.createElement('div');
-        fillingTitleContainer.classList.add('filling-title-container');
-        let fillingTitle = document.createElement('h2');
-        fillingTitle.textContent = 'Основы';
-        fillingTitleContainer.append(fillingTitle);
-        return fillingTitleContainer;
+        return this._createTitleContainer('Основы');
     }
 
     _createCupContainer() {
@@ -131,9 +163,18 @@ class FillState extends State {
         return cupContainer;
     }
 
+    _createTitleContainer(toppingTitle) {
+        let titleContainer = document.createElement('div');
+        titleContainer.classList.add('filling-title-container');
+        let title = document.createElement('h2');
+        title.textContent = toppingTitle;
+        titleContainer.append(title);
+        return titleContainer;
+    }
+
     restart() {
         this.gameContainer.replaceChildren();
-        this.init();
+        this.init(false);
     }
 }
 
@@ -186,6 +227,9 @@ class MixState extends State {
         let cupContainer = document.createElement('div');
         cupContainer.id = 'cupContainer';
         cupContainer.classList.add('container', 'cup-container');
+        if (this.orders[0].isCursed) {
+            cupContainer.classList.add('cursed');
+        }
         return cupContainer;
     }
 
@@ -200,6 +244,9 @@ class MixState extends State {
         let requiredInputsContainer = document.createElement('div');
         requiredInputsContainer.id = 'requiredInputsContainer';
         requiredInputsContainer.classList.add('container', 'required-inputs-container');
+        if (this.orders[0].isCursed) {
+            requiredInputsContainer.classList.add('cursed');
+        }
         return requiredInputsContainer;
     }
 
@@ -308,6 +355,9 @@ class PourState extends State {
         let pouringCupContainer = document.createElement('div');
         pouringCupContainer.id = 'pouringCupContainer';
         pouringCupContainer.classList.add('container', 'cup-container');
+        if (this.orders[0].isCursed) {
+            pouringCupContainer.classList.add('cursed');
+        }
 
         this.pouringCup = new Drink(pouringCupContainer);
 
@@ -375,6 +425,9 @@ class PourState extends State {
         let cupContainer = document.createElement('div');
         cupContainer.id = 'cupContainer';
         cupContainer.classList.add('container', 'cup-container');
+        if (this.orders[0].isCursed) {
+            cupContainer.classList.add('cursed');
+        }
         return cupContainer;
     }
 
@@ -407,34 +460,30 @@ class FinalState extends State {
         let scoreText = document.createElement('h1');
         let streakText = document.createElement('h1');
 
-        let addedComponentsText = document.createElement('h1');
-        let requiredComponentsText = document.createElement('h1');
-        let componentDifferenceText = document.createElement('h1');
-
-        let addedVolumeText = document.createElement('h1');
-        let requiredVolumeText = document.createElement('h1');
-
-        addedComponentsText.textContent = `Ваш состав: ${this.components.map(x => ComponentTranslation[x]).join(', ')}`;
-        requiredComponentsText.textContent = `Требуемый состав: ${this.orders[0].components.map(x => ComponentTranslation[x]).join(', ')}`;
-
-        if (getArrayDifference(this.components, this.orders[0].components).length !== 0) {
-            componentDifferenceText.textContent = `Разница: ${getArrayDifference(this.components, this.orders[0].components).map(x => ComponentTranslation[x]).join(', ')}`;
-        }
-
-        addedVolumeText.textContent = `Ваш объем: ${VolumeTranslation[this.volume]}`;
-        requiredVolumeText.textContent = `Требуемый объем: ${VolumeTranslation[this.orders[0].volume]}`;
-
         if (equalOrders(this.orders[0], this.components, this.volume)) {
-            this.score += FullScore + FullScore * this.streak / 2;
+            if (this.orders[0].isCursed) {
+                this.score += 3 * (FullScore + FullScore * this.streak / 2);
+            } else {
+                this.score += FullScore + FullScore * this.streak / 2;
+            }
             this.streak++;
-            this.orders.shift();
+            this.currentOrder = this.orders.shift();
             let orderText = document.getElementById('orderText');
             if (this.orders.length === 0) {
                 orderText.textContent = ''; // todo: why empty?
+            } else if (!this.currentOrder.isCursed && this.orders[0].isCursed){
+                let nextStateButton = document.getElementById('nextStateButton');
+                nextStateButton.addEventListener('click', rippleFunc = addRipple.bind(nextStateButton));
+                orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
+            } else if (this.currentOrder.isCursed && !this.orders[0].isCursed){
+                let nextStateButton = document.getElementById('nextStateButton');
+                nextStateButton.addEventListener('click', rippleFunc = removeRipple.bind(nextStateButton));
+                orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
             } else {
                 orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
             }
         } else {
+            this.currentOrder = this.orders[0];
             this.streak = 0;
         }
 
@@ -450,7 +499,45 @@ class FinalState extends State {
     }
 
     restart() {
+
     }
+}
+
+export function addRipple() {
+    let scriptNode = document.getElementsByTagName('script')[0];
+    let ripple = document.createElement('div');
+    let ripplePosition = getRipplePosition(nextStateButton);
+    console.log(ripplePosition);
+    ripple.classList.add('cursed-screen-ripple');
+    ripple.style.top = `${ripplePosition[0]}px`;
+    ripple.style.left = `${ripplePosition[1]}px`;
+    scriptNode.before(ripple);
+    ripple.classList.add('start-screen-animation');
+    setTimeout(() => {
+        document.body.style.background = 'rgb(80, 0, 69)';
+        ripple.remove();  
+    }, 750);
+    if (this != undefined) {
+        this.removeEventListener('click', rippleFunc);
+    }
+}
+
+export function removeRipple() {
+    let scriptNode = document.getElementsByTagName('script')[0];
+    let ripple = document.createElement('div');
+    let ripplePosition = getRipplePosition(nextStateButton);
+    console.log(ripplePosition);
+    ripple.classList.add('cursed-screen-ripple');
+    ripple.style.top = `${ripplePosition[0]}px`;
+    ripple.style.left = `${ripplePosition[1]}px`;
+    scriptNode.before(ripple);
+    ripple.classList.add('result-screen-animation');
+    document.body.style.background = '#FFFDF0';
+    setTimeout(() => {
+        document.body.style.background = '#FFFDF0';
+        ripple.remove();  
+    }, 750);
+    this.removeEventListener('click', rippleFunc);
 }
 
 export {FillState, MixState, PourState, FinalState}

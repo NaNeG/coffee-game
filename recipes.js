@@ -21,3 +21,9 @@ export const Recipes = {
     19: { name: 'Штрих ночи', components: ['tea', 'coffee', 'milk'] },
     20: { name: 'Сумеречная мгла', components: ['tea', 'juice', 'juice'] },
 }
+
+export const CursedRecipes = {
+    0: { name: 'XRM-S55', components: ['x1', 'x2', 'x3'] },
+    1: { name: 'HFG-727', components: ['x1', 'x1', 'y1'] },
+    2: { name: 'JAN-1K', components: ['x2', 'y1', 'y2'] },
+}
