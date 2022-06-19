@@ -25,35 +25,10 @@ export const Events = {
     nextState: 'nextState',
 }
 
-export const Fillings = {
-    'coffee': 'Кофе',
-    'tea': 'Чай',
-    'juice': 'Сок',
-}
-
-export const Toppings = {
-    'milk': 'Молоко',
-    'chocolate': 'Шоколад',
-    'fizzy-water': 'Газировка',
-    'caramel': 'Карамель',
-    'lemon': 'Лемон',
-    'mint': 'Мята',
-}
-
-export const CursedFillings = {
-    'uranium': 'Уран',
-    'void': 'Пустота',
-    'nakirium': 'Накириум',
-    'chicken': 'Курица???',
-    'concrete': 'Бетон',
-}
-
-export const CursedToppings = {
-    'mucacium': 'Мукациум',
-    'antimatter': 'Кориум',
-    'emotions': 'Эмоции',
-    'magma': 'Магма'
-}
+export const Fillings = ['coffee', 'tea', 'juice'];
+export const Toppings = ['milk', 'chocolate', 'fizzyWater', 'caramel', 'lemon', 'mint'];
+export const CursedFillings = ['uranium', 'void', 'nakirium', 'chicken', 'concrete'];
+export const CursedToppings = ['mucacium', 'antimatter', 'emotions', 'magma'];
 
 // export const CursedFillings = {
 //     'x1': 'X1',
@@ -67,9 +42,9 @@ export const CursedToppings = {
 //     'y3': 'Y3'
 // }
 
-export const ComponentTranslation = { ...Fillings, ...Toppings }
+export const Components = [...Fillings, ...Toppings];
 
-export const CursedComponentTranslation = { ...CursedFillings, ...CursedToppings }
+export const CursedComponents = [...CursedFillings, ...CursedToppings];
 
 export const IsFilling = {
     'tea': true,
@@ -92,17 +67,7 @@ export const IsFilling = {
     'magma': false
 }
 
-export const VolumeTranslation = {
-    'small': 'малый',
-    'medium': 'средний',
-    'large': 'большой'
-}
-
-export const GameModes = {
-    'classic': 'Классика',
-    'arcade': 'Аркада',
-    'infinite': 'Бесконечный',
-}
+export const GameModes = ['classic', 'arcade', 'infinite'];
 
 export const FullScore = 1000;
 
@@ -235,7 +200,7 @@ export function getRipplePosition(element) {
 
 export const componentsColors = {};
 
-if (window.document.styleSheets.length != 1) {
+if (window.document.styleSheets.length !== 1) {
     throw new Error('Not Implemented');
 }
 
@@ -244,7 +209,7 @@ const styleSheet = window.document.styleSheets[0];
 for (let rule of styleSheet.cssRules) {
     if (!rule.selectorText || rule.selectorText.length <= 1) continue;
     let potentialClassName = rule.selectorText.substring(1);
-    if (potentialClassName in Toppings || potentialClassName in Fillings || potentialClassName in CursedFillings || potentialClassName in CursedToppings) {
+    if (Components.includes(potentialClassName) || CursedComponents.includes(potentialClassName)) {
         componentsColors[potentialClassName] = rule.style.background;
     }
 } // todo: possibly better to define and set colors in js only

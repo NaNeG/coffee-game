@@ -55,5 +55,5 @@ export class Database {
 }
 
 export const leaderboardDBs = Object.fromEntries(
-    Object.keys(GameModes).map(mode => [mode, new Database(mode)])
+    GameModes.map(mode => [mode, new Database(mode)])
 );
