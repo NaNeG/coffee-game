@@ -3,9 +3,9 @@ import { mix_rgbs, getRandomInt, equalOrders, Inputs, Volumes,
          inputImages, Events, FullScore, Fillings, Toppings,
          convertRGB, TabIndexOffsets, equalComponents,
          getArrayDifference, getArrayIntersection,
-         componentsColors, 
+         componentsColors,
          CursedFillings,
-         CursedToppings, 
+         CursedToppings,
         getRipplePosition} from "./helpers.js";
 import { Languages } from './translations.js';
 
@@ -42,7 +42,7 @@ class FillState extends State {
             firstTime = true;
         }
         this.init(firstTime);
-        
+
     }
 
     init(firstTime) {
@@ -84,7 +84,7 @@ class FillState extends State {
         let offset = TabIndexOffsets.game;
 
         if (this.orders[0].isCursed) {
-            
+
             for (let filling of CursedFillings) {
                 let button = this._createIngredientButton(filling, curLang[filling]);
                 button.tabIndex = offset;
@@ -126,7 +126,7 @@ class FillState extends State {
                 fillingMenuDimming.classList.add('cursed');
                 toppingMenuDimming.classList.add('cursed');
             }
-            
+
         } else {
             cursedRecipesButton.style.display = 'none';
             recipesButton.style.display = 'block';
@@ -154,7 +154,7 @@ class FillState extends State {
             fillingMenuDimming.classList.remove('cursed');
             toppingMenuDimming.classList.remove('cursed');
         }
-        
+
         if (window.matchMedia("(min-width: 1251px)").matches) {
             this.gameContainer.replaceChildren(fillingMenuContainer, cupContainer, toppingMenuContainer);
         } else {
@@ -218,7 +218,7 @@ class FillState extends State {
 
 class MixState extends State {
     constructor(orders, cup) {
-        super(orders); 
+        super(orders);
         this.cup = cup;
         this._buttons = {
             'left': null,
@@ -257,7 +257,7 @@ class MixState extends State {
             (btn, i) => btn.tabIndex = TabIndexOffsets.game + i
         );
         mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
-        
+
         this.gameContainer.replaceChildren(cupContainer, mixButtonsContainer, requiredInputsContainer);
         this.cup.changeContainer(cupContainer);
         this.cup.draw();
@@ -371,7 +371,7 @@ class MixState extends State {
             arrowObject.classList.remove(...arrowObject.classList);
         }
         let requiredInputsContainer = document.getElementById('requiredInputsContainer');
-        
+
         if (this.orders[0].isCursed) {
             requiredInputsContainer.classList.add('flash-background-cursed');
             setTimeout(() => requiredInputsContainer.classList.remove('flash-background-cursed'), 1000);
@@ -416,7 +416,7 @@ class PourState extends State {
         this.pouringCup = new Drink(pouringCupContainer);
 
         this.pouringBar = new PouringBar(pouringBarContainer, this._mixColor);
-        
+
         let stopButton = this._createStopButton();
 
         this.cup.changeContainer(cupContainer);
@@ -527,8 +527,6 @@ class FinalState extends State {
                 h1Elements[i].classList.add('cursed');
             }
         }
-        
-
         if (equalOrders(this.orders[0], this.components, this.volume)) {
             if (this.orders[0].isCursed) {
                 this.score += 3 * (FullScore + FullScore * this.streak / 2);
@@ -577,7 +575,7 @@ export function addRipple() {
     ripple.classList.add('start-screen-animation');
     setTimeout(() => {
         document.body.style.background = 'rgb(80, 0, 69)';
-        ripple.remove();  
+        ripple.remove();
     }, 750);
     if (this != undefined) {
         this.removeEventListener('click', rippleEventListener);
@@ -597,7 +595,7 @@ export function removeRipple() {
     document.body.style.background = '#FFFDF0';
     setTimeout(() => {
         document.body.style.background = '#FFFDF0';
-        ripple.remove();  
+        ripple.remove();
     }, 750);
     this.removeEventListener('click', rippleEventListener);
 }

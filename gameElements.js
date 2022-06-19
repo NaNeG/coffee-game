@@ -9,7 +9,7 @@ class Drawable {
     draw(...classList) {
         let element = document.createElement('div');
         for (let c of classList) {
-            element.classList.add(c);            
+            element.classList.add(c);
         }
         this.container.append(element);
     }
@@ -28,13 +28,10 @@ class FillingBar extends Drawable {
     draw(firstTime) {
         if (firstTime) {
             super.draw("filling-bar", 'filling-bar-animation', this.texture);
-        }
-        else {
+        } else {
             super.draw("filling-bar", this.texture);
         }
     }
-
-
 }
 
 class ToppingBar extends Drawable {
@@ -46,12 +43,10 @@ class ToppingBar extends Drawable {
     draw(firstTime) {
         if (firstTime) {
             super.draw("topping-bar", 'topping-bar-animation', this.texture);
-        }
-        else {
+        } else {
             super.draw("topping-bar", this.texture);
         }
     }
-
 }
 
 class PouringCupBar extends Drawable {
@@ -68,15 +63,14 @@ class PouringCupBar extends Drawable {
         element.style.setProperty('--animation-height', this.volume + '%');
         this.container.append(element);
     }
-
 }
 
 class Cup extends Drawable {
 
     components = [];
 
-    constructor(container, color='black') {
-        super(container);        
+    constructor(container) {
+        super(container);
         //this.color = color;
         this.draw();
     }
@@ -86,21 +80,19 @@ class Cup extends Drawable {
             let fillBarContainer = document.querySelector('.filling-bar-container');
             this.drawFilling(fillBarContainer, component, true);
             this.components.push(component);
-        }   
+        }
     }
 
     drawFilling(container, component, firstTime) {
         if (IsFilling[component]){
             let fillBar = new FillingBar(container, component);
             fillBar.draw(firstTime);
-        }
-        else {
+        } else {
             let fillBar = new ToppingBar(container, component);
-            fillBar.draw(firstTime);        
+            fillBar.draw(firstTime);
         }
-        
     }
-    
+
     draw() {
         let cupBody = document.createElement('div');
         let fillBarContainer = document.createElement('div');
@@ -122,14 +114,14 @@ class Drink extends Drawable {
     }
 
     fill(volume, texture) {
-        this.volume = volume < 33.34 ? 33.34
+        this.volume = volume < 33.34 ? 33.34 // todo: FIX!
                     : volume < 66.68 ? 66.68
                     : 100;
         if (this.firstTimeFill) {
             this.firstTimeFill = false;
             let fillBarContainer = document.getElementById('pouringFillBarContainer');
             this.drawFilling(fillBarContainer, texture);
-        }    
+        }
     }
 
     drawFilling(container, texture) {
@@ -161,26 +153,22 @@ class PouringBar extends Drawable {
         pouringBar.classList.add('pouring-bar');
         pouringBar.style.setProperty('--background-color', `rgb(${barColor[0]}, ${barColor[1]}, ${barColor[2]})`);
         this.container.append(pouringBar);
-        
+
         this.interval = setInterval(() => {
-            
             if (!oppositeDirection) {
                 this.progress++;
                 if (this.progress == 100) {
                     oppositeDirection = true;
                 }
-                
-            }
-            else {
+            } else {
                 this.progress--;
                 if (this.progress == 0) {
                     oppositeDirection = false;
                 }
-                
             }
             pouringBar.style.height = this.progress + '%';
 
-        }, 15);      
+        }, 15);
     }
 
     stop() {
@@ -196,6 +184,5 @@ class Order {
         this.isCursed = isCursed;
     }
 }
-
 
 export { Cup, PouringBar, Drink, Order };

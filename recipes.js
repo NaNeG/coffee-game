@@ -20,7 +20,7 @@ export const Recipes = {
     18: { name: 'BirchJuice', components: ['juice', 'juice', 'lemon'] },
     19: { name: 'StrokeOfTheNight', components: ['tea', 'coffee', 'milk'] },
     20: { name: 'TwilightHaze', components: ['tea', 'juice', 'juice'] },
-}
+};
 
 export const CursedRecipes = {
     0: { name: 'XML98Y', components: ['void', 'emotions', 'uranium'] },
@@ -33,4 +33,4 @@ export const CursedRecipes = {
     7: { name: 'NNG153', components: ['uranium', 'emotions', 'void'] },
     8: { name: 'IRS397', components: ['void', 'concrete', 'magma'] },
     9: { name: 'NKR434', components: ['nakirium', 'nakirium', 'emotions'] },
-}
+};

@@ -16,7 +16,7 @@ export class GameSession {
         this.playerId = playerId;
         this.firstOrder = true;
         this.createOrder();
-        this.gameState = new FillState(this.orders, undefined); 
+        this.gameState = new FillState(this.orders, undefined);
         this.mode = mode;
         this.totalOrders = 0;
         this.correctOrders = 0;
@@ -34,11 +34,10 @@ export class GameSession {
                 this.gameTime = 0;
                 this.updateInfiniteTimer();
                 break;
-        } 
-        this.orderCreator = setRandomInterval(() => { 
+        }
+        this.orderCreator = setRandomInterval(() => {
             this.createOrder();
         }, 5000, 15000);
-        
     }
 
     updateMistakeCounter() {
@@ -90,50 +89,47 @@ export class GameSession {
         }
     }
 
-    nextState() { 
+    nextState() {
         let cup = this.gameState.cup;
         if (this.gameState instanceof FillState) {
             this.gameState.dispose();
             this.gameState = new MixState(this.orders, cup);
-        } 
-        else if (this.gameState instanceof MixState) {
+        } else if (this.gameState instanceof MixState) {
             if (equalArrays(this.gameState.userInputs, this.gameState.requiredInputs)){
                 console.log('correct');
                 this.gameState.dispose();
                 this.gameState = new PourState(this.orders, cup);
-            }
-            else {
+            } else {
                 this.gameState.restart();
                 console.log('incorrect');
-            }         
-        } 
-        else if (this.gameState instanceof PourState) {
-            if (this.gameState.volume != undefined) {
-                console.log(this.gameState.volume);
-                this.gameState.dispose();
-                this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume, this.streak);
-                this.score += this.gameState.score;
-                if (this.gameState.score > 0) {
-                    this.streak++;
-                    this.correctOrders++;
-                } else {
-                    this.streak = 0;
-                } 
-                this.totalOrders++;
-                if (this.mode == 'classic') {
-                    this.updateMistakeCounter();
-                }
-                
-                let scoreText = document.getElementById('scoreText');
-                scoreText.textContent = curLang.totalScoreText(this.score);
-
-                let nextStateButton = document.getElementById('nextStateButton');
-                if (this.orders.length === 0) {  
-                    nextStateButton.disabled = true;
-                }
             }
-        } 
-        else if (this.gameState instanceof FinalState) {
+        } else if (this.gameState instanceof PourState) {
+            if (this.gameState.volume == undefined) {
+                return;
+            }
+            console.log(this.gameState.volume);
+            this.gameState.dispose();
+            this.gameState = new FinalState(this.orders, cup.components, this.gameState.volume, this.streak);
+            this.score += this.gameState.score;
+            if (this.gameState.score > 0) {
+                this.streak++;
+                this.correctOrders++;
+            } else {
+                this.streak = 0;
+            }
+            this.totalOrders++;
+            if (this.mode == 'classic') {
+                this.updateMistakeCounter();
+            }
+
+            let scoreText = document.getElementById('scoreText');
+            scoreText.textContent = curLang.totalScoreText(this.score);
+
+            let nextStateButton = document.getElementById('nextStateButton');
+            if (this.orders.length === 0) {
+                nextStateButton.disabled = true;
+            }
+        } else if (this.gameState instanceof FinalState) {
             let previousOrder = this.gameState.currentOrder;
             this.gameState.dispose();
             this.gameState = new FillState(this.orders, previousOrder);
@@ -149,6 +145,3 @@ export class GameSession {
         clearInterval(this.timerUpdater);
     }
 }
-
-
-

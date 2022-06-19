@@ -1,7 +1,7 @@
 export const volumeRussianTranslation = {
     'small': 'малый',
     'medium': 'средний',
-    'large': 'большой'
+    'large': 'большой',
 };
 
 export const gameModesRussianTranslation = {

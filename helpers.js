@@ -3,27 +3,27 @@ export const Inputs = {
     1: 'right',
     2: 'down',
     3: 'left',
-}
+};
 
 export const Volumes = {
     0: 'small',
     1: 'medium',
     2: 'large',
-}
+};
 
 export const inputImages = {
     0: 'up.png',
     1: 'right.png',
     2: 'down.png',
     3: 'left.png',
-}
+};
 
 export const Events = {
     init: 'init',
     restart: 'restart',
     dispose: 'dispose',
     nextState: 'nextState',
-}
+};
 
 export const Fillings = ['coffee', 'tea', 'juice'];
 export const Toppings = ['milk', 'chocolate', 'fizzyWater', 'caramel', 'lemon', 'mint'];
@@ -34,13 +34,13 @@ export const CursedToppings = ['mucacium', 'antimatter', 'emotions', 'magma'];
 //     'x1': 'X1',
 //     'x2': 'X2',
 //     'x3': 'X3'
-// }
+// };
 
 // export const CursedToppings = {
 //     'y1': 'Y1',
 //     'y2': 'Y2',
 //     'y3': 'Y3'
-// }
+// };
 
 export const Components = [...Fillings, ...Toppings];
 
@@ -65,7 +65,7 @@ export const IsFilling = {
     'anitmatter': false,
     'emotions': false,
     'magma': false
-}
+};
 
 export const GameModes = ['classic', 'arcade', 'infinite'];
 
@@ -79,7 +79,7 @@ export const TabIndexOffsets = {
     navBar: 1,
     game: 501,
     menu: 1001,
-}
+};
 
 export function getRgb(r, g, b){
     return `rgb(${r}, ${g}, ${b})`;
@@ -96,8 +96,7 @@ export function equalArrays(a, b) {
 function containsAll (arr1, arr2) {
     return arr2.every(arr2Item => arr1.includes(arr2Item));
 }
-                
-                
+
 function sameMembers (arr1, arr2) {
     return containsAll(arr1, arr2) && containsAll(arr2, arr1);
 }
@@ -122,27 +121,26 @@ export function getArrayIntersection(arr1, arr2) {
     return arr1.filter(x => arr2.includes(x))
 }
 
-
 export function setRandomInterval (intervalFunction, minDelay, maxDelay) {
     let timeout;
-  
+
     const runInterval = () => {
       const timeoutFunction = () => {
         intervalFunction();
         runInterval();
       };
-  
+
       const delay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
-  
+
       timeout = setTimeout(timeoutFunction, delay);
     };
-  
+
     runInterval();
-  
+
     return {
       clear() { clearTimeout(timeout) },
     };
-};
+}
 
 function rgb2cmyk(r, g, b) {
     let c = 1 - (r / 255);
@@ -195,7 +193,10 @@ export function convertRGB(colorString)
 
 export function getRipplePosition(element) {
     let rect = element.getBoundingClientRect();
-    return [rect.top + (rect.bottom - rect.top) / 2 - window.innerWidth, rect.left + (rect.right - rect.left) / 2 - window.innerWidth];
+    return [
+        rect.top + (rect.bottom - rect.top) / 2 - window.innerWidth,
+        rect.left + (rect.right - rect.left) / 2 - window.innerWidth
+    ];
 }
 
 export const componentsColors = {};

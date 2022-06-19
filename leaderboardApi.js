@@ -48,7 +48,7 @@ export class Database {
             ? Array.prototype.map.call(docsJson.documents, d => _lb_clear(d, _extr_name(d)))
             : [];
     }
-    
+
     del(id) {
         return _delete(this.collection_name, id);
     }
