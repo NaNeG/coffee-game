@@ -50,7 +50,7 @@ export const CursedFillings = {
 
 export const CursedToppings = {
     'mucacium': 'Мукациум',
-    'antimatter': 'Антиматерия',
+    'antimatter': 'Кориум',
     'emotions': 'Эмоции',
     'magma': 'Магма'
 }

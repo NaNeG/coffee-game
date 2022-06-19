@@ -111,7 +111,6 @@ body {
   font-size: 20px;
   cursor: pointer;
   color: #8d726e;
-  font-size: 16px;
 }
 
 .filling-button:hover {
@@ -803,9 +802,6 @@ body {
 }
 
 @media screen and (min-width: 1460px) and (min-height: 950px) {
-  .filling-menu-dimming {
-    display: none;
-  }
 }
 
 @media screen and (max-width: 1459px) {
