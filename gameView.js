@@ -5,7 +5,7 @@ import { leaderboardDBs } from "./leaderboardApi.js";
 import { ArcadeGameTime, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition } from "./helpers.js";
 import { Languages } from "./translations.js";
 
-const firstGameMode = Object.keys(GameModes)[0];
+const firstGameMode = GameModes[0];
 
 const curLangName = 'russian';
 const curLang = Languages[curLangName];
@@ -72,10 +72,10 @@ function createNicknameInput() {
 }
 
 function createModeButtons(container) {
-    for (let mode of Object.keys(GameModes)) {
+    for (let mode of GameModes) {
         let modeButton = document.createElement('button');
         modeButton.id = mode;
-        modeButton.textContent = GameModes[mode];
+        modeButton.textContent = curLang[mode];
         modeButton.classList.add('start-menu-button');
         modeButton.addEventListener('click', (event) => {
             hideStartScreen(event);
@@ -420,9 +420,9 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
 }
 
 function addModeSelectionButtonsToLeaderboardLightbox() {
-    Object.keys(GameModes).forEach(mode => {
+    GameModes.forEach(mode => {
         let button = document.createElement('button');
-        button.textContent = GameModes[mode];
+        button.textContent = curLang[mode];
         button.classList.add('mode-selection-button');
         button.addEventListener('click', () => {
             button.disabled = true;

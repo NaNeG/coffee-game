@@ -56,6 +56,9 @@ export const Languages = {
         antimatter: 'Кориум',
         emotions: 'Эмоции',
         magma: 'Магма',
+        classic: 'Классика',
+        arcade: 'Аркада',
+        infinite: 'Бесконечный',
     },
 };
 

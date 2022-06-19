@@ -26,11 +26,8 @@ export const Events = {
 }
 
 export const Fillings = ['coffee', 'tea', 'juice'];
-
 export const Toppings = ['milk', 'chocolate', 'fizzyWater', 'caramel', 'lemon', 'mint'];
-
 export const CursedFillings = ['uranium', 'void', 'nakirium', 'chicken', 'concrete'];
-
 export const CursedToppings = ['mucacium', 'antimatter', 'emotions', 'magma'];
 
 // export const CursedFillings = {
@@ -70,11 +67,7 @@ export const IsFilling = {
     'magma': false
 }
 
-export const GameModes = {
-    'classic': 'Классика',
-    'arcade': 'Аркада',
-    'infinite': 'Бесконечный',
-}
+export const GameModes = ['classic', 'arcade', 'infinite'];
 
 export const FullScore = 1000;
 
