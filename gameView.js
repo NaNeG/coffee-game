@@ -154,9 +154,9 @@ function createLeaderboardButton() {
     return leaderboardButton;
 }
 
-function initGame(mode) {
+async function initGame(mode) {
     if (currentGameSession instanceof GameSession) {
-        finishSession();
+        await finishSession();
     }
 
     let modeInfoContainer = createModeInfoContainer(mode);
@@ -198,17 +198,13 @@ function initGame(mode) {
         case 'classic':
             gameTimer = setInterval(() => {
                 if (currentGameSession.totalOrders - currentGameSession.correctOrders === 3) {
-                    finishSession();
-                    console.log('fin');
+                    finishSession().then(console.log('fin'));
                 }
             }, 50);
             break;
         
         case 'arcade':
-            gameTimer = setTimeout(() => {
-                finishSession();
-                console.log('fin');
-            }, ArcadeGameTime * 1000);
+            gameTimer = setTimeout(() => finishSession().then(console.log('fin')), ArcadeGameTime * 1000);
             break;
 
         case 'infinite':
@@ -247,9 +243,7 @@ function createFinishButton() {
     let finishButton = document.createElement('button');
     finishButton.id = 'finishButton';
     finishButton.textContent = 'Выход';
-    finishButton.addEventListener('click', () => {
-        finishSession();
-    });
+    finishButton.addEventListener('click', finishSession);
     finishButton.classList.add('game-menu-button');
     return finishButton;
 }
@@ -310,7 +304,7 @@ function createOrderContainer() {
 
 
 
-function finishSession() {
+async function finishSession() {
     clearInterval(gameTimer);
     let gameInfoContainer = document.getElementById('gameInfoContainer');
     let orderContainer = document.getElementById('orderContainer');
@@ -325,7 +319,8 @@ function finishSession() {
     let totalOrders = currentGameSession.totalOrders;
     let correctOrders = currentGameSession.correctOrders;
     let playerId = currentGameSession.playerId;
-    if (leaderboardDBs[currentGameMode].get(playerId)?.points ?? -1 < gameScore) {
+    let playerData = await leaderboardDBs[currentGameMode].get(playerId);
+    if ((playerData?.points ?? -1) < gameScore) {
         leaderboardDBs[currentGameMode].create(playerId, {points: gameScore});
     }
     setTimeout(() => {
@@ -384,11 +379,11 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
         
     });
 
-    restartButton.addEventListener('click', () => {
+    restartButton.addEventListener('click', async () => {
         resultsScreenContainer.remove();
         document.body.style.background = '#FFFDF0';
         console.log(gameMode);
-        initGame(gameMode);
+        await initGame(gameMode);
     });
 
     let resultScoreContainer =  document.createElement('div');

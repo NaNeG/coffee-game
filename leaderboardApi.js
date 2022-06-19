@@ -11,7 +11,7 @@ function _lb_dirt(doc) {
 }
 
 function _lb_clear(doc, id=null) {
-    const cleared = {points: doc.fields.points.integerValue};
+    const cleared = {points: Number(doc.fields.points.integerValue)};
     if (id !== null) { cleared.id = id };
     return cleared;
 }
