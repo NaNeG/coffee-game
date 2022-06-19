@@ -417,11 +417,14 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
 
 function addModeSelectionButtonsToLeaderboardLightbox() {
     Object.keys(GameModes).forEach(mode => {
-        let btn = document.createElement('button');
-        btn.textContent = GameModes[mode];
-        btn.classList.add('mode-selection-button');
-        btn.addEventListener('click', () => showLeaderboard(mode, MaxLeaderboardEntriesCount))
-        leaderboardModeSelection.appendChild(btn);
+        let button = document.createElement('button');
+        button.textContent = GameModes[mode];
+        button.classList.add('mode-selection-button');
+        button.addEventListener('click', () => {
+            button.disabled = true;
+            showLeaderboard(mode, MaxLeaderboardEntriesCount).then(() => button.disabled = false);
+        })
+        leaderboardModeSelection.appendChild(button);
     });
 }
 
