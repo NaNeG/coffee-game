@@ -1,8 +1,7 @@
-import { Cup, Drink, PouringBar, Order } from './gameElements.js';
+import { Cup, Drink, PouringBar } from './gameElements.js';
 import { mix_rgbs, getRandomInt, equalOrders, Inputs, Volumes,
-         inputImages, Events, FullScore, Fillings, Toppings,
-         convertRGB, TabIndexOffsets, equalComponents,
-         getArrayDifference, getArrayIntersection,
+         inputImages, FullScore, Fillings, Toppings,
+         convertRGB, TabIndexOffsets,
          componentsColors,
          CursedFillings,
          CursedToppings,

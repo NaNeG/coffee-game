@@ -18,32 +18,12 @@ export const inputImages = {
     3: 'left.png',
 };
 
-export const Events = {
-    init: 'init',
-    restart: 'restart',
-    dispose: 'dispose',
-    nextState: 'nextState',
-};
-
 export const Fillings = ['coffee', 'tea', 'juice'];
 export const Toppings = ['milk', 'chocolate', 'fizzyWater', 'caramel', 'lemon', 'mint'];
 export const CursedFillings = ['uranium', 'void', 'nakirium', 'chicken', 'concrete'];
 export const CursedToppings = ['mucacium', 'antimatter', 'emotions', 'magma'];
 
-// export const CursedFillings = {
-//     'x1': 'X1',
-//     'x2': 'X2',
-//     'x3': 'X3'
-// };
-
-// export const CursedToppings = {
-//     'y1': 'Y1',
-//     'y2': 'Y2',
-//     'y3': 'Y3'
-// };
-
 export const Components = [...Fillings, ...Toppings];
-
 export const CursedComponents = [...CursedFillings, ...CursedToppings];
 
 export const IsFilling = {

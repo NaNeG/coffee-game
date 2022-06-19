@@ -1,4 +1,4 @@
-import { getRandomInt, getRgb, IsFilling } from "./helpers.js";
+import { IsFilling } from "./helpers.js";
 
 
 class Drawable {

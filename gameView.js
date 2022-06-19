@@ -1,4 +1,3 @@
-import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js';
 import { CursedRecipes, Recipes } from "./recipes.js";
 import { leaderboardDBs } from "./leaderboardApi.js";

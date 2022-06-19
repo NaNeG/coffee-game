@@ -896,12 +896,6 @@ body {
   }
 }
 
-/* @media screen and (max-height: 799px) {
-  #barElementsContainer {
-    transform: scale(0.75);
-  }
-} */
-
 @media screen and (max-height: 799px), screen and (max-width: 749px){
   h1 {
     font-size: 24px;
@@ -924,9 +918,6 @@ body {
 
 .lightbox {
   position: fixed;
-  /* top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-100%); */
   background-color: #FFFDF0;
   border-radius: 10px;
   font-family: 'TTSkip';

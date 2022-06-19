@@ -1,6 +1,6 @@
 import { Order } from "./gameElements.js";
 import { FillState, MixState, PourState, FinalState, addRipple, removeRipple } from "./gameStates.js";
-import { equalArrays, getRandomInt, setRandomInterval, Volumes, ArcadeGameTime, getRipplePosition } from "./helpers.js";
+import { equalArrays, getRandomInt, setRandomInterval, Volumes, ArcadeGameTime } from "./helpers.js";
 import { CursedRecipes, Recipes } from "./recipes.js";
 import { Languages } from "./translations.js";
 
