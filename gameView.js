@@ -6,12 +6,13 @@ import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets, MaxLe
 
 const firstGameMode = Object.keys(GameModes)[0];
 
+let playerId;
 let currentGameSession;
 let gameTimer;
 
 let scriptNode = document.getElementsByTagName('script')[0];
 const overlayNode = document.querySelector('.overlay');
-const recipesTable = document.querySelector('.recipes').firstElementChild;
+const recipesTable = document.querySelector('.recipes table');
 const leaderboardLightBox = document.querySelector('.leaderboard');
 const leaderboardTable = leaderboardLightBox.querySelector('table');
 const leaderboardModeSelection = leaderboardLightBox.querySelector('#leaderboard-mode-selection');
@@ -25,17 +26,37 @@ for (let {name, components} of Object.values(Recipes)) {
     row.insertCell().textContent = components.map(x => ComponentTranslation[x]).join(', ');
 }
 
+function nicknameIsValid(nickname) {
+    return 1 <= nickname.length && nickname.length <= 12;
+}
+
 function createStartButton(container) {
     let startButton = document.createElement('button');
     startButton.id = 'startButton';
     startButton.textContent = 'Старт';
     startButton.classList.add('start-menu-button');
     startButton.addEventListener('click', () => {
+        let nickInput = document.querySelector('#nickname-input');
+        if (!nicknameIsValid(nickInput.value)) {
+            startButton.disabled = true;
+            return;
+        }
         createModeButtons(container);
+        playerId = nickInput.value;
         startButton.remove();
+        nickInput.remove();
         document.getElementById('leaderboardButton').remove();
     });
     return startButton;
+}
+
+function createNicknameInput() {
+    let input = document.createElement('input');
+    input.id = 'nickname-input';
+    input.type = 'text';
+    input.maxLength = 12;
+    input.addEventListener('input', () => document.querySelector('#startButton').disabled = !nicknameIsValid(input.value));
+    return input;
 }
 
 function createModeButtons(container) {
@@ -67,11 +88,14 @@ function createStartScreen() {
     title.id = 'startScreenTitle';
     title.textContent = 'Cofea';
     let startButton = createStartButton(startScreenContainer);
+    let nicknameInput = createNicknameInput();
     let leaderboardButton = createLeaderboardButton();
     let ripple = document.createElement('div');
     ripple.classList.add('start-screen-ripple');
-    startScreenContainer.append(title, startButton, leaderboardButton, ripple);
+    startScreenContainer.append(title, nicknameInput, startButton, leaderboardButton, ripple);
     scriptNode.before(startScreenContainer);
+    nicknameInput.value = playerId ?? '';
+    nicknameInput.dispatchEvent(new Event('input'));
 }
 
 function hideStartScreen(event) {
@@ -150,7 +174,7 @@ function initGame(mode) {
 
     scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
 
-    currentGameSession = new GameSession(123, mode); //add playerId
+    currentGameSession = new GameSession(playerId, mode);
     switch (mode) {
         case 'classic':
             gameTimer = setInterval(() => {
@@ -271,9 +295,7 @@ function finishSession() {
     let gameScore = currentGameSession.score;
     let totalOrders = currentGameSession.totalOrders;
     let correctOrders = currentGameSession.correctOrders;
-    const playerId = 123; // todo: fix
-    console.log(leaderboardDBs[currentGameMode].get(playerId)?.points);
-    console.log(gameScore);
+    let playerId = currentGameSession.playerId;
     if (leaderboardDBs[currentGameMode].get(playerId)?.points ?? -1 < gameScore) {
         leaderboardDBs[currentGameMode].create(playerId, {points: gameScore});
     }
