@@ -976,3 +976,24 @@ body {
   justify-content: space-between;
   padding-bottom: 10px;
 }
+
+#nickname-input {
+  width: 300px;
+  height: 6%;
+  background: white;
+  border-radius: 50px;
+  font-family: 'TTSkip';
+  font-size: 24px;
+  color: #8d726e;
+  padding: 0 30px;
+  box-sizing: border-box;
+  border: 3px solid #ffd599;
+  margin: 2%;
+}
+
+
+#nickname-input::placeholder {
+  color: #8d726e;
+  opacity: 0.5;
+  text-align: center;
+}

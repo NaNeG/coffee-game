@@ -61,6 +61,7 @@ function createNicknameInput() {
     let input = document.createElement('input');
     input.id = 'nickname-input';
     input.type = 'text';
+    input.placeholder = 'Ваш ник:'
     input.maxLength = 12;
     input.addEventListener('input', () => document.querySelector('#startButton').disabled = !nicknameIsValid(input.value));
     return input;
