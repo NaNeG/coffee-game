@@ -801,9 +801,6 @@ body {
   }
 }
 
-@media screen and (min-width: 1460px) and (min-height: 950px) {
-}
-
 @media screen and (max-width: 1459px) {
   #nextStateButton {
     margin-left: 15px;
@@ -931,6 +928,13 @@ body {
   border: 20px #FFFDF0 solid;
   box-shadow: 0px 0px 20px 0px #FFD599;
   color: #8d726e;
+}
+
+.lightbox.leaderboard table {
+  border-spacing: 10px;
+  margin: auto;
+  text-align: center;
+  width: 500px;
 }
 
 .lightbox table {
