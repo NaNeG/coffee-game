@@ -23,7 +23,14 @@ export const Recipes = {
 }
 
 export const CursedRecipes = {
-    0: { name: 'XRM-S55', components: ['x1', 'x2', 'x3'] },
-    1: { name: 'HFG-727', components: ['x1', 'x1', 'y1'] },
-    2: { name: 'JAN-1K', components: ['x2', 'y1', 'y2'] },
+    0: { name: 'XML-98Y', components: ['void', 'emotions', 'uranium'] },
+    1: { name: 'OSU-727', components: ['nakirium', 'emotions', 'mucacium'] },
+    2: { name: 'JAN-1K5', components: ['concrete', 'mucacium', 'mucacium'] },
+    3: { name: 'KFP-607', components: ['chicken', 'chicken', 'chicken'] },
+    4: { name: 'YMD-255', components: ['void', 'antimatter', 'emotions'] },
+    5: { name: 'NNC-H1S', components: ['uranium', 'emotions', 'magma'] },
+    6: { name: 'AME-114', components: ['nakirium', 'mucacium', 'emotions'] },
+    7: { name: 'NNG-153', components: ['uranium', 'emotions', 'void'] },
+    8: { name: 'IRS-397', components: ['void', 'concrete', 'magma'] },
+    9: { name: 'NKR-434', components: ['nakirium', 'nakirium', 'emotions'] },
 }

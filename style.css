@@ -22,9 +22,17 @@ h1 {
   color: #8d726e;
 }
 
+h1.cursed {
+  color: white;
+}
+
 h2 {
   font-family: 'TTSkip';
   color: #8d726e;
+}
+
+h2.cursed {
+  color: white;
 }
 
 body {
@@ -103,6 +111,7 @@ body {
   font-size: 20px;
   cursor: pointer;
   color: #8d726e;
+  font-size: 16px;
 }
 
 .filling-button:hover {
@@ -124,6 +133,7 @@ body {
   color: #8d726e;
   z-index: 10;
   margin: 2%;
+  cursor: pointer;
 }
 
 .start-menu-button:hover {
@@ -132,6 +142,31 @@ body {
 }
 
 .start-menu-button:active {
+  background: #ffc676;
+  transition: 0.2s;
+}
+
+.mode-selection-button {
+  width: 175px;
+  height: 100%;
+  background: white;
+  border: 2px solid #ffd599;
+  border-radius: 50px;
+  font-family: 'TTSkip';
+  font-size: 18px;
+  color: #8d726e;
+  z-index: 10;
+  padding: 5px 20px;
+  margin: 1%;
+  cursor: pointer;
+}
+
+.mode-selection-button:hover {
+  background: #ffd599;
+  transition: 0.2s;
+}
+
+.mode-selection-button:active {
   background: #ffc676;
   transition: 0.2s;
 }
@@ -182,6 +217,7 @@ body {
   font-size: 24px;
   color: #8d726e;
   margin: 20px;
+  cursor: pointer;
 }
 
 .game-menu-button:hover {
@@ -190,6 +226,27 @@ body {
 
 .game-menu-button:active {
   background: #ffc676;
+}
+
+.cursed-menu-button {
+  width: 200px;
+  height: 80px;
+  background: #51ff00;
+  border: 3px solid #51ff00;
+  border-radius: 50px;
+  font-family: 'TTSkip';
+  font-size: 24px;
+  color: #8d726e;
+  margin: 20px;
+  cursor: pointer;
+}
+
+.cursed-menu-button:hover {
+  background: #3fc700;
+}
+
+.cursed-menu-button:active {
+  background: #3bb900;
 }
 
 .mix-button {
@@ -475,24 +532,43 @@ body {
   background: rgb(130, 174, 43);
 }
 
-.x1 {
-  background: rgb(0, 0, 255);
+.uranium {
+  background: #70cc13;
 }
-.x2 {
-  background: rgb(0, 255, 0);
+
+.void {
+  background: rgb(1, 1, 1);
 }
-.x3 {
-  background: rgb(255, 0, 0);
+
+.nakirium {
+  background: #d9d8db;
 }
-.y1 {
-  background: rgb(255, 0, 255);
+
+.chicken {
+  background: #e37600;
 }
-.y2 {
-  background: rgb(0, 255, 255);
+
+.concrete {
+  background: #cbcbcb;
 }
-.y3 {
-  background: rgb(255, 255, 0);
+
+.mucacium {
+  background: #fff4cb;
 }
+
+.antimatter {
+  background: #2c1f3b;
+}
+
+.emotions {
+  background: #96b180;
+}
+
+.magma {
+  background: #f5ea42;
+}
+
+
 
 
 
@@ -509,12 +585,18 @@ body {
   animation: flash-background 0.5s ease;
 }
 
+.flash-background-cursed {
+  animation: flash-background-cursed 0.5s ease;
+}
+
 #gameContainer {
   display: flex;
   justify-content: center;
   width: 100%;
   height: 67vh;
   flex-wrap: wrap;
+  overflow: scroll;
+  align-items: center;
 }
 
 #leftMixButton {
@@ -541,12 +623,6 @@ body {
   margin-left: auto;
 }
 
-#startButton {
-  
-}
-
-
-
 #gameInfoContainer {
   display: flex;
   justify-content: space-around;
@@ -567,6 +643,11 @@ body {
 }
 
 #modeInfoContainer {
+  width: 50%;
+  text-align: center;
+}
+
+#stageInfoContainer {
   width: 50%;
   text-align: center;
 }
@@ -677,6 +758,22 @@ body {
   }
 }
 
+@keyframes flash-background-cursed {
+  0% {
+    background: linear-gradient(90deg, rgb(80, 0, 69) 15%, #FFD599 50%, rgb(80, 0, 69) 85%);
+  }
+
+  50%{
+    background: linear-gradient(90deg, rgb(80, 0, 69) 15%, rgb(255, 48, 48) 50%, rgb(80, 0, 69) 85%);
+  }
+
+  100% {
+    background: linear-gradient(90deg, rgb(80, 0, 69) 15%, #FFD599 50%, rgb(80, 0, 69) 85%);
+  }
+}
+
+
+
 @keyframes screen-pulse {
 
 
@@ -705,7 +802,7 @@ body {
   }
 }
 
-@media screen and (min-width: 1460px) and (min-height: 900px) {
+@media screen and (min-width: 1460px) and (min-height: 950px) {
   .filling-menu-dimming {
     display: none;
   }
@@ -725,15 +822,85 @@ body {
   .game-menu-button {
     width: 80%;
   }
-}
-
-@media screen and (max-width: 749px) {
-  #gameContainer {
-    overflow: scroll;
+  .cursed-menu-button {
+    width: 80%;
   }
 }
 
-@media screen and (max-height: 799px){
+@media screen and (max-width: 899px) {
+  #gameContainer {
+    flex-wrap: wrap;
+    overflow: hidden;
+  }
+ 
+  .cup-container {
+    margin: auto 0;
+  }
+}
+
+@media screen and (max-width: 549px) {
+  .bar-elements-container {
+    transform: rotate(90deg) scale(0.75);
+  }
+  .stop-button {
+    transform: rotate(-90deg);
+  }
+}
+
+@media screen and (max-width: 699px) {
+ 
+
+  #mixButtonsContainer {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .mix-button img {
+    width: 75px;
+    height: 75px;
+  }
+
+  
+  .required-inputs-container {
+    height: 75px;
+  }
+
+  
+  .required-inputs-container img {
+    width: 75px;
+    height: 75px;
+  }
+
+  .cup {
+    width: 225px;
+    height: 225px;
+  }
+
+  .mug {
+    width: 225px;
+    height: 225px;
+  }
+
+  #pouringCupContainer {
+    width: 225px;
+    height: 225px;
+  }
+
+  #cupContainer {
+    width: 225px;
+    height: 225px;
+  }
+
+  .filling-bar-container {
+    bottom: 12px;
+  }
+
+  .mug-filling-bar-container {
+    bottom: 28px;
+  }
+}
+
+@media screen and (max-height: 799px), screen and (max-width: 749px){
   h1 {
     font-size: 24px;
   }
@@ -746,8 +913,12 @@ body {
     font-size: 18px;
     height: 60px;
   }
-}
 
+  .cursed-menu-button {
+    font-size: 18px;
+    height: 60px;
+  }
+}
 
 
 .lightbox {
@@ -768,9 +939,8 @@ body {
 
 .lightbox table {
   border-spacing: 10px;
+  margin: auto;
 }
-
-
 
 .lightbox-dimming {
   position: sticky;
@@ -799,4 +969,10 @@ body {
   top: 0;
   left: 0;
   z-index: 100;
+}
+
+#leaderboardModeSelection {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
 }

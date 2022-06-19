@@ -33,7 +33,7 @@ export class GameSession {
         } 
         this.orderCreator = setRandomInterval(() => { 
             this.createOrder();
-        }, 12000, 12000);
+        }, 5000, 15000);
         
     }
 
@@ -63,19 +63,19 @@ export class GameSession {
         let nextStateButton = document.getElementById('nextStateButton');
         nextStateButton.disabled = false;
         if (getRandomInt(2) === 0) {
-            let recipe = CursedRecipes[getRandomInt(3)];
+            let recipe = CursedRecipes[getRandomInt(10)];
             this.orders.push(new Order(recipe, volume, true));
             if (this.firstOrder) {
                 addRipple();
             } else if (this.orders[0].isCursed && this.gameState instanceof FinalState && !this.gameState.currentOrder.isCursed) {
-                nextStateButton.addEventListener('click', rippleFunc = addRipple.bind(nextStateButton));
+                nextStateButton.addEventListener('click', rippleEventListener = addRipple.bind(nextStateButton));
             }
             console.log(recipe.components, recipe.name, volume);
         } else {
             let recipe = Recipes[getRandomInt(21)];
             this.orders.push(new Order(recipe, volume, false));
             if (!this.orders[0].isCursed && this.gameState instanceof FinalState && this.gameState.currentOrder.isCursed) {
-                nextStateButton.addEventListener('click', rippleFunc = removeRipple.bind(nextStateButton));
+                nextStateButton.addEventListener('click', rippleEventListener = removeRipple.bind(nextStateButton));
             }
             console.log(recipe.components, recipe.name, volume);
         }
