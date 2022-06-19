@@ -1,8 +1,8 @@
 import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js'
-import { Recipes } from "./recipes.js";
+import { CursedRecipes, Recipes } from "./recipes.js";
 import { leaderboardDBs } from "./leaderboardApi.js";
-import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition } from "./helpers.js";
+import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition, CursedComponentTranslation } from "./helpers.js";
 
 const firstGameMode = Object.keys(GameModes)[0];
 
@@ -13,9 +13,10 @@ let gameTimer;
 let scriptNode = document.getElementsByTagName('script')[0];
 const overlayNode = document.querySelector('.overlay');
 const recipesTable = document.querySelector('.recipes table');
+const cursedRecipesTable = document.querySelector('.cursed-recipes table');
 const leaderboardLightBox = document.querySelector('.leaderboard');
 const leaderboardTable = leaderboardLightBox.querySelector('table');
-const leaderboardModeSelection = leaderboardLightBox.querySelector('#leaderboard-mode-selection');
+const leaderboardModeSelection = leaderboardLightBox.querySelector('#leaderboardModeSelection');
 
 createStartScreen();
 addModeSelectionButtonsToLeaderboardLightbox();
@@ -24,6 +25,12 @@ for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
     row.insertCell().textContent = name + ':';
     row.insertCell().textContent = components.map(x => ComponentTranslation[x]).join(', ');
+}
+
+for (let {name, components} of Object.values(CursedRecipes)) {
+    let row = cursedRecipesTable.insertRow();
+    row.insertCell().textContent = name + ':';
+    row.insertCell().textContent = components.map(x => CursedComponentTranslation[x]).join(', ');
 }
 
 function nicknameIsValid(nickname) {
@@ -125,6 +132,16 @@ function createRecipesButton() {
     return recipesButton;
 }
 
+function createCursedRecipesButton() {
+    let recipesButton = document.createElement('button');
+    recipesButton.id = 'cursedRecipesButton';
+    recipesButton.textContent = 'Рецепты';
+    recipesButton.addEventListener('click', () => showLightBox('.cursed-recipes'));
+    recipesButton.classList.add('cursed-menu-button');
+    recipesButton.style.display = 'none';
+    return recipesButton;
+}
+
 function createLeaderboardButton() {
     let leaderboardButton = document.createElement('button');
     leaderboardButton.id = 'leaderboardButton';
@@ -144,7 +161,8 @@ function initGame(mode) {
 
     let modeInfoContainer = createModeInfoContainer(mode);
     let scoreContainer = createScoreContainer();
-    let gameInfoContainer = createGameInfoContainer(scoreContainer, modeInfoContainer);
+    let stageInfoContainer = createStageInfoContainer();
+    let gameInfoContainer = createGameInfoContainer(scoreContainer, stageInfoContainer, modeInfoContainer);
     // todo: move timer & score containers creation inside?
 
     let orderContainer = createOrderContainer();
@@ -154,16 +172,17 @@ function initGame(mode) {
     let finishButton = createFinishButton();
     let restartButton = createRestartButton();
     let recipesButton = createRecipesButton();
+    let cursedRecipesButton = createCursedRecipesButton();
     let nextStateButton = createNextStateButton();
-    let menuContainer = createMenuContainer(finishButton, restartButton, recipesButton, nextStateButton);
+    let menuContainer = createMenuContainer(finishButton, restartButton, cursedRecipesButton, recipesButton, nextStateButton);
     // todo: move buttons creation inside?
     // todo: redundant css class for button, menu's id is enough?
 
     [finishButton, restartButton, recipesButton, nextStateButton].forEach(
         (btn, i) => btn.tabIndex = TabIndexOffsets.menu + i
     );
-    menuContainer.append(finishButton, restartButton, recipesButton, nextStateButton);
-    gameInfoContainer.append(scoreContainer, modeInfoContainer);
+    // menuContainer.append(finishButton, restartButton, recipesButton, nextStateButton);
+    //gameInfoContainer.append(scoreContainer, modeInfoContainer);
 
     scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
 
@@ -235,10 +254,10 @@ function createFinishButton() {
     return finishButton;
 }
 
-function createGameInfoContainer(scoreContainer, timerContainer) {
+function createGameInfoContainer(scoreContainer, stageInfoContainer, timerContainer) {
     let gameInfoContainer = document.createElement('div');
     gameInfoContainer.id = 'gameInfoContainer';
-    gameInfoContainer.append(scoreContainer, timerContainer);
+    gameInfoContainer.append(scoreContainer, stageInfoContainer, timerContainer);
     return gameInfoContainer;
 }
 
@@ -262,6 +281,16 @@ function createModeInfoContainer(mode) {
     } 
     modeInfoContainer.append(modeInfo);
     return modeInfoContainer;
+}
+
+function createStageInfoContainer() {
+    let stageInfoContainer = document.createElement('div');
+    stageInfoContainer.id = 'stageInfoContainer';
+    let stageText = document.createElement('h1');
+    stageText.id = 'stageText';
+    stageText.textContent = `Наполнение`;
+    stageInfoContainer.append(stageText);
+    return stageInfoContainer;
 }
 
 function createGameContainer() {
@@ -322,6 +351,7 @@ function createScoreContainer() {
 }
 
 function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
+    document.body.style.background = '#FFFDF0';
     let resultsScreenContainer = document.createElement('div');
     resultsScreenContainer.id = 'resultsScreenContainer';
 
@@ -392,7 +422,8 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
 function addModeSelectionButtonsToLeaderboardLightbox() {
     Object.keys(GameModes).forEach(mode => {
         let btn = document.createElement('button');
-        btn.textContent = mode;
+        btn.textContent = GameModes[mode];
+        btn.classList.add('mode-selection-button');
         btn.addEventListener('click', () => showLeaderboard(mode, MaxLeaderboardEntriesCount))
         leaderboardModeSelection.appendChild(btn);
     });

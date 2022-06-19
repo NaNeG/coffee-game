@@ -8,8 +8,6 @@ import { mix_rgbs, getRandomInt, equalOrders, Inputs, Volumes,
          CursedToppings, 
         getRipplePosition} from "./helpers.js";
 
-globalThis.rippleFunc = () => {};
-
 class State {
     constructor(orders) {
         this.gameContainer = document.getElementById('gameContainer');
@@ -40,9 +38,16 @@ class FillState extends State {
             firstTime = true;
         }
         this.init(firstTime);
+        
     }
 
     init(firstTime) {
+        let recipesButton = document.getElementById('recipesButton');
+        let cursedRecipesButton = document.getElementById('cursedRecipesButton');
+
+        let stageText = document.getElementById('stageText');
+        stageText.textContent = 'Наполнение';
+
         let cupContainer = this._createCupContainer();
 
         let fillingTitleContainer = this._createFillingTitleContainer();
@@ -63,18 +68,19 @@ class FillState extends State {
             toppingMenuContainer.classList.add('filling-menu-container');
 
         if (window.matchMedia("(min-width: 1251px)").matches) {
+            this.gameContainer.style.flexWrap = 'nowrap';
             fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, fillingMenuDimming);
             toppingMenuContainer.append(toppingTitleContainer, toppingsContainer, toppingMenuDimming);
-            this.gameContainer.style.flexWrap = 'nowrap';
         } else {
-            fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, toppingTitleContainer, toppingsContainer, fillingMenuDimming);
             this.gameContainer.style.flexWrap = 'wrap';
+            fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, toppingTitleContainer, toppingsContainer, fillingMenuDimming);
         }
 
         this.cup = new Cup(cupContainer);
         let offset = TabIndexOffsets.game;
 
         if (this.orders[0].isCursed) {
+            
             for (let [name, translation] of Object.entries(CursedFillings)) {
                 let button = this._createIngredientButton(name, translation);
                 button.tabIndex = offset;
@@ -89,17 +95,37 @@ class FillState extends State {
             }
             if (firstTime && (this.previousOrder == undefined || !this.previousOrder.isCursed)) {
                 setTimeout(() => {
+                    cursedRecipesButton.style.display = 'block';
+                    recipesButton.style.display = 'none';
+                    let h1Elements = document.getElementsByTagName("h1");
+                    for (let i = 0; i < h1Elements.length; i++) {
+                        h1Elements[i].classList.add('cursed');
+                    }
+                    let h2Elements = document.getElementsByTagName("h1");
+                    for (let i = 0; i < h1Elements.length; i++) {
+                        h2Elements[i].classList.add('cursed');
+                    }
                     cupContainer.classList.add('cursed');
                     fillingMenuDimming.classList.add('cursed');
                     toppingMenuDimming.classList.add('cursed');
                 }, 750);
             } else {
+                let h1Elements = document.getElementsByTagName("h1");
+                for (let i = 0; i < h1Elements.length; i++) {
+                    h1Elements[i].classList.add('cursed');
+                }
+                let h2Elements = document.getElementsByTagName("h1");
+                for (let i = 0; i < h1Elements.length; i++) {
+                    h2Elements[i].classList.add('cursed');
+                }
                 cupContainer.classList.add('cursed');
                 fillingMenuDimming.classList.add('cursed');
                 toppingMenuDimming.classList.add('cursed');
             }
             
         } else {
+            cursedRecipesButton.style.display = 'none';
+            recipesButton.style.display = 'block';
             for (let [name, translation] of Object.entries(Fillings)) {
                 let button = this._createIngredientButton(name, translation);
                 button.tabIndex = offset;
@@ -111,6 +137,14 @@ class FillState extends State {
                 button.tabIndex = offset;
                 toppingsContainer.append(button);
                 offset++;
+            }
+            let h1Elements = document.getElementsByTagName("h1");
+            for (let i = 0; i < h1Elements.length; i++) {
+                h1Elements[i].classList.remove('cursed');
+            }
+            let h2Elements = document.getElementsByTagName("h1");
+            for (let i = 0; i < h1Elements.length; i++) {
+                h2Elements[i].classList.remove('cursed');
             }
             cupContainer.classList.remove('cursed');
             fillingMenuDimming.classList.remove('cursed');
@@ -189,6 +223,11 @@ class MixState extends State {
             'down': null,
         };
 
+        this.gameContainer.style.flexWrap = 'wrap';
+
+        let stageText = document.getElementById('stageText');
+        stageText.textContent = 'Смешивание';
+
         let cupContainer = this._createCupContainer();
         let mixButtonsContainer = this._createMixButtonsContainer();
         let requiredInputsContainer = this._createRequiredInputsContainer();
@@ -215,7 +254,6 @@ class MixState extends State {
         );
         mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
         
-        this.gameContainer.style.flexWrap = 'wrap';
         this.gameContainer.replaceChildren(cupContainer, mixButtonsContainer, requiredInputsContainer);
         this.cup.changeContainer(cupContainer);
         this.cup.draw();
@@ -329,8 +367,14 @@ class MixState extends State {
             arrowObject.classList.remove(...arrowObject.classList);
         }
         let requiredInputsContainer = document.getElementById('requiredInputsContainer');
-        requiredInputsContainer.classList.add('flash-background');
-        setTimeout(() => requiredInputsContainer.classList.remove('flash-background'), 1000);
+        
+        if (this.orders[0].isCursed) {
+            requiredInputsContainer.classList.add('flash-background-cursed');
+            setTimeout(() => requiredInputsContainer.classList.remove('flash-background-cursed'), 1000);
+        } else {
+            requiredInputsContainer.classList.add('flash-background');
+            setTimeout(() => requiredInputsContainer.classList.remove('flash-background'), 1000);
+        }
         this.userInputs = [];
     }
 }
@@ -343,7 +387,11 @@ class PourState extends State {
     }
 
     init() {
+        let stageText = document.getElementById('stageText');
+        stageText.textContent = 'Разлив';
+
         this._mixColor = mix_rgbs(...this.getComponentsColorsOfCup());
+        console.log(this._mixColor);
         this.gameContainer.replaceChildren();
 
         let cupContainer = this._createCupContainer();
@@ -448,7 +496,10 @@ class FinalState extends State {
 
         this.gameContainer.replaceChildren();
 
-        let scoreContainer =  document.createElement('div');
+        let stageText = document.getElementById('stageText');
+        stageText.textContent = 'Результат';
+
+        let scoreContainer = document.createElement('div');
         scoreContainer.classList.add('final-info-container');
 
         let componentsEqualityContainer = document.createElement('div');
@@ -459,6 +510,18 @@ class FinalState extends State {
 
         let scoreText = document.createElement('h1');
         let streakText = document.createElement('h1');
+
+        scoreContainer.append(scoreText, streakText);
+
+        this.gameContainer.append(scoreContainer);
+
+        if (this.orders[0].isCursed) {
+            let h1Elements = document.getElementsByTagName("h1");
+            for (let i = 0; i < h1Elements.length; i++) {
+                h1Elements[i].classList.add('cursed');
+            }
+        }
+        
 
         if (equalOrders(this.orders[0], this.components, this.volume)) {
             if (this.orders[0].isCursed) {
@@ -473,11 +536,11 @@ class FinalState extends State {
                 orderText.textContent = ''; // todo: why empty?
             } else if (!this.currentOrder.isCursed && this.orders[0].isCursed){
                 let nextStateButton = document.getElementById('nextStateButton');
-                nextStateButton.addEventListener('click', rippleFunc = addRipple.bind(nextStateButton));
+                nextStateButton.addEventListener('click', rippleEventListener = addRipple.bind(nextStateButton));
                 orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
             } else if (this.currentOrder.isCursed && !this.orders[0].isCursed){
                 let nextStateButton = document.getElementById('nextStateButton');
-                nextStateButton.addEventListener('click', rippleFunc = removeRipple.bind(nextStateButton));
+                nextStateButton.addEventListener('click', rippleEventListener = removeRipple.bind(nextStateButton));
                 orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
             } else {
                 orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
@@ -489,13 +552,6 @@ class FinalState extends State {
 
         scoreText.textContent = `Очки за заказ: ${this.score}`;
         streakText.textContent = `Серия: ${this.streak}`;
-
-        scoreContainer.append(scoreText, streakText);
-
-        // componentsEqualityContainer.append(addedComponentsText, requiredComponentsText, componentDifferenceText);
-        // volumesEqualityContainer.append(addedVolumeText, requiredVolumeText);
-
-        this.gameContainer.append(scoreContainer);
     }
 
     restart() {
@@ -518,7 +574,7 @@ export function addRipple() {
         ripple.remove();  
     }, 750);
     if (this != undefined) {
-        this.removeEventListener('click', rippleFunc);
+        this.removeEventListener('click', rippleEventListener);
     }
 }
 
@@ -537,7 +593,9 @@ export function removeRipple() {
         document.body.style.background = '#FFFDF0';
         ripple.remove();  
     }, 750);
-    this.removeEventListener('click', rippleFunc);
+    this.removeEventListener('click', rippleEventListener);
 }
+
+globalThis.rippleEventListener = () => {}; // I am sorry for this, tried everything else to get rid of it
 
 export {FillState, MixState, PourState, FinalState}

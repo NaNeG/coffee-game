@@ -40,10 +40,25 @@ export const Toppings = {
     'mint': 'Мята',
 }
 
+export const CursedFillings = {
+    'uranium': 'Уран',
+    'void': 'Пустота',
+    'nakirium': 'Накириум',
+    'chicken': 'Курица???',
+    'concrete': 'Бетон',
+}
+
+export const CursedToppings = {
+    'mucacium': 'Мукациум',
+    'antimatter': 'Антиматерия',
+    'emotions': 'Эмоции',
+    'magma': 'Магма'
+}
+
 // export const CursedFillings = {
-//     'uranium': 'Уран',
-//     'muc': 'MUC-963',
-//     'nakirium': 'Накириум'
+//     'x1': 'X1',
+//     'x2': 'X2',
+//     'x3': 'X3'
 // }
 
 // export const CursedToppings = {
@@ -51,17 +66,6 @@ export const Toppings = {
 //     'y2': 'Y2',
 //     'y3': 'Y3'
 // }
-export const CursedFillings = {
-    'x1': 'X1',
-    'x2': 'X2',
-    'x3': 'X3'
-}
-
-export const CursedToppings = {
-    'y1': 'Y1',
-    'y2': 'Y2',
-    'y3': 'Y3'
-}
 
 export const ComponentTranslation = { ...Fillings, ...Toppings }
 
@@ -77,12 +81,15 @@ export const IsFilling = {
     'caramel': false,
     'lemon': false,
     'mint': false,
-    'x1': true,
-    'x2': true,
-    'x3': true,
-    'y1': false,
-    'y2': false,
-    'y3': false
+    'uranium': true,
+    'void': true,
+    'nakirium': true,
+    'chicken': true,
+    'concrete': true,
+    'mucacium': false,
+    'anitmatter': false,
+    'emotions': false,
+    'magma': false
 }
 
 export const VolumeTranslation = {
@@ -202,6 +209,7 @@ function mix_cmyks(...cmyks) {
 }
 
 export function mix_rgbs(...rgbs) {
+    console.log(rgbs);
     let cmyks = rgbs.map(rgb => rgb2cmyk(...rgb));
     let mixture_cmyk = mix_cmyks(...cmyks);
     let mixture_rgb = cmyk2rgb(...mixture_cmyk);
