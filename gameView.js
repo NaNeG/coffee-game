@@ -2,7 +2,7 @@ import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js';
 import { CursedRecipes, Recipes } from "./recipes.js";
 import { leaderboardDBs } from "./leaderboardApi.js";
-import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition, CursedComponentTranslation } from "./helpers.js";
+import { ArcadeGameTime, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition } from "./helpers.js";
 import { Languages } from "./translations.js";
 
 const firstGameMode = Object.keys(GameModes)[0];
@@ -28,13 +28,13 @@ addModeSelectionButtonsToLeaderboardLightbox();
 for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
     row.insertCell().textContent = name + ':';
-    row.insertCell().textContent = components.map(x => ComponentTranslation[x]).join(', ');
+    row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
 }
 
 for (let {name, components} of Object.values(CursedRecipes)) {
     let row = cursedRecipesTable.insertRow();
     row.insertCell().textContent = name + ':';
-    row.insertCell().textContent = components.map(x => CursedComponentTranslation[x]).join(', ');
+    row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
 }
 
 function nicknameIsValid(nickname) {

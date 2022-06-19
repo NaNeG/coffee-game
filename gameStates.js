@@ -85,14 +85,14 @@ class FillState extends State {
 
         if (this.orders[0].isCursed) {
             
-            for (let [name, translation] of Object.entries(CursedFillings)) {
-                let button = this._createIngredientButton(name, translation);
+            for (let filling of CursedFillings) {
+                let button = this._createIngredientButton(filling, curLang[filling]);
                 button.tabIndex = offset;
                 fillingsContainer.append(button);
                 offset++;
             }
-            for (let [engName, translation] of Object.entries(CursedToppings)) {
-                let button = this._createIngredientButton(engName, translation);
+            for (let topping of CursedToppings) {
+                let button = this._createIngredientButton(topping, curLang[topping]);
                 button.tabIndex = offset;
                 toppingsContainer.append(button);
                 offset++;
@@ -130,14 +130,14 @@ class FillState extends State {
         } else {
             cursedRecipesButton.style.display = 'none';
             recipesButton.style.display = 'block';
-            for (let [name, translation] of Object.entries(Fillings)) {
-                let button = this._createIngredientButton(name, translation);
+            for (let filling of Fillings) {
+                let button = this._createIngredientButton(filling, curLang[filling]);
                 button.tabIndex = offset;
                 fillingsContainer.append(button);
                 offset++;
             }
-            for (let [engName, translation] of Object.entries(Toppings)) {
-                let button = this._createIngredientButton(engName, translation);
+            for (let topping of Toppings) {
+                let button = this._createIngredientButton(topping, curLang[topping]);
                 button.tabIndex = offset;
                 toppingsContainer.append(button);
                 offset++;
