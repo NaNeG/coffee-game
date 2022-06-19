@@ -52,7 +52,7 @@ export const IsFilling = {
     'juice': true,
     'milk': false,
     'chocolate': false,
-    'fizzy-water': false,
+    'fizzyWater': false,
     'caramel': false,
     'lemon': false,
     'mint': false,
