@@ -27,13 +27,13 @@ addModeSelectionButtonsToLeaderboardLightbox();
 
 for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
-    row.insertCell().textContent = name + ':';
+    row.insertCell().textContent = curLang[name] + ':';
     row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
 }
 
 for (let {name, components} of Object.values(CursedRecipes)) {
     let row = cursedRecipesTable.insertRow();
-    row.insertCell().textContent = name + ':';
+    row.insertCell().textContent = curLang[name] + ':';
     row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
 }
 

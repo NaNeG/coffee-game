@@ -86,7 +86,7 @@ export class GameSession {
         this.firstOrder = false;
         let orderText = document.getElementById('orderText');
         if (orderText.textContent == '') {
-            orderText.textContent = curLang.orderText(this.orders[0].name, this.orders[0].volume);
+            orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
         }
     }
 

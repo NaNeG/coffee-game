@@ -11,7 +11,18 @@ export const gameModesRussianTranslation = {
 };
 
 export const Languages = {
-    english: {},
+    english: {
+        XML98Y: 'XML-98Y',
+        OSU727: 'OSU-727',
+        JAN1K5: 'JAN-1K5',
+        KFP607: 'KFP-607',
+        YMD255: 'YMD-255',
+        NNCH1S: 'NNC-H1S',
+        AME114: 'AME-114',
+        NNG153: 'NNG-153',
+        IRS397: 'IRS-397',
+        NKR434: 'NKR-434',
+    },
     russian : {
         mistakeCounterText: mistakesCount => 'Ошибок: ' + mistakesCount,
         orderText: (name, volume) => `Заказ: ${name} ${volumeRussianTranslation[volume]}`,
@@ -38,6 +49,7 @@ export const Languages = {
         pourStateText: 'Разлив',
         pourStateStopButtonText: 'Стоп',
         finalStateText: 'Результат',
+
         coffee: 'Кофе',
         tea: 'Чай',
         juice: 'Сок',
@@ -59,6 +71,28 @@ export const Languages = {
         classic: 'Классика',
         arcade: 'Аркада',
         infinite: 'Бесконечный',
+
+        Atheneum: 'Атенеум',
+        GoldenEden: 'Золотой Эдем',
+        NightOfSpinningStars: 'Ночь кружащихся звезд',
+        CaramelCones: 'Карамельные шишки',
+        LunarAlley: 'Лунная аллея',
+        FarReefFoam: 'Пена дальнего рифа',
+        FoggyGarden: 'Туманный сад',
+        BrightCrown: 'Яркая корона',
+        GuardNote: 'Стража Нота',
+        JoyfulLaughter: 'Радостный смех',
+        SourSheen: 'Кислый блеск',
+        ScientistsLunch: 'Полдник ученого',
+        LoveVerses: 'Любовные стихи',
+        GrayValleySunset: 'Закат серой долины',
+        TheSweetnessOfTheCiderLake: 'Сладость сидрового озера',
+        DawnDew: 'Рассветная роса',
+        EvrasGift: 'Подарок Эвра',
+        SnowCoveredHugs: 'Заснеженные объятья',
+        BirchJuice: 'Березовый сок',
+        StrokeOfTheNight: 'Штрих ночи',
+        TwilightHaze: 'Сумеречная мгла',
     },
 };
 
