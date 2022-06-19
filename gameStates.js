@@ -387,6 +387,8 @@ class PourState extends State {
     }
 
     init() {
+        this.gameContainer.style = '';
+
         let stageText = document.getElementById('stageText');
         stageText.textContent = 'Разлив';
 

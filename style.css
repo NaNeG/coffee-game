@@ -832,17 +832,27 @@ body {
 }
 
 @media screen and (max-width: 549px) {
-  .bar-elements-container {
-    transform: rotate(90deg) scale(0.75);
-  }
-  .stop-button {
-    transform: rotate(-90deg);
+  #gameContainer {
+    flex-wrap: nowrap;
   }
 }
 
+@media screen and (max-height: 799px) {
+  .bar-elements-container {
+    transform: scale(0.75);
+  }
+}
+
+@media screen and (max-height: 699px) {
+  .bar-elements-container {
+    transform: scale(0.5);
+  }
+}
+
+
+
 @media screen and (max-width: 699px), screen and (max-height: 774px) {
  
-
   #mixButtonsContainer {
     width: 300px;
     height: 300px;
@@ -893,17 +903,12 @@ body {
   }
 }
 
-@media screen and (max-height: 799px) {
+/* @media screen and (max-height: 799px) {
   #barElementsContainer {
     transform: scale(0.75);
   }
-}
+} */
 
-@media screen and (max-height: 699px) {
-  #barElementsContainer {
-    transform: scale(0.5);
-  }
-}
 
 @media screen and (max-height: 799px), screen and (max-width: 749px){
   h1 {
