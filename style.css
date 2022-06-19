@@ -840,7 +840,7 @@ body {
   }
 }
 
-@media screen and (max-width: 699px) {
+@media screen and (max-width: 699px), screen and (max-height: 774px) {
  
 
   #mixButtonsContainer {
