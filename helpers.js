@@ -92,12 +92,6 @@ export const IsFilling = {
     'magma': false
 }
 
-export const VolumeTranslation = {
-    'small': 'малый',
-    'medium': 'средний',
-    'large': 'большой'
-}
-
 export const GameModes = {
     'classic': 'Классика',
     'arcade': 'Аркада',

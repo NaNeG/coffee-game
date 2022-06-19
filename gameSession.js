@@ -1,7 +1,11 @@
 import { Order } from "./gameElements.js";
 import { FillState, MixState, PourState, FinalState, addRipple, removeRipple } from "./gameStates.js";
-import { equalArrays, getRandomInt, setRandomInterval, Volumes, VolumeTranslation, ArcadeGameTime, getRipplePosition } from "./helpers.js";
+import { equalArrays, getRandomInt, setRandomInterval, Volumes, ArcadeGameTime, getRipplePosition } from "./helpers.js";
 import { CursedRecipes, Recipes } from "./recipes.js";
+import { Languages } from "./translations.js";
+
+const curLangName = 'russian';
+const curLang = Languages[curLangName];
 
 export class GameSession {
     orders = [];
@@ -39,14 +43,14 @@ export class GameSession {
 
     updateMistakeCounter() {
         let mistakeCounter = document.getElementById('modeInfo');
-        mistakeCounter.textContent = `Ошибок: ${this.totalOrders - this.correctOrders}`;
+        mistakeCounter.textContent = curLang.mistakeCounterText(this.totalOrders - this.correctOrders);
     }
 
     updateInfiniteTimer() {
         let timer = document.getElementById('modeInfo');
         this.timerUpdater = setInterval(() => {
             this.gameTime += 1;
-            timer.textContent = 'Время: ' + this.gameTime;
+            timer.textContent = curLang.timerText(this.gameTime);
         }, 1000);
     }
 
@@ -54,7 +58,7 @@ export class GameSession {
         let timer = document.getElementById('modeInfo');
         this.timerUpdater = setInterval(() => {
             this.gameTime -= 1;
-            timer.textContent = 'Время: ' + this.gameTime;
+            timer.textContent = curLang.timerText(this.gameTime);
         }, 1000);
     }
 
@@ -82,7 +86,7 @@ export class GameSession {
         this.firstOrder = false;
         let orderText = document.getElementById('orderText');
         if (orderText.textContent == '') {
-            orderText.textContent = 'Заказ: ' + this.orders[0].name + ' ' + VolumeTranslation[this.orders[0].volume];
+            orderText.textContent = curLang.orderText(this.orders[0].name, this.orders[0].volume);
         }
     }
 
@@ -121,7 +125,7 @@ export class GameSession {
                 }
                 
                 let scoreText = document.getElementById('scoreText');
-                scoreText.textContent = 'Очки: ' + this.score;
+                scoreText.textContent = curLang.totalScoreText(this.score);
 
                 let nextStateButton = document.getElementById('nextStateButton');
                 if (this.orders.length === 0) {  
