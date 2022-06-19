@@ -12,6 +12,7 @@ export const gameModesRussianTranslation = {
 
 export const Languages = {
     english: {
+        gameTitle: 'Cofea',
         XML98Y: 'XML-98Y',
         OSU727: 'OSU-727',
         JAN1K5: 'JAN-1K5',
