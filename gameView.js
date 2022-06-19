@@ -98,7 +98,7 @@ function createStartScreen() {
     startScreenContainer.id = 'startScreenContainer'; 
     let title = document.createElement('h1');
     title.id = 'startScreenTitle';
-    title.textContent = 'Cofea';
+    title.textContent = curLang.gameTitle;
     let startButton = createStartButton(startScreenContainer);
     let nicknameInput = createNicknameInput();
     let leaderboardButton = createLeaderboardButton();
