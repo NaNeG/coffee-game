@@ -851,6 +851,8 @@ body {
 
 
 
+
+
 @media screen and (max-width: 699px), screen and (max-height: 774px) {
  
   #mixButtonsContainer {
@@ -900,6 +902,18 @@ body {
 
   .mug-filling-bar-container {
     bottom: 28px;
+  }
+}
+
+@media screen and (max-height: 599px) {
+  #mixButtonsContainer {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .mix-button img {
+    width: 50px;
+    height: 50px;
   }
 }
 
