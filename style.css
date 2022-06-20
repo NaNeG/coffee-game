@@ -700,7 +700,7 @@ body {
   position: absolute;
   padding-top: 100px;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
 }
 
 @keyframes fill-percentage {
@@ -792,6 +792,10 @@ body {
     margin-left: 15px;
   }
 
+  .filling-menu-container {
+    transform: scale(0.8);
+  }
+  
   #menuContainer {
     flex-direction: column-reverse;
     align-items: center;

@@ -114,9 +114,7 @@ class Drink extends Drawable {
     }
 
     fill(volume, texture) {
-        this.volume = volume < 33.34 ? 33.34 // todo: FIX!
-                    : volume < 66.68 ? 66.68
-                    : 100;
+        this.volume = Math.ceil(volume / 33.34) * 33.34;
         if (this.firstTimeFill) {
             this.firstTimeFill = false;
             let fillBarContainer = document.getElementById('pouringFillBarContainer');
