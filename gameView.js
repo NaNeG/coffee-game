@@ -1,4 +1,3 @@
-import { Cup } from "./gameElements.js";
 import { GameSession } from './gameSession.js';
 import { CursedRecipes, Recipes } from "./recipes.js";
 import { leaderboardDBs } from "./leaderboardApi.js";
@@ -25,13 +24,13 @@ const leaderboardModeSelection = leaderboardLightBox.querySelector('#leaderboard
 createStartScreen();
 addModeSelectionButtonsToLeaderboardLightbox();
 
-for (let {name, components} of Object.values(Recipes)) {
+for (let {name, components} of Recipes) {
     let row = recipesTable.insertRow();
     row.insertCell().textContent = curLang[name] + ':';
     row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
 }
 
-for (let {name, components} of Object.values(CursedRecipes)) {
+for (let {name, components} of CursedRecipes) {
     let row = cursedRecipesTable.insertRow();
     row.insertCell().textContent = curLang[name] + ':';
     row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
@@ -67,7 +66,9 @@ function createNicknameInput() {
     input.type = 'text';
     input.placeholder = curLang.nicknamePlaceholder;
     input.maxLength = 12;
-    input.addEventListener('input', () => document.querySelector('#startButton').disabled = !nicknameIsValid(input.value));
+    input.addEventListener('input',
+        () => document.querySelector('#startButton').disabled = !nicknameIsValid(input.value)
+    );
     return input;
 }
 
@@ -95,7 +96,7 @@ function createModeButtons(container) {
 
 function createStartScreen() {
     let startScreenContainer = document.createElement('div');
-    startScreenContainer.id = 'startScreenContainer'; 
+    startScreenContainer.id = 'startScreenContainer';
     let title = document.createElement('h1');
     title.id = 'startScreenTitle';
     title.textContent = curLang.gameTitle;
@@ -153,7 +154,8 @@ function createLeaderboardButton() {
     leaderboardButton.textContent = curLang.leaderboardButtonText;
     leaderboardButton.addEventListener('click', () => {
         leaderboardButton.disabled = true;
-        showLeaderboard(currentGameSession?.mode ?? firstGameMode, MaxLeaderboardEntriesCount).then(() => leaderboardButton.disabled = false);
+        showLeaderboard(currentGameSession?.mode ?? firstGameMode, MaxLeaderboardEntriesCount)
+            .then(() => leaderboardButton.disabled = false);
     });
     leaderboardButton.classList.add('start-menu-button');
     return leaderboardButton;
@@ -171,7 +173,7 @@ async function initGame(mode) {
     // todo: move timer & score containers creation inside?
 
     let orderContainer = createOrderContainer();
-    
+
     let gameContainer = createGameContainer();
 
     let finishButton = createFinishButton();
@@ -179,7 +181,8 @@ async function initGame(mode) {
     let recipesButton = createRecipesButton();
     let cursedRecipesButton = createCursedRecipesButton();
     let nextStateButton = createNextStateButton();
-    let menuContainer = createMenuContainer(finishButton, restartButton, cursedRecipesButton, recipesButton, nextStateButton);
+    let menuContainer = createMenuContainer(
+        finishButton, restartButton, cursedRecipesButton, recipesButton, nextStateButton);
     // todo: move buttons creation inside?
     // todo: redundant css class for button, menu's id is enough?
 
@@ -194,7 +197,7 @@ async function initGame(mode) {
     gameInfoContainer.classList.add('game-elements-fade-in');
     orderContainer.classList.add('game-elements-fade-in');
     gameContainer.classList.add('game-elements-fade-in');
-    menuContainer.classList.add('game-elements-fade-in');   
+    menuContainer.classList.add('game-elements-fade-in');
 
     scriptNode.before(gameInfoContainer, orderContainer, gameContainer, menuContainer);
 
@@ -207,7 +210,7 @@ async function initGame(mode) {
                 }
             }, 50);
             break;
-        
+
         case 'arcade':
             gameTimer = setTimeout(() => finishSession().then(console.log('fin')), ArcadeGameTime * 1000);
             break;
@@ -277,7 +280,7 @@ function createModeInfoContainer(mode) {
         case 'infinite':
             modeInfo.textContent = curLang.timerText(0);
             break;
-    } 
+    }
     modeInfoContainer.append(modeInfo);
     return modeInfoContainer;
 }
@@ -306,8 +309,6 @@ function createOrderContainer() {
     orderContainer.append(orderText);
     return orderContainer;
 }
-
-
 
 async function finishSession() {
     clearInterval(gameTimer);
@@ -367,7 +368,7 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
 
     let ripple = document.createElement('div');
     ripple.classList.add('result-screen-ripple');
-    
+
     quitButton.addEventListener('click', () => {
         let ripplePosition = getRipplePosition(quitButton);
         ripple.style.top = `${ripplePosition[0]}px`;
@@ -379,9 +380,9 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
         document.body.style.background = '#FFFDF0';
         createStartScreen();
         setTimeout(() => {
-            resultsScreenContainer.remove()
+            resultsScreenContainer.remove();
         }, 750);
-        
+
     });
 
     restartButton.addEventListener('click', async () => {
@@ -395,10 +396,10 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
     resultScoreContainer.id = 'resultScoreContainer';
 
     let buttonsContainer = document.createElement('div');
-    buttonsContainer.classList.add('filling-buttons-container')
+    buttonsContainer.classList.add('filling-buttons-container');
 
     let scoreText = document.createElement('h1');
-    scoreText.textContent = curLang.totalScoreText(gameScore); // 'Ваш счет: ' + 
+    scoreText.textContent = curLang.totalScoreText(gameScore); // 'Ваш счет: ' +
 
     let orderCount = document.createElement('h1');
     orderCount.textContent = curLang.completedOrdersCountText(correctOrders);
@@ -409,7 +410,7 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
     } else {
         correctOrdersText.textContent = curLang.successPercentageText(0);
     }
-    
+
     resultScoreContainer.append(scoreText, orderCount, correctOrdersText);
 
     buttonsContainer.append(quitButton, restartButton);
@@ -427,7 +428,7 @@ function addModeSelectionButtonsToLeaderboardLightbox() {
         button.addEventListener('click', () => {
             button.disabled = true;
             showLeaderboard(mode, MaxLeaderboardEntriesCount).then(() => button.disabled = false);
-        })
+        });
         leaderboardModeSelection.appendChild(button);
     });
 }

@@ -35,7 +35,11 @@ export function _get(coll, name = null) {
 
 export function _getAll(coll, count = Infinity, ascending = null) {
     const url = new URL(`${base_url}/${coll}`);
-    if (count !== null && count !== Infinity) { url.searchParams.append('pageSize', count); }
-    if (ascending !== null) { url.searchParams.append('orderBy', ascending ? 'points' : 'points desc'); }
+    if (count !== null && count !== Infinity) {
+        url.searchParams.append('pageSize', count);
+    }
+    if (ascending !== null) {
+        url.searchParams.append('orderBy', ascending ? 'points' : 'points desc');
+    }
     return fetch(url);
 }

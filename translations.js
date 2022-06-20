@@ -1,7 +1,7 @@
 export const volumeRussianTranslation = {
     'small': 'малый',
     'medium': 'средний',
-    'large': 'большой'
+    'large': 'большой',
 };
 
 export const gameModesRussianTranslation = {
@@ -58,7 +58,7 @@ export const Languages = {
         chocolate: 'Шоколад',
         fizzyWater: 'Газировка',
         caramel: 'Карамель',
-        lemon: 'Лемон',
+        lemon: 'Лимон',
         mint: 'Мята',
         uranium: 'Уран',
         void: 'Пустота',

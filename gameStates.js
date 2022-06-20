@@ -1,12 +1,10 @@
-import { Cup, Drink, PouringBar, Order } from './gameElements.js';
+import { Cup, Drink, PouringBar } from './gameElements.js';
 import { mix_rgbs, getRandomInt, equalOrders, Inputs, Volumes,
-         inputImages, Events, FullScore, Fillings, Toppings,
-         convertRGB, TabIndexOffsets, equalComponents,
-         getArrayDifference, getArrayIntersection,
-         componentsColors, 
+         inputImages, FullScore, Fillings, Toppings,
+         convertRGB, TabIndexOffsets,
+         componentsColors,
          CursedFillings,
-         CursedToppings, 
-        getRipplePosition} from "./helpers.js";
+         CursedToppings} from "./helpers.js";
 import { Languages } from './translations.js';
 
 const curLangName = 'russian';
@@ -42,125 +40,122 @@ class FillState extends State {
             firstTime = true;
         }
         this.init(firstTime);
-        
+
     }
 
     init(firstTime) {
-        let recipesButton = document.getElementById('recipesButton');
-        let cursedRecipesButton = document.getElementById('cursedRecipesButton');
+        this._recipesButton = document.getElementById('recipesButton');
+        this._cursedRecipesButton = document.getElementById('cursedRecipesButton');
 
         let stageText = document.getElementById('stageText'); // todo: state or stage?
         stageText.textContent = curLang.fillStateText;
 
-        let cupContainer = this._createCupContainer();
+        this._cupContainer = this._createCupContainer();
 
         let fillingTitleContainer = this._createFillingTitleContainer();
         let fillingsContainer = this._createFillingsContainer();
         let toppingTitleContainer = this._createToppingTitleContainer();
         let toppingsContainer = this._createToppingsContainer();
 
-        let fillingMenuDimming = document.createElement('div');
-        fillingMenuDimming.classList.add('filling-menu-dimming');
+        this._fillingMenuDimming = this._createFillingMenuDimming();
+        this._toppingMenuDimming = this._createFillingMenuDimming();
 
-        let toppingMenuDimming = document.createElement('div');
-        toppingMenuDimming.classList.add('filling-menu-dimming');
+        this.cup = new Cup(this._cupContainer);
 
-        let fillingMenuContainer = document.createElement('div');
-        fillingMenuContainer.classList.add('filling-menu-container');
+        if (this.orders[0].isCursed) {
+            this._addComponents(fillingsContainer, toppingsContainer, true);
+            if (firstTime && (this.previousOrder == undefined || !this.previousOrder.isCursed)) {
+                setTimeout(() => this._becomeCursed(), 750);
+            } else {
+                this._setCursedClassToElements();
+            }
 
-        let toppingMenuContainer = document.createElement('div');
-            toppingMenuContainer.classList.add('filling-menu-container');
+        } else {
+            this._addComponents(fillingsContainer, toppingsContainer, false);
+            this._displayRecipesButton(false);
+            this._removeCursedClassFromElements();
+        }
+
+        this._fillGameContainer(fillingTitleContainer, fillingsContainer, this._fillingMenuDimming, toppingTitleContainer, toppingsContainer, this._toppingMenuDimming, this._cupContainer);
+    }
+
+    _displayRecipesButton(cursed = false) {
+        this._cursedRecipesButton.style.display = cursed ? 'block' : 'none';
+        this._recipesButton.style.display = cursed ? 'none' : 'block';
+    }
+
+    _removeCursedClassFromElements() {
+        let h1Elements = document.getElementsByTagName("h1");
+        for (let i = 0; i < h1Elements.length; i++) {
+            h1Elements[i].classList.remove('cursed');
+        }
+        this._cupContainer.classList.remove('cursed');
+        this._fillingMenuDimming.classList.remove('cursed');
+        this._toppingMenuDimming.classList.remove('cursed');
+    }
+
+    _becomeCursed() {
+        this._displayRecipesButton(true);
+        this._setCursedClassToElements();
+    }
+
+    _setCursedClassToElements() {
+        let h1Elements = document.getElementsByTagName("h1");
+        for (let i = 0; i < h1Elements.length; i++) {
+            h1Elements[i].classList.add('cursed');
+        }
+        // let h2Elements = document.getElementsByTagName("h2");
+        // for (let i = 0; i < h2Elements.length; i++) {
+        //     h2Elements[i].classList.add('cursed');
+        // }
+        // above never worked and probably for good
+        this._cupContainer.classList.add('cursed');
+        this._fillingMenuDimming.classList.add('cursed');
+        this._toppingMenuDimming.classList.add('cursed');
+    }
+
+    _addComponents(fillingsContainer, toppingsContainer, cursed = false) {
+        let offset = TabIndexOffsets.game; // todo: make via special obj
+        for (let component of (cursed ? CursedFillings : Fillings)) {
+            let button = this._createIngredientButton(component, curLang[component]);
+            button.tabIndex = offset;
+            fillingsContainer.append(button);
+            offset++;
+        }
+        for (let component of (cursed ? CursedToppings : Toppings)) {
+            let button = this._createIngredientButton(component, curLang[component]);
+            button.tabIndex = offset;
+            toppingsContainer.append(button);
+            offset++;
+        }
+    }
+
+    _fillGameContainer(fillingTitleContainer, fillingsContainer, fillingMenuDimming, toppingTitleContainer, toppingsContainer, toppingMenuDimming, cupContainer) {
+        let fillingMenuContainer = this._createFillingMenuContainer();
+        let toppingMenuContainer = this._createFillingMenuContainer();
 
         if (window.matchMedia("(min-width: 1251px)").matches) {
             this.gameContainer.style.flexWrap = 'nowrap';
             fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, fillingMenuDimming);
             toppingMenuContainer.append(toppingTitleContainer, toppingsContainer, toppingMenuDimming);
+            this.gameContainer.replaceChildren(fillingMenuContainer, cupContainer, toppingMenuContainer);
         } else {
             this.gameContainer.style.flexWrap = 'wrap';
             fillingMenuContainer.append(fillingTitleContainer, fillingsContainer, toppingTitleContainer, toppingsContainer, fillingMenuDimming);
-        }
-
-        this.cup = new Cup(cupContainer);
-        let offset = TabIndexOffsets.game;
-
-        if (this.orders[0].isCursed) {
-            
-            for (let filling of CursedFillings) {
-                let button = this._createIngredientButton(filling, curLang[filling]);
-                button.tabIndex = offset;
-                fillingsContainer.append(button);
-                offset++;
-            }
-            for (let topping of CursedToppings) {
-                let button = this._createIngredientButton(topping, curLang[topping]);
-                button.tabIndex = offset;
-                toppingsContainer.append(button);
-                offset++;
-            }
-            if (firstTime && (this.previousOrder == undefined || !this.previousOrder.isCursed)) {
-                setTimeout(() => {
-                    cursedRecipesButton.style.display = 'block';
-                    recipesButton.style.display = 'none';
-                    let h1Elements = document.getElementsByTagName("h1");
-                    for (let i = 0; i < h1Elements.length; i++) {
-                        h1Elements[i].classList.add('cursed');
-                    }
-                    let h2Elements = document.getElementsByTagName("h1");
-                    for (let i = 0; i < h1Elements.length; i++) {
-                        h2Elements[i].classList.add('cursed');
-                    }
-                    cupContainer.classList.add('cursed');
-                    fillingMenuDimming.classList.add('cursed');
-                    toppingMenuDimming.classList.add('cursed');
-                }, 750);
-            } else {
-                let h1Elements = document.getElementsByTagName("h1");
-                for (let i = 0; i < h1Elements.length; i++) {
-                    h1Elements[i].classList.add('cursed');
-                }
-                let h2Elements = document.getElementsByTagName("h1");
-                for (let i = 0; i < h1Elements.length; i++) {
-                    h2Elements[i].classList.add('cursed');
-                }
-                cupContainer.classList.add('cursed');
-                fillingMenuDimming.classList.add('cursed');
-                toppingMenuDimming.classList.add('cursed');
-            }
-            
-        } else {
-            cursedRecipesButton.style.display = 'none';
-            recipesButton.style.display = 'block';
-            for (let filling of Fillings) {
-                let button = this._createIngredientButton(filling, curLang[filling]);
-                button.tabIndex = offset;
-                fillingsContainer.append(button);
-                offset++;
-            }
-            for (let topping of Toppings) {
-                let button = this._createIngredientButton(topping, curLang[topping]);
-                button.tabIndex = offset;
-                toppingsContainer.append(button);
-                offset++;
-            }
-            let h1Elements = document.getElementsByTagName("h1");
-            for (let i = 0; i < h1Elements.length; i++) {
-                h1Elements[i].classList.remove('cursed');
-            }
-            let h2Elements = document.getElementsByTagName("h1");
-            for (let i = 0; i < h1Elements.length; i++) {
-                h2Elements[i].classList.remove('cursed');
-            }
-            cupContainer.classList.remove('cursed');
-            fillingMenuDimming.classList.remove('cursed');
-            toppingMenuDimming.classList.remove('cursed');
-        }
-        
-        if (window.matchMedia("(min-width: 1251px)").matches) {
-            this.gameContainer.replaceChildren(fillingMenuContainer, cupContainer, toppingMenuContainer);
-        } else {
             this.gameContainer.replaceChildren(cupContainer, fillingMenuContainer);
         }
+    }
 
+    _createFillingMenuContainer() {
+        let fillingMenuContainer = document.createElement('div');
+        fillingMenuContainer.classList.add('filling-menu-container');
+        return fillingMenuContainer;
+    }
+
+    _createFillingMenuDimming() {
+        let fillingMenuDimming = document.createElement('div');
+        fillingMenuDimming.classList.add('filling-menu-dimming');
+        return fillingMenuDimming;
     }
 
     _createIngredientButton(engName, translation) {
@@ -218,7 +213,7 @@ class FillState extends State {
 
 class MixState extends State {
     constructor(orders, cup) {
-        super(orders); 
+        super(orders);
         this.cup = cup;
         this._buttons = {
             'left': null,
@@ -257,7 +252,7 @@ class MixState extends State {
             (btn, i) => btn.tabIndex = TabIndexOffsets.game + i
         );
         mixButtonsContainer.append(leftMixButton, rightMixButton, downMixButton, upMixButton);
-        
+
         this.gameContainer.replaceChildren(cupContainer, mixButtonsContainer, requiredInputsContainer);
         this.cup.changeContainer(cupContainer);
         this.cup.draw();
@@ -371,7 +366,7 @@ class MixState extends State {
             arrowObject.classList.remove(...arrowObject.classList);
         }
         let requiredInputsContainer = document.getElementById('requiredInputsContainer');
-        
+
         if (this.orders[0].isCursed) {
             requiredInputsContainer.classList.add('flash-background-cursed');
             setTimeout(() => requiredInputsContainer.classList.remove('flash-background-cursed'), 1000);
@@ -416,7 +411,7 @@ class PourState extends State {
         this.pouringCup = new Drink(pouringCupContainer);
 
         this.pouringBar = new PouringBar(pouringBarContainer, this._mixColor);
-        
+
         let stopButton = this._createStopButton();
 
         this.cup.changeContainer(cupContainer);
@@ -527,8 +522,6 @@ class FinalState extends State {
                 h1Elements[i].classList.add('cursed');
             }
         }
-        
-
         if (equalOrders(this.orders[0], this.components, this.volume)) {
             if (this.orders[0].isCursed) {
                 this.score += 3 * (FullScore + FullScore * this.streak / 2);
@@ -540,14 +533,6 @@ class FinalState extends State {
             let orderText = document.getElementById('orderText');
             if (this.orders.length === 0) {
                 orderText.textContent = ''; // todo: why empty?
-            } else if (!this.currentOrder.isCursed && this.orders[0].isCursed){
-                let nextStateButton = document.getElementById('nextStateButton');
-                nextStateButton.addEventListener('click', rippleEventListener = addRipple.bind(nextStateButton));
-                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
-            } else if (this.currentOrder.isCursed && !this.orders[0].isCursed){
-                let nextStateButton = document.getElementById('nextStateButton');
-                nextStateButton.addEventListener('click', rippleEventListener = removeRipple.bind(nextStateButton));
-                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             } else {
                 orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             }
@@ -564,44 +549,5 @@ class FinalState extends State {
 
     }
 }
-
-export function addRipple() {
-    let scriptNode = document.getElementsByTagName('script')[0];
-    let ripple = document.createElement('div');
-    let ripplePosition = getRipplePosition(nextStateButton);
-    console.log(ripplePosition);
-    ripple.classList.add('cursed-screen-ripple');
-    ripple.style.top = `${ripplePosition[0]}px`;
-    ripple.style.left = `${ripplePosition[1]}px`;
-    scriptNode.before(ripple);
-    ripple.classList.add('start-screen-animation');
-    setTimeout(() => {
-        document.body.style.background = 'rgb(80, 0, 69)';
-        ripple.remove();  
-    }, 750);
-    if (this != undefined) {
-        this.removeEventListener('click', rippleEventListener);
-    }
-}
-
-export function removeRipple() {
-    let scriptNode = document.getElementsByTagName('script')[0];
-    let ripple = document.createElement('div');
-    let ripplePosition = getRipplePosition(nextStateButton);
-    console.log(ripplePosition);
-    ripple.classList.add('cursed-screen-ripple');
-    ripple.style.top = `${ripplePosition[0]}px`;
-    ripple.style.left = `${ripplePosition[1]}px`;
-    scriptNode.before(ripple);
-    ripple.classList.add('result-screen-animation');
-    document.body.style.background = '#FFFDF0';
-    setTimeout(() => {
-        document.body.style.background = '#FFFDF0';
-        ripple.remove();  
-    }, 750);
-    this.removeEventListener('click', rippleEventListener);
-}
-
-globalThis.rippleEventListener = () => {}; // I am sorry for this, tried everything else to get rid of it
 
 export {FillState, MixState, PourState, FinalState}
