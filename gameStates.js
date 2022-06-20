@@ -427,7 +427,10 @@ class PourState extends State {
     _stop = () => {
         this.pouringBar.stop();
         this.pouringCup.fill(this.pouringBar.progress, this._mixColor);
-        this.volume = Volumes[Math.floor(this.pouringCup.volume / 33.34) - 1];
+        let volumeType = this.pouringBar.progress <= 33.34 ? 0
+                       : this.pouringBar.progress <= 66.68 ? 1
+                       : 2;
+        this.volume = Volumes[volumeType];
     }
 
     _createPouringBarContainer() {
