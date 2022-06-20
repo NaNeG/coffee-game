@@ -58,7 +58,7 @@ export const Languages = {
         chocolate: 'Шоколад',
         fizzyWater: 'Газировка',
         caramel: 'Карамель',
-        lemon: 'Лемон',
+        lemon: 'Лимон',
         mint: 'Мята',
         uranium: 'Уран',
         void: 'Пустота',
