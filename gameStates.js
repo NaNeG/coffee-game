@@ -543,13 +543,13 @@ class FinalState extends State {
             } else if (!this.currentOrder.isCursed && this.orders[0].isCursed){
                 let nextStateButton = document.getElementById('nextStateButton');
                 nextStateButton.addEventListener('click', rippleEventListener = addRipple.bind(nextStateButton));
-                orderText.textContent = curLang.orderText(this.orders[0].name, this.orders[0].volume);
+                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             } else if (this.currentOrder.isCursed && !this.orders[0].isCursed){
                 let nextStateButton = document.getElementById('nextStateButton');
                 nextStateButton.addEventListener('click', rippleEventListener = removeRipple.bind(nextStateButton));
-                orderText.textContent = curLang.orderText(this.orders[0].name, this.orders[0].volume);
+                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             } else {
-                orderText.textContent = curLang.orderText(this.orders[0].name, this.orders[0].volume);
+                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             }
         } else {
             this.currentOrder = this.orders[0];
