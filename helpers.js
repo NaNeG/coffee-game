@@ -5,11 +5,11 @@ export const Inputs = {
     3: 'left',
 };
 
-export const Volumes = {
-    0: 'small',
-    1: 'medium',
-    2: 'large',
-};
+export const Volumes = [
+    'small',
+    'medium',
+    'large',
+];
 
 export const inputImages = {
     0: 'up.png',

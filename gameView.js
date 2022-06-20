@@ -24,13 +24,13 @@ const leaderboardModeSelection = leaderboardLightBox.querySelector('#leaderboard
 createStartScreen();
 addModeSelectionButtonsToLeaderboardLightbox();
 
-for (let {name, components} of Object.values(Recipes)) {
+for (let {name, components} of Recipes) {
     let row = recipesTable.insertRow();
     row.insertCell().textContent = curLang[name] + ':';
     row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
 }
 
-for (let {name, components} of Object.values(CursedRecipes)) {
+for (let {name, components} of CursedRecipes) {
     let row = cursedRecipesTable.insertRow();
     row.insertCell().textContent = curLang[name] + ':';
     row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
