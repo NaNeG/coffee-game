@@ -1,13 +1,9 @@
 import { GameSession } from './gameSession.js';
 import { CursedRecipes, Recipes } from "./recipes.js";
 import { leaderboardDBs } from "./leaderboardApi.js";
-import { ArcadeGameTime, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition } from "./helpers.js";
-import { Languages } from "./translations.js";
+import { ArcadeGameTime, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition, curLang } from "./helpers.js";
 
 const firstGameMode = GameModes[0];
-
-const curLangName = 'russian';
-const curLang = Languages[curLangName];
 
 let playerId;
 let currentGameSession;

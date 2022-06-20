@@ -1,11 +1,8 @@
 import { Order } from "./gameElements.js";
 import { FillState, MixState, PourState, FinalState } from "./gameStates.js";
-import { equalArrays, getRandomInt, setRandomInterval, Volumes, ArcadeGameTime, getRipplePosition } from "./helpers.js";
+import { equalArrays, getRandomInt, setRandomInterval, Volumes, ArcadeGameTime, getRipplePosition, curLang } from "./helpers.js";
 import { CursedRecipes, Recipes } from "./recipes.js";
-import { Languages } from "./translations.js";
 
-const curLangName = 'russian';
-const curLang = Languages[curLangName];
 
 export class GameSession {
     score = 0;

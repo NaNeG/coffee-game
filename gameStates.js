@@ -4,11 +4,8 @@ import { mix_rgbs, getRandomInt, equalOrders, Inputs, Volumes,
          convertRGB, TabIndexOffsets,
          componentsColors,
          CursedFillings,
-         CursedToppings} from "./helpers.js";
-import { Languages } from './translations.js';
+         CursedToppings, curLang} from "./helpers.js";
 
-const curLangName = 'russian';
-const curLang = Languages[curLangName];
 
 class State {
     constructor(orders) {

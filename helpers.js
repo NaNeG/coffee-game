@@ -1,3 +1,5 @@
+import { Languages } from "./translations.js";
+
 export const Inputs = {
     0: 'up',
     1: 'right',
@@ -60,6 +62,9 @@ export const TabIndexOffsets = {
     game: 501,
     menu: 1001,
 };
+
+export const curLangName = 'russian';
+export const curLang = Languages[curLangName];
 
 export function getRgb(r, g, b){
     return `rgb(${r}, ${g}, ${b})`;
