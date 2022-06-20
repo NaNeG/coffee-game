@@ -1,6 +1,6 @@
 import { Order } from "./gameElements.js";
-import { FillState, MixState, PourState, FinalState, addRipple, removeRipple } from "./gameStates.js";
-import { equalArrays, getRandomInt, setRandomInterval, Volumes, ArcadeGameTime } from "./helpers.js";
+import { FillState, MixState, PourState, FinalState } from "./gameStates.js";
+import { equalArrays, getRandomInt, setRandomInterval, Volumes, ArcadeGameTime, getRipplePosition } from "./helpers.js";
 import { CursedRecipes, Recipes } from "./recipes.js";
 import { Languages } from "./translations.js";
 
@@ -19,6 +19,9 @@ export class GameSession {
         this._firstOrder = true;
         this._createOrder();
         this._gameState = new FillState(this._orders, undefined);
+        if (this._orders[0].isCursed) {
+            this._addRipple();
+        }
         this.mode = mode;
         switch (mode) {
             case 'classic':
@@ -68,18 +71,10 @@ export class GameSession {
         if (getRandomInt(2) === 0) {
             let recipe = CursedRecipes[getRandomInt(CursedRecipes.length)];
             this._orders.push(new Order(recipe, volume, true));
-            if (this._firstOrder) {
-                addRipple();
-            } else if (this._orders[0].isCursed && this._gameState instanceof FinalState && !this._gameState.currentOrder.isCursed) {
-                nextStateButton.addEventListener('click', rippleEventListener = addRipple.bind(nextStateButton));
-            }
             console.log(recipe.components, recipe.name, volume);
         } else {
             let recipe = Recipes[getRandomInt(Recipes.length)];
             this._orders.push(new Order(recipe, volume, false));
-            if (!this._orders[0].isCursed && this._gameState instanceof FinalState && this._gameState.currentOrder.isCursed) {
-                nextStateButton.addEventListener('click', rippleEventListener = removeRipple.bind(nextStateButton));
-            }
             console.log(recipe.components, recipe.name, volume);
         }
         this._firstOrder = false;
@@ -149,6 +144,44 @@ export class GameSession {
         let previousOrder = this._gameState.currentOrder;
         this._gameState.dispose();
         this._gameState = new FillState(this._orders, previousOrder);
+        if (!previousOrder.isCursed && this._orders[0].isCursed) {
+            this._addRipple();
+        } else if (previousOrder.isCursed && !this._orders[0].isCursed) {
+            this._removeRipple();
+        }
+    }
+    
+    _addRipple() {
+        let scriptNode = document.getElementsByTagName('script')[0];
+        let ripple = document.createElement('div');
+        let ripplePosition = getRipplePosition(nextStateButton);
+        console.log(ripplePosition);
+        ripple.classList.add('cursed-screen-ripple');
+        ripple.style.top = `${ripplePosition[0]}px`;
+        ripple.style.left = `${ripplePosition[1]}px`;
+        scriptNode.before(ripple);
+        ripple.classList.add('start-screen-animation');
+        setTimeout(() => {
+            document.body.style.background = 'rgb(80, 0, 69)';
+            ripple.remove();
+        }, 750);
+    }
+    
+    _removeRipple() {
+        let scriptNode = document.getElementsByTagName('script')[0];
+        let ripple = document.createElement('div');
+        let ripplePosition = getRipplePosition(nextStateButton);
+        console.log(ripplePosition);
+        ripple.classList.add('cursed-screen-ripple');
+        ripple.style.top = `${ripplePosition[0]}px`;
+        ripple.style.left = `${ripplePosition[1]}px`;
+        scriptNode.before(ripple);
+        ripple.classList.add('result-screen-animation');
+        document.body.style.background = '#FFFDF0';
+        setTimeout(() => {
+            document.body.style.background = '#FFFDF0';
+            ripple.remove();
+        }, 750);
     }
 
     restart() {

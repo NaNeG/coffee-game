@@ -4,8 +4,7 @@ import { mix_rgbs, getRandomInt, equalOrders, Inputs, Volumes,
          convertRGB, TabIndexOffsets,
          componentsColors,
          CursedFillings,
-         CursedToppings,
-        getRipplePosition} from "./helpers.js";
+         CursedToppings} from "./helpers.js";
 import { Languages } from './translations.js';
 
 const curLangName = 'russian';
@@ -534,14 +533,6 @@ class FinalState extends State {
             let orderText = document.getElementById('orderText');
             if (this.orders.length === 0) {
                 orderText.textContent = ''; // todo: why empty?
-            } else if (!this.currentOrder.isCursed && this.orders[0].isCursed){
-                let nextStateButton = document.getElementById('nextStateButton');
-                nextStateButton.addEventListener('click', rippleEventListener = addRipple.bind(nextStateButton));
-                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
-            } else if (this.currentOrder.isCursed && !this.orders[0].isCursed){
-                let nextStateButton = document.getElementById('nextStateButton');
-                nextStateButton.addEventListener('click', rippleEventListener = removeRipple.bind(nextStateButton));
-                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             } else {
                 orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             }
@@ -558,44 +549,5 @@ class FinalState extends State {
 
     }
 }
-
-export function addRipple() {
-    let scriptNode = document.getElementsByTagName('script')[0];
-    let ripple = document.createElement('div');
-    let ripplePosition = getRipplePosition(nextStateButton);
-    console.log(ripplePosition);
-    ripple.classList.add('cursed-screen-ripple');
-    ripple.style.top = `${ripplePosition[0]}px`;
-    ripple.style.left = `${ripplePosition[1]}px`;
-    scriptNode.before(ripple);
-    ripple.classList.add('start-screen-animation');
-    setTimeout(() => {
-        document.body.style.background = 'rgb(80, 0, 69)';
-        ripple.remove();
-    }, 750);
-    if (this != undefined) {
-        this.removeEventListener('click', rippleEventListener);
-    }
-}
-
-export function removeRipple() {
-    let scriptNode = document.getElementsByTagName('script')[0];
-    let ripple = document.createElement('div');
-    let ripplePosition = getRipplePosition(nextStateButton);
-    console.log(ripplePosition);
-    ripple.classList.add('cursed-screen-ripple');
-    ripple.style.top = `${ripplePosition[0]}px`;
-    ripple.style.left = `${ripplePosition[1]}px`;
-    scriptNode.before(ripple);
-    ripple.classList.add('result-screen-animation');
-    document.body.style.background = '#FFFDF0';
-    setTimeout(() => {
-        document.body.style.background = '#FFFDF0';
-        ripple.remove();
-    }, 750);
-    this.removeEventListener('click', rippleEventListener);
-}
-
-globalThis.rippleEventListener = () => {}; // I am sorry for this, tried everything else to get rid of it
 
 export {FillState, MixState, PourState, FinalState}
