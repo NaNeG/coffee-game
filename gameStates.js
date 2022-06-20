@@ -1,12 +1,16 @@
 import { Cup, Drink, PouringBar, Order } from './gameElements.js';
 import { mix_rgbs, getRandomInt, equalOrders, Inputs, Volumes,
          inputImages, Events, FullScore, Fillings, Toppings,
-         VolumeTranslation, convertRGB, TabIndexOffsets, equalComponents,
-         getArrayDifference, getArrayIntersection, ComponentTranslation,
+         convertRGB, TabIndexOffsets, equalComponents,
+         getArrayDifference, getArrayIntersection,
          componentsColors, 
          CursedFillings,
          CursedToppings, 
         getRipplePosition} from "./helpers.js";
+import { Languages } from './translations.js';
+
+const curLangName = 'russian';
+const curLang = Languages[curLangName];
 
 class State {
     constructor(orders) {
@@ -45,8 +49,8 @@ class FillState extends State {
         let recipesButton = document.getElementById('recipesButton');
         let cursedRecipesButton = document.getElementById('cursedRecipesButton');
 
-        let stageText = document.getElementById('stageText');
-        stageText.textContent = 'Наполнение';
+        let stageText = document.getElementById('stageText'); // todo: state or stage?
+        stageText.textContent = curLang.fillStateText;
 
         let cupContainer = this._createCupContainer();
 
@@ -81,14 +85,14 @@ class FillState extends State {
 
         if (this.orders[0].isCursed) {
             
-            for (let [name, translation] of Object.entries(CursedFillings)) {
-                let button = this._createIngredientButton(name, translation);
+            for (let filling of CursedFillings) {
+                let button = this._createIngredientButton(filling, curLang[filling]);
                 button.tabIndex = offset;
                 fillingsContainer.append(button);
                 offset++;
             }
-            for (let [engName, translation] of Object.entries(CursedToppings)) {
-                let button = this._createIngredientButton(engName, translation);
+            for (let topping of CursedToppings) {
+                let button = this._createIngredientButton(topping, curLang[topping]);
                 button.tabIndex = offset;
                 toppingsContainer.append(button);
                 offset++;
@@ -126,14 +130,14 @@ class FillState extends State {
         } else {
             cursedRecipesButton.style.display = 'none';
             recipesButton.style.display = 'block';
-            for (let [name, translation] of Object.entries(Fillings)) {
-                let button = this._createIngredientButton(name, translation);
+            for (let filling of Fillings) {
+                let button = this._createIngredientButton(filling, curLang[filling]);
                 button.tabIndex = offset;
                 fillingsContainer.append(button);
                 offset++;
             }
-            for (let [engName, translation] of Object.entries(Toppings)) {
-                let button = this._createIngredientButton(engName, translation);
+            for (let topping of Toppings) {
+                let button = this._createIngredientButton(topping, curLang[topping]);
                 button.tabIndex = offset;
                 toppingsContainer.append(button);
                 offset++;
@@ -183,11 +187,11 @@ class FillState extends State {
     }
 
     _createToppingTitleContainer() {
-        return this._createTitleContainer('Добавки');
+        return this._createTitleContainer(curLang.fillStateToppingTitle);
     }
 
     _createFillingTitleContainer() {
-        return this._createTitleContainer('Основы');
+        return this._createTitleContainer(curLang.fillStateFillingTitle);
     }
 
     _createCupContainer() {
@@ -226,7 +230,7 @@ class MixState extends State {
         this.gameContainer.style.flexWrap = 'wrap';
 
         let stageText = document.getElementById('stageText');
-        stageText.textContent = 'Смешивание';
+        stageText.textContent = curLang.mixStateText;
 
         let cupContainer = this._createCupContainer();
         let mixButtonsContainer = this._createMixButtonsContainer();
@@ -390,7 +394,7 @@ class PourState extends State {
         this.gameContainer.style = '';
 
         let stageText = document.getElementById('stageText');
-        stageText.textContent = 'Разлив';
+        stageText.textContent = curLang.pourStateText;
 
         this._mixColor = mix_rgbs(...this.getComponentsColorsOfCup());
         console.log(this._mixColor);
@@ -455,7 +459,7 @@ class PourState extends State {
     _createStopButton() {
         let stopButton = document.createElement('button');
         stopButton.id = 'stopButton';
-        stopButton.textContent = 'Стоп';
+        stopButton.textContent = curLang.pourStateStopButtonText;
         stopButton.classList.add('stop-button');
         stopButton.addEventListener('click', this._stop);
         stopButton.tabIndex = TabIndexOffsets.game;
@@ -499,7 +503,7 @@ class FinalState extends State {
         this.gameContainer.replaceChildren();
 
         let stageText = document.getElementById('stageText');
-        stageText.textContent = 'Результат';
+        stageText.textContent = curLang.finalStateText;
 
         let scoreContainer = document.createElement('div');
         scoreContainer.classList.add('final-info-container');
@@ -539,21 +543,21 @@ class FinalState extends State {
             } else if (!this.currentOrder.isCursed && this.orders[0].isCursed){
                 let nextStateButton = document.getElementById('nextStateButton');
                 nextStateButton.addEventListener('click', rippleEventListener = addRipple.bind(nextStateButton));
-                orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
+                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             } else if (this.currentOrder.isCursed && !this.orders[0].isCursed){
                 let nextStateButton = document.getElementById('nextStateButton');
                 nextStateButton.addEventListener('click', rippleEventListener = removeRipple.bind(nextStateButton));
-                orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
+                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             } else {
-                orderText.textContent = `Заказ: ${this.orders[0].name} ${VolumeTranslation[this.orders[0].volume]}`;
+                orderText.textContent = curLang.orderText(curLang[this.orders[0].name], this.orders[0].volume);
             }
         } else {
             this.currentOrder = this.orders[0];
             this.streak = 0;
         }
 
-        scoreText.textContent = `Очки за заказ: ${this.score}`;
-        streakText.textContent = `Серия: ${this.streak}`;
+        scoreText.textContent = curLang.orderScoreText(this.score);
+        streakText.textContent = curLang.streakText(this.streak);
     }
 
     restart() {

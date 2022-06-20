@@ -1,10 +1,14 @@
 import { Cup } from "./gameElements.js";
-import { GameSession } from './gameSession.js'
+import { GameSession } from './gameSession.js';
 import { CursedRecipes, Recipes } from "./recipes.js";
 import { leaderboardDBs } from "./leaderboardApi.js";
-import { ArcadeGameTime, ComponentTranslation, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition, CursedComponentTranslation } from "./helpers.js";
+import { ArcadeGameTime, GameModes, TabIndexOffsets, MaxLeaderboardEntriesCount, getRipplePosition } from "./helpers.js";
+import { Languages } from "./translations.js";
 
-const firstGameMode = Object.keys(GameModes)[0];
+const firstGameMode = GameModes[0];
+
+const curLangName = 'russian';
+const curLang = Languages[curLangName];
 
 let playerId;
 let currentGameSession;
@@ -23,14 +27,14 @@ addModeSelectionButtonsToLeaderboardLightbox();
 
 for (let {name, components} of Object.values(Recipes)) {
     let row = recipesTable.insertRow();
-    row.insertCell().textContent = name + ':';
-    row.insertCell().textContent = components.map(x => ComponentTranslation[x]).join(', ');
+    row.insertCell().textContent = curLang[name] + ':';
+    row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
 }
 
 for (let {name, components} of Object.values(CursedRecipes)) {
     let row = cursedRecipesTable.insertRow();
-    row.insertCell().textContent = name + ':';
-    row.insertCell().textContent = components.map(x => CursedComponentTranslation[x]).join(', ');
+    row.insertCell().textContent = curLang[name] + ':';
+    row.insertCell().textContent = components.map(x => curLang[x]).join(', ');
 }
 
 function nicknameIsValid(nickname) {
@@ -40,7 +44,7 @@ function nicknameIsValid(nickname) {
 function createStartButton(container) {
     let startButton = document.createElement('button');
     startButton.id = 'startButton';
-    startButton.textContent = 'Старт';
+    startButton.textContent = curLang.startText;
     startButton.classList.add('start-menu-button');
     startButton.addEventListener('click', () => {
         let nickInput = document.querySelector('#nickname-input');
@@ -61,17 +65,17 @@ function createNicknameInput() {
     let input = document.createElement('input');
     input.id = 'nickname-input';
     input.type = 'text';
-    input.placeholder = 'Ваш ник:'
+    input.placeholder = curLang.nicknamePlaceholder;
     input.maxLength = 12;
     input.addEventListener('input', () => document.querySelector('#startButton').disabled = !nicknameIsValid(input.value));
     return input;
 }
 
 function createModeButtons(container) {
-    for (let mode of Object.keys(GameModes)) {
+    for (let mode of GameModes) {
         let modeButton = document.createElement('button');
         modeButton.id = mode;
-        modeButton.textContent = GameModes[mode];
+        modeButton.textContent = curLang[mode];
         modeButton.classList.add('start-menu-button');
         modeButton.addEventListener('click', (event) => {
             hideStartScreen(event);
@@ -80,7 +84,7 @@ function createModeButtons(container) {
         container.append(modeButton);
     }
     let backButton = document.createElement('button');
-    backButton.textContent = 'Назад';
+    backButton.textContent = curLang.backButtonText;
     backButton.classList.add('start-menu-button');
     backButton.addEventListener('click', () => {
         startScreenContainer.remove();
@@ -94,7 +98,7 @@ function createStartScreen() {
     startScreenContainer.id = 'startScreenContainer'; 
     let title = document.createElement('h1');
     title.id = 'startScreenTitle';
-    title.textContent = 'Cofea';
+    title.textContent = curLang.gameTitle;
     let startButton = createStartButton(startScreenContainer);
     let nicknameInput = createNicknameInput();
     let leaderboardButton = createLeaderboardButton();
@@ -127,7 +131,7 @@ function hideStartScreen(event) {
 function createRecipesButton() {
     let recipesButton = document.createElement('button');
     recipesButton.id = 'recipesButton';
-    recipesButton.textContent = 'Рецепты';
+    recipesButton.textContent = curLang.recipesButtonText;
     recipesButton.addEventListener('click', () => showLightBox('.recipes'));
     recipesButton.classList.add('game-menu-button');
     return recipesButton;
@@ -136,7 +140,7 @@ function createRecipesButton() {
 function createCursedRecipesButton() {
     let recipesButton = document.createElement('button');
     recipesButton.id = 'cursedRecipesButton';
-    recipesButton.textContent = 'Рецепты';
+    recipesButton.textContent = curLang.recipesButtonText;
     recipesButton.addEventListener('click', () => showLightBox('.cursed-recipes'));
     recipesButton.classList.add('cursed-menu-button');
     recipesButton.style.display = 'none';
@@ -146,7 +150,7 @@ function createCursedRecipesButton() {
 function createLeaderboardButton() {
     let leaderboardButton = document.createElement('button');
     leaderboardButton.id = 'leaderboardButton';
-    leaderboardButton.textContent = 'Таблица лидеров';
+    leaderboardButton.textContent = curLang.leaderboardButtonText;
     leaderboardButton.addEventListener('click', () => {
         leaderboardButton.disabled = true;
         showLeaderboard(currentGameSession?.mode ?? firstGameMode, MaxLeaderboardEntriesCount).then(() => leaderboardButton.disabled = false);
@@ -225,7 +229,7 @@ function createMenuContainer(...buttons) {
 function createNextStateButton() {
     let nextStateButton = document.createElement('button');
     nextStateButton.id = 'nextStateButton';
-    nextStateButton.textContent = 'Далее';
+    nextStateButton.textContent = curLang.nextStateButtonText;
     nextStateButton.addEventListener('click', () => currentGameSession.nextState());
     nextStateButton.classList.add('game-menu-button');
     return nextStateButton;
@@ -234,7 +238,7 @@ function createNextStateButton() {
 function createRestartButton() {
     let restartButton = document.createElement('button');
     restartButton.id = 'restartButton';
-    restartButton.textContent = 'Сброс этапа';
+    restartButton.textContent = curLang.restartStateButtonText;
     restartButton.addEventListener('click', () => currentGameSession.restart());
     restartButton.classList.add('game-menu-button');
     return restartButton;
@@ -243,7 +247,7 @@ function createRestartButton() {
 function createFinishButton() {
     let finishButton = document.createElement('button');
     finishButton.id = 'finishButton';
-    finishButton.textContent = 'Выход';
+    finishButton.textContent = curLang.finishButtonText;
     finishButton.addEventListener('click', finishSession);
     finishButton.classList.add('game-menu-button');
     return finishButton;
@@ -263,15 +267,15 @@ function createModeInfoContainer(mode) {
     modeInfo.id = 'modeInfo';
     switch (mode) {
         case 'classic':
-            modeInfo.textContent = 'Ошибок: 0'
+            modeInfo.textContent = curLang.mistakeCounterText(0);
             break;
 
         case 'arcade':
-            modeInfo.textContent = `Время: ${ArcadeGameTime}`;
+            modeInfo.textContent = curLang.timerText(ArcadeGameTime);
             break;
 
         case 'infinite':
-            modeInfo.textContent = `Время: 0`;
+            modeInfo.textContent = curLang.timerText(0);
             break;
     } 
     modeInfoContainer.append(modeInfo);
@@ -283,7 +287,7 @@ function createStageInfoContainer() {
     stageInfoContainer.id = 'stageInfoContainer';
     let stageText = document.createElement('h1');
     stageText.id = 'stageText';
-    stageText.textContent = `Наполнение`;
+    stageText.textContent = curLang.fillStateText;
     stageInfoContainer.append(stageText);
     return stageInfoContainer;
 }
@@ -341,7 +345,7 @@ function createScoreContainer() {
     scoreContainer.id = 'scoreContainer';
     let scoreText = document.createElement('h1');
     scoreText.id = 'scoreText';
-    scoreText.textContent = 'Очки: ' + 0;
+    scoreText.textContent = curLang.totalScoreText(0);
     scoreContainer.append(scoreText);
     return scoreContainer; // todo: return method for setting score?
 }
@@ -353,12 +357,12 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
 
     let quitButton = document.createElement('button');
     quitButton.id = 'quitButton';
-    quitButton.textContent = 'Меню';
+    quitButton.textContent = curLang.goMenuButtonText;
     quitButton.classList.add('game-menu-button');
 
     let restartButton = document.createElement('button');
     restartButton.id = 'restartButton';
-    restartButton.textContent = 'Заново';
+    restartButton.textContent = curLang.restartButtonText;
     restartButton.classList.add('game-menu-button');
 
     let ripple = document.createElement('div');
@@ -394,16 +398,16 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
     buttonsContainer.classList.add('filling-buttons-container')
 
     let scoreText = document.createElement('h1');
-    scoreText.textContent = `Ваш счет: ${gameScore}`;
+    scoreText.textContent = curLang.totalScoreText(gameScore); // 'Ваш счет: ' + 
 
     let orderCount = document.createElement('h1');
-    orderCount.textContent = `Выполнено заказов: ${correctOrders}`;
+    orderCount.textContent = curLang.completedOrdersCountText(correctOrders);
 
     let correctOrdersText = document.createElement('h1');
     if (totalOrders > 0) {
-        correctOrdersText.textContent = `Процент успеха: ${(correctOrders / totalOrders).toFixed(2) * 100}%`;
+        correctOrdersText.textContent = curLang.successPercentageText((correctOrders / totalOrders).toFixed(2) * 100);
     } else {
-        correctOrdersText.textContent = `Процент успеха: 0%`;
+        correctOrdersText.textContent = curLang.successPercentageText(0);
     }
     
     resultScoreContainer.append(scoreText, orderCount, correctOrdersText);
@@ -416,9 +420,9 @@ function createResultScreen(gameMode, gameScore, totalOrders, correctOrders) {
 }
 
 function addModeSelectionButtonsToLeaderboardLightbox() {
-    Object.keys(GameModes).forEach(mode => {
+    GameModes.forEach(mode => {
         let button = document.createElement('button');
-        button.textContent = GameModes[mode];
+        button.textContent = curLang[mode];
         button.classList.add('mode-selection-button');
         button.addEventListener('click', () => {
             button.disabled = true;
